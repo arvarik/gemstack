@@ -8,11 +8,17 @@ _One-sentence description of the active feature or bug fix phase._
 Example: Reconnect Reminders - backend complete, frontend build next
 
 ## State of Work
-_List the lifecycle phases for the current feature and check them off as you progress._
-- [ ] Ideate: `docs/explorations/...`
-- [ ] Design (UX/Arch): `docs/designs/...`
-- [ ] Plan (BE/FE): `docs/plans/...`
-- [ ] Build
+_List the lifecycle phases for the current feature and check them off as you progress. Remove lines that don't apply (e.g., if no frontend, delete the Frontend lines; if no ML, delete the ML line)._
+- [ ] Ideate: `docs/explorations/YYYY-MM-DD-{topic}.md`
+- [ ] Design (UX): `docs/designs/YYYY-MM-DD-{feature}-ux.md`
+- [ ] Design (Architecture): `docs/designs/YYYY-MM-DD-{feature}-architecture.md`
+- [ ] Design (ML): `docs/designs/YYYY-MM-DD-{feature}-ml.md`
+- [ ] Plan (Backend): `docs/plans/YYYY-MM-DD-{feature}-backend.md`
+- [ ] Plan (Frontend): `docs/plans/YYYY-MM-DD-{feature}-frontend.md`
+- [ ] Plan (ML): `docs/plans/YYYY-MM-DD-{feature}-ml.md`
+- [ ] Build (Backend)
+- [ ] Build (Frontend)
+- [ ] Build (ML)
 - [ ] Test
 - [ ] Review
 - [ ] Ship
@@ -25,6 +31,7 @@ _Bullet points of features or major tasks that were recently shipped. Move items
 ## Known Issues
 _List any persistent bugs or architectural debt that isn't blocking the current release but needs to be tracked. Do NOT list "blocks release" bugs here (those go in TESTING.md)._
 - Example: OAuth token refresh occasionally fails silently
+- Example: Reminder query does full scan (fine now, index later if needed)
 
 ## What's Next
 _What feature or task should be picked up after the current focus is complete? Reference the exploration doc recommendation._
@@ -34,3 +41,30 @@ _List ONLY the files the agent needs to read or modify for the immediate next ta
 - `src/components/...` (modify)
 - `src/lib/...` (read-only)
 - `docs/designs/...` (spec)
+
+## Review Results
+_Populated during the Review phase. Keep the most recent review here; archive older ones with shipped features._
+
+### Review Results — YYYY-MM-DD
+- **Architecture**: pass / concerns noted
+- **Security**: pass / findings with severity
+- **Product fit**: pass / gaps identified
+
+### Action Items
+_For each item, specify severity and routing._
+
+| Item | Severity | Route To | Status |
+|------|----------|----------|--------|
+| _Example: GET /api/reminders has no auth check_ | recommended | Backend Eng (fix phase) | OPEN |
+| _Example: Card max-width missing at 1440px_ | cosmetic | Frontend Eng (fix phase) | OPEN |
+| _Example: Data model violates single-responsibility_ | blocks ship | Architect → plan + build | OPEN |
+
+## Active Worktrees
+_Track parallel agent work when using git worktrees. Remove entries during Ship phase cleanup._
+
+| Worktree | Branch | Port | Status | Owner |
+|----------|--------|------|--------|-------|
+| _Example: ../project-feat-backend_ | `feat/reconnect-backend` | :3001 | In progress | Backend Eng |
+| _Example: ../project-feat-frontend_ | `feat/reconnect-frontend` | :3002 | Blocked on BE merge | Frontend Eng |
+
+_If no parallel worktrees are active, write "(none — sequential execution)"._

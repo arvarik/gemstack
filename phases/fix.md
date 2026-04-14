@@ -18,8 +18,8 @@ This is NOT the build phase. The scope is surgically narrow.
 - NEVER for new features, refactoring, or "while I'm here" improvements
 
 ## Inputs
-- .agent-context/TESTING.md for bug descriptions, repro steps, severity
-- .agent-context/STATUS.md for review action items (if from review phase)
+- .agent/TESTING.md for bug descriptions, repro steps, severity
+- .agent/STATUS.md for review action items (if from review phase)
 
 ## Process
 1. Read the specific bug from TESTING.md or STATUS.md
@@ -48,8 +48,8 @@ This is NOT the build phase. The scope is surgically narrow.
 | File | Change |
 |------|--------|
 | (only the files containing the bug) | Minimal fix |
-| .agent-context/TESTING.md | Bug status changed to FIXED (if bug came from QA) |
-| .agent-context/STATUS.md | Action item marked FIXED (if issue came from review) |
+| .agent/TESTING.md | Bug status changed to FIXED (if bug came from QA) |
+| .agent/STATUS.md | Action item marked FIXED (if issue came from review) |
 
 ## Transition
 After all blocking bugs are fixed, return to the test phase for

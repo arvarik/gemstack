@@ -12,9 +12,9 @@ Purpose: Generate and prioritize what to build next.
 - Engineers (what technical debt or opportunities exist?)
 
 ## Inputs
-- .agent-context/STATUS.md for current project state
-- .agent-context/ARCHITECTURE.md for what exists today
-- .agent-context/PHILOSOPHY.md for product principles
+- .agent/STATUS.md for current project state
+- .agent/ARCHITECTURE.md for what exists today
+- .agent/PHILOSOPHY.md for product principles
 - docs/explorations/ for past explorations (to avoid retreading)
   NOTE: only read file names and headers, not full content,
   to conserve tokens
@@ -50,7 +50,7 @@ Decisions that need human input before proceeding
 | File | Change |
 |------|--------|
 | docs/explorations/YYYY-MM-DD-{topic}.md | Created |
-| .agent-context/STATUS.md | Updated current focus |
+| .agent/STATUS.md | Updated current focus |
 
 ## Transition
 Done when you have a clear recommendation with user approval.

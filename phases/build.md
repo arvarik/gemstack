@@ -13,10 +13,10 @@ Purpose: Write the code.
 
 ## Inputs
 - Plan doc from the plan phase
-- .agent-context/STATUS.md for which task to pick up next
+- .agent/STATUS.md for which task to pick up next
   (read "Relevant Files" section first - only read the files listed
-  there, not the entire .agent-context/ directory)
-- API contracts in .agent-context/ARCHITECTURE.md (for frontend
+  there, not the entire .agent/ directory)
+- API contracts in .agent/ARCHITECTURE.md (for frontend
   building against backend contracts)
 
 ## Process
@@ -60,7 +60,7 @@ If building in a git worktree:
 
 ## State Isolation (Parallel Worktrees)
 If you are building in a parallel worktree alongside other agents:
-- Do NOT update .agent-context/STATUS.md - it is owned by the
+- Do NOT update .agent/STATUS.md - it is owned by the
   primary agent or will be updated after branch merge
 - Track your task progress exclusively in your plan doc
   (docs/plans/{feature}-{type}.md) via task checkboxes
@@ -69,10 +69,10 @@ If you are building in a parallel worktree alongside other agents:
   ```
   ## Relevant Files (live tracking)
   Task 2: src/components/interactions/log-form.tsx (create),
-  src/lib/schemas/interaction.ts (read), .agent-context/STYLE.md
+  src/lib/schemas/interaction.ts (read), .agent/STYLE.md
   ```
 - Write new test scenarios to a temporary file:
-  .agent-context/TESTING-{your-type}.md (e.g., TESTING-frontend.md)
+  .agent/TESTING-{your-type}.md (e.g., TESTING-frontend.md)
   These will be merged into the global TESTING.md before the test phase
 - Respect resource boundaries from the plan: use your assigned port,
   don't touch the database if another worktree owns it
@@ -98,17 +98,17 @@ ARCHITECTURE.md:
 |------|--------|
 | (source code files) | Created / modified per plan |
 | docs/plans/{feature}-{type}.md | Task checkboxes updated |
-| .agent-context/STATUS.md | Progress + relevant files for next task |
-| .agent-context/TESTING.md | New scenarios added (status: UNTESTED) |
+| .agent/STATUS.md | Progress + relevant files for next task |
+| .agent/TESTING.md | New scenarios added (status: UNTESTED) |
 
 ### If in a parallel worktree:
 | File | Change |
 |------|--------|
 | (source code files) | Created / modified per plan |
 | docs/plans/{feature}-{type}.md | Task checkboxes updated + Relevant Files tracked here |
-| .agent-context/TESTING-{type}.md | New scenarios added (temporary file, merged before test phase) |
-| .agent-context/STATUS.md | DO NOT TOUCH - owned by primary agent |
-| .agent-context/TESTING.md | DO NOT TOUCH - use TESTING-{type}.md instead |
+| .agent/TESTING-{type}.md | New scenarios added (temporary file, merged before test phase) |
+| .agent/STATUS.md | DO NOT TOUCH - owned by primary agent |
+| .agent/TESTING.md | DO NOT TOUCH - use TESTING-{type}.md instead |
 
 ## Transition
 A task is done when the code works for the happy path locally.

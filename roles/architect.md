@@ -18,8 +18,8 @@ next month's nightmare.
 - When two parts of the system need to interact in a new way
 
 ## What You Review
-- Does the new work follow patterns established in ARCHITECTURE.md?
-  If it diverges, is the divergence justified or accidental?
+- Does the new work follow patterns established in ARCHITECTURE.md
+  and STYLE.md? If it diverges, is the divergence justified or accidental?
 - Are responsibilities clearly separated? Is any module doing
   too many things?
 - Are there emerging patterns that should be formalized, or

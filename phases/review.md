@@ -59,8 +59,8 @@ For each item:
 ## Files Updated
 | File | Change |
 |------|--------|
-| .agent-context/STATUS.md | Review results + action items |
-| .agent-context/ARCHITECTURE.md | Updated if decisions were made or contracts drifted |
+| .agent/STATUS.md | Review results + action items |
+| .agent/ARCHITECTURE.md | Updated if decisions were made or contracts drifted |
 
 ## Transition
 Route action items based on their nature:

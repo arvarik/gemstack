@@ -11,7 +11,7 @@ Purpose: Find out what's broken before the user does.
 - ML Engineer (model quality testing, performance benchmarks)
 
 ## Inputs
-- .agent-context/TESTING.md for scenarios and project-specific test methods
+- .agent/TESTING.md for scenarios and project-specific test methods
 - The code built in the build phase
 - Design docs for expected behavior reference
 
@@ -20,11 +20,11 @@ Purpose: Find out what's broken before the user does.
 ### Step 0: State Unification (if parallel worktrees were used)
 Before testing, check if any temporary test files exist from
 parallel build agents:
-1. Check: `ls .agent-context/TESTING-*.md 2>/dev/null`
+1. Check: `ls .agent/TESTING-*.md 2>/dev/null`
 2. If found, read each temporary file and merge its scenarios
-   into the appropriate section of .agent-context/TESTING.md
+   into the appropriate section of .agent/TESTING.md
    (don't just concatenate - organize by feature section)
-3. Delete the temporary files: `rm .agent-context/TESTING-*.md`
+3. Delete the temporary files: `rm .agent/TESTING-*.md`
 4. Commit the unified TESTING.md before proceeding
 
 ### Functional Testing (QA Engineer):
@@ -72,8 +72,8 @@ For each bug:
 ## Files Updated
 | File | Change |
 |------|--------|
-| .agent-context/TESTING.md | Scenarios updated with results + evidence |
-| .agent-context/STATUS.md | Updated to reflect test results / bug-fix mode |
+| .agent/TESTING.md | Scenarios updated with results + evidence |
+| .agent/STATUS.md | Updated to reflect test results / bug-fix mode |
 
 ## Transition
 If bugs with severity "blocks release" exist, they go to the

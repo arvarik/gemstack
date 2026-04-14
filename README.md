@@ -46,6 +46,8 @@ Every repository you build should contain this structure at its root:
 ├── TESTING.md          # test methods, scenarios, results with evidence
 └── PHILOSOPHY.md       # product soul - why this exists, core beliefs
 
+.env.example            # all required env vars with placeholder values and comments
+
 docs/
 ├── explorations/       # ideate phase output
 ├── designs/            # design phase output
@@ -53,14 +55,51 @@ docs/
 └── archive/            # shipped feature docs
 ```
 
+### Feature Lifecycle Flow
+```
+ideate --> design --> plan --> build --> test ----> review --> ship
+                       ^        ^         |          |
+                       |        |         v          |
+                       |        +------ fix  <-------+ (localized bugs)
+                       |        (scoped bug fixes
+                       |         return to test)
+                       |                             |
+                       +-----------------------------+ (architectural issues
+                        (structural problems go back    skip fix, return to
+                         to plan + build, not fix)      plan + build)
+```
+
+### Role x Phase Matrix
+| | ideate | design | plan | build | fix | test | review | ship |
+|---|---|---|---|---|---|---|---|---|
+| Product Visionary | **primary** | | | | | | periodic | |
+| UI/UX Designer | secondary | **primary** | | | | | | |
+| Architect | | **primary** | advisory | | | | **primary** | |
+| Backend Engineer | secondary | secondary | **primary** | **primary** | **primary** | | | |
+| Frontend Engineer | secondary | secondary | **primary** | **primary** | **primary** | | | |
+| ML Engineer | secondary | **primary** | **primary** | **primary** | **primary** | **primary** | | |
+| QA Engineer | | | | | | **primary** | | |
+| Security Engineer | | | | | | | **primary** | advisory |
+| DevOps Engineer | | | | | | | | **primary** |
+
 ### Bootstrapping a New Project with AI
 You do not need to manually fill out the `.agent/` files for a new project. We have automated it:
 
-1. Copy the entire `gemstack/context/` directory into the root of your new project.
-2. In your new project, ask your LLM:
+1. Copy the contents of `gemstack/context/` into the root of your target project:
+   ```bash
+   # From the root of your target project:
+   cp -r /path/to/gemstack/context/.agent .agent
+   cp -r /path/to/gemstack/context/docs docs
+   cp /path/to/gemstack/context/context_prompt.md context_prompt.md
+   cp /path/to/gemstack/context/.env.example .env.example
+   ```
+   > **Note**: Copy the *contents* of `context/`, not the `context/` directory itself. The `.agent/` and `docs/` folders should live at your project root.
+
+2. In your project, ask your LLM:
    > "Please read `@context_prompt.md` and follow the instructions to bootstrap this project."
-3. The LLM will deeply analyze your actual codebase (`package.json`, schemas, UI components) and overwrite the `.agent/` templates with concrete, highly specific facts. 
-4. Your new repo is now perfectly aligned with the Gemstack framework and ready for the `/ideate` phase!
+3. The LLM will deeply analyze your actual codebase (`package.json`, schemas, `go.mod`, `Makefile`, UI components) and overwrite the `.agent/` templates with concrete, highly specific facts.
+4. Once bootstrapped, you can delete `context_prompt.md` from the project — its job is done.
+5. Your repo is now aligned with the Gemstack framework and ready for the `/ideate` phase!
 
 ---
 

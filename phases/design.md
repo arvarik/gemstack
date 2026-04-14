@@ -15,9 +15,9 @@ with API contracts that enable parallel frontend/backend work.
 
 ## Inputs
 - Recommendation from the ideate phase
-- .agent-context/ARCHITECTURE.md for existing system context
-- .agent-context/STYLE.md for existing visual/code patterns
-- .agent-context/PHILOSOPHY.md for product soul and tone
+- .agent/ARCHITECTURE.md for existing system context
+- .agent/STYLE.md for existing visual/code patterns
+- .agent/PHILOSOPHY.md for product soul and tone
 
 ## Process
 
@@ -71,8 +71,8 @@ Explicitly what this feature does NOT include
 | File | Change |
 |------|--------|
 | docs/designs/YYYY-MM-DD-{feature}-{type}.md | Created |
-| .agent-context/ARCHITECTURE.md | Updated with API contracts (Architect only) |
-| .agent-context/STATUS.md | Updated phase progress |
+| .agent/ARCHITECTURE.md | Updated with API contracts (Architect only) |
+| .agent/STATUS.md | Updated phase progress |
 
 ## Transition
 This phase is done when:

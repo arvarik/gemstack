@@ -11,8 +11,8 @@ Purpose: Deploy safely, verify it works, and clean up for the next feature.
 
 ## Inputs
 - Review phase completed with no blocking items
-- .agent-context/ARCHITECTURE.md for deployment configuration
-- .agent-context/TESTING.md confirming all scenarios pass
+- .agent/ARCHITECTURE.md for deployment configuration
+- .agent/TESTING.md confirming all scenarios pass
 
 ## Pre-Ship Checklist
 Before deploying, verify:
@@ -98,9 +98,9 @@ After successful deployment:
 ## Files Updated
 | File | Change |
 |------|--------|
-| .agent-context/STATUS.md | Reset for next feature |
-| .agent-context/TESTING.md | Archived, kept regression scenarios |
-| .agent-context/ARCHITECTURE.md | Verified up-to-date |
+| .agent/STATUS.md | Reset for next feature |
+| .agent/TESTING.md | Archived, kept regression scenarios |
+| .agent/ARCHITECTURE.md | Verified up-to-date |
 | docs/archive/{feature-name}/ | Feature docs moved here |
 | docs/explorations/, designs/, plans/ | Cleaned of shipped feature docs |
 
