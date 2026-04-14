@@ -1,21 +1,66 @@
 # Gemstack: Agentic Development Framework
 
-A complete framework for building personal software projects using AI agents (Gemini CLI, Antigravity, Claude Code, or any LLM-based coding tool). It defines a system of composable **roles** (how the agent thinks) and **phases** (what process the agent follows) that together produce consistent, high-quality output across multiple projects and tech stacks.
+A complete framework for standardizing AI Agent orchestration across all your software projects. Whether you are using Gemini CLI, Antigravity, Claude Code, or any LLM-based coding tool, Gemstack defines a unified system of composable **roles** (how the agent thinks), **phases** (what process the agent follows), and **project context** (the boundaries and rules of the specific codebase).
 
-This repository serves as your **single source of truth**. You edit the markdown files here, and they are globally available as slash commands (`/`) in both **Gemini CLI** and **Antigravity**.
+This repository serves as your **single source of truth**. By defining roles, phases, and templates here, you ensure consistent, high-quality, and non-hallucinated AI output across multiple projects and tech stacks. 
 
 ## Directory Structure
 
 *   `roles/`: Contains markdown files defining agent mindsets (e.g., `architect.md`, `product-visionary.md`).
 *   `phases/`: Contains markdown files defining the workflow steps (e.g., `plan.md`, `build.md`).
+*   `context/`: Contains the master templates for project-specific rules (e.g., `ARCHITECTURE.md`, `STYLE.md`, `TESTING.md`) and the AI bootstrapping script.
 *   `roles_phases.md`: The original master document containing all definitions.
 
-## How It Works
+---
 
-*   **Antigravity:** Uses the `.md` files directly. It requires a YAML frontmatter block (e.g., `--- name: architect ---`) at the top of each file and requires the files to be symlinked directly into `~/.agent/workflows/`.
-*   **Gemini CLI:** Uses `.toml` wrappers in `~/.gemini/commands/`. These TOML files dynamically read (inject) the contents of your `.md` files using the `!{cat ...}` shell command.
+## 1. Global Skills: Roles & Phases
+
+The `roles/` and `phases/` folders act as global commands. You edit the markdown files here, and they become instantly available as slash commands (`/`) in both **Gemini CLI** and **Antigravity**.
+
+### How It Works
+*   **Antigravity:** Uses the `.md` files directly via symlinks. It requires a YAML frontmatter block (e.g., `--- name: architect ---`) at the top of each file.
+*   **Gemini CLI:** Uses `.toml` wrappers that dynamically read (inject) the contents of your `.md` files using the `!{cat ...}` shell command.
 
 Because both tools reference the files in this repository, **any edits you make to the files in `roles/` or `phases/` will instantly apply globally across all your projects.**
+
+### Usage Example
+In Gemini CLI (namespaced):
+> `/roles:principal-frontend-engineer /phases:build Help me implement the UI component defined in the plan.`
+
+In Antigravity (flat):
+> `/principal-frontend-engineer /build Help me implement the UI component defined in the plan.`
+
+---
+
+## 2. Project Boundaries: The `.agent/` Context
+
+While roles and phases are global, every project has unique rules (tech stack, CSS tokens, database constraints). The `context/` folder in this repository solves the "context drift" problem by providing a standardized `.agent/` directory for all your repos.
+
+### The Standardized Structure
+Every repository you build should contain this structure at its root:
+```text
+.agent/
+├── STATUS.md           # where we are, what to do next, relevant file pointers
+├── ARCHITECTURE.md     # how the system is built, data models, API contracts
+├── STYLE.md            # code and visual patterns, explicit anti-patterns
+├── TESTING.md          # test methods, scenarios, results with evidence
+└── PHILOSOPHY.md       # product soul - why this exists, core beliefs
+
+docs/
+├── explorations/       # ideate phase output
+├── designs/            # design phase output
+├── plans/              # plan phase output
+└── archive/            # shipped feature docs
+```
+
+### Bootstrapping a New Project with AI
+You do not need to manually fill out the `.agent/` files for a new project. We have automated it:
+
+1. Copy the entire `gemstack/context/` directory into the root of your new project.
+2. In your new project, ask your LLM:
+   > "Please read `@context_prompt.md` and follow the instructions to bootstrap this project."
+3. The LLM will deeply analyze your actual codebase (`package.json`, schemas, UI components) and overwrite the `.agent/` templates with concrete, highly specific facts. 
+4. Your new repo is now perfectly aligned with the Gemstack framework and ready for the `/ideate` phase!
 
 ---
 
@@ -40,10 +85,9 @@ mkdir -p ~/.agent/workflows
 find $(pwd)/roles -name "*.md" -exec ln -sfn {} ~/.agent/workflows/ \;
 find $(pwd)/phases -name "*.md" -exec ln -sfn {} ~/.agent/workflows/ \;
 ```
-*Note: The `.md` files in this repo already contain the required YAML frontmatter.*
 
 ### 3. Setup Gemini CLI (Global Slash Commands)
-Gemini CLI requires `.toml` definitions in `~/.gemini/commands/`. We use a quick Node.js script to generate these wrappers so they dynamically load your markdown files.
+Gemini CLI requires `.toml` definitions in `~/.gemini/commands/`. We use a quick Node.js script to generate these wrappers.
 
 Run this script from the root of the `gemstack` repository:
 
@@ -92,30 +136,6 @@ node setup-gemini.js
 rm setup-gemini.js
 ```
 Then, in any active Gemini CLI terminal, type `/commands reload`.
-
----
-
-## Usage
-
-### In Gemini CLI
-Because we placed the TOML files in subdirectories, they are namespaced:
-*   `/roles:architect`
-*   `/roles:principal-backend-engineer`
-*   `/phases:build`
-*   `/phases:plan`
-
-**Example:**
-> `/roles:principal-frontend-engineer /phases:build Help me implement the UI component defined in the plan.`
-
-### In Antigravity
-Because Antigravity doesn't support subdirectories for workflows, the commands appear directly as their filenames:
-*   `/architect`
-*   `/principal-backend-engineer`
-*   `/build`
-*   `/plan`
-
-**Example:**
-> `/principal-frontend-engineer /build Help me implement the UI component defined in the plan.`
 
 ---
 
