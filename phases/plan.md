@@ -67,7 +67,7 @@ When parallel worktrees are active, agents MUST NOT write to the
 same global files simultaneously. Follow these rules:
 - **STATUS.md**: only the primary/sequential agent updates it.
   Parallel agents track progress in their own plan doc
-  (docs/plans/{feature}-{type}.md) via task checkboxes.
+  (docs/plans/YYYY-MM-DD-{role}-{feature}.md) via task checkboxes.
 - **TESTING.md**: parallel agents write to temporary files
   (.agent/TESTING-{backend|frontend|ml}.md). These are
   merged into the global TESTING.md when branches are unified.
@@ -75,7 +75,7 @@ same global files simultaneously. Follow these rules:
   when worktree branches are merged back to the feature branch.
 
 ## Output
-Write to docs/plans/YYYY-MM-DD-{feature}-{backend|frontend|ml}.md:
+Write to docs/plans/YYYY-MM-DD-{role}-{feature}.md:
 
 ### Overview
 One line: what we're implementing
@@ -116,7 +116,7 @@ directory when it only needs one or two files.
 ## Files Updated
 | File | Change |
 |------|--------|
-| docs/plans/YYYY-MM-DD-{feature}-{type}.md | Created |
+| docs/plans/YYYY-MM-DD-{role}-{feature}.md | Created |
 | .agent/STATUS.md | Updated with plan ref, current task, relevant file pointers |
 
 ## Transition

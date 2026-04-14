@@ -63,7 +63,7 @@ If you are building in a parallel worktree alongside other agents:
 - Do NOT update .agent/STATUS.md - it is owned by the
   primary agent or will be updated after branch merge
 - Track your task progress exclusively in your plan doc
-  (docs/plans/{feature}-{type}.md) via task checkboxes
+  (docs/plans/YYYY-MM-DD-{role}-{feature}.md) via task checkboxes
 - Maintain your own "Relevant Files for Current Task" list at the
   top of your plan doc, since you cannot read/write STATUS.md:
   ```
@@ -97,7 +97,7 @@ ARCHITECTURE.md:
 | File | Change |
 |------|--------|
 | (source code files) | Created / modified per plan |
-| docs/plans/{feature}-{type}.md | Task checkboxes updated |
+| docs/plans/YYYY-MM-DD-{role}-{feature}.md | Task checkboxes updated |
 | .agent/STATUS.md | Progress + relevant files for next task |
 | .agent/TESTING.md | New scenarios added (status: UNTESTED) |
 
@@ -105,7 +105,7 @@ ARCHITECTURE.md:
 | File | Change |
 |------|--------|
 | (source code files) | Created / modified per plan |
-| docs/plans/{feature}-{type}.md | Task checkboxes updated + Relevant Files tracked here |
+| docs/plans/YYYY-MM-DD-{role}-{feature}.md | Task checkboxes updated + Relevant Files tracked here |
 | .agent/TESTING-{type}.md | New scenarios added (temporary file, merged before test phase) |
 | .agent/STATUS.md | DO NOT TOUCH - owned by primary agent |
 | .agent/TESTING.md | DO NOT TOUCH - use TESTING-{type}.md instead |

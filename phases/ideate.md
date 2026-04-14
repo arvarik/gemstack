@@ -27,7 +27,7 @@ Purpose: Generate and prioritize what to build next.
 5. Select top 1-3 items to move forward
 
 ## Output
-Write to docs/explorations/YYYY-MM-DD-{topic}.md:
+Write to docs/explorations/YYYY-MM-DD-{role}-{feature}.md:
 
 ### Context
 What prompted this exploration
@@ -49,7 +49,7 @@ Decisions that need human input before proceeding
 ## Files Updated
 | File | Change |
 |------|--------|
-| docs/explorations/YYYY-MM-DD-{topic}.md | Created |
+| docs/explorations/YYYY-MM-DD-{role}-{feature}.md | Created |
 | .agent/STATUS.md | Updated current focus |
 
 ## Transition

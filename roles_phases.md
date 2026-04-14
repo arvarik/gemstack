@@ -110,6 +110,9 @@ Roles define **mindset** - how the agent thinks and what it prioritizes. Roles a
 ```markdown
 # Role: Product Visionary
 
+## Code Writing Policy
+**STRICTLY PROHIBITED.** You only write Markdown (`.md`) files. You never write, modify, or suggest concrete implementation code. Your output is entirely conceptual and product-focused.
+
 ## Mindset
 You think like a founder who uses their own products obsessively.
 You don't care about technical constraints yet - that's someone
@@ -148,6 +151,9 @@ Write feature proposals as:
 
 ```markdown
 # Role: UI/UX Designer
+
+## Code Writing Policy
+**STRICTLY PROHIBITED.** You only write Markdown (`.md`) files. You never write, modify, or suggest concrete implementation code (e.g., UI components, CSS files). Your output is entirely design specs and UX flows.
 
 ## Mindset
 You are the user's advocate. Every screen, every interaction, every
@@ -199,6 +205,9 @@ Describe designs as:
 ```markdown
 # Role: Principal Backend Engineer
 
+## Code Writing Policy
+**ALLOWED.** You are expected to write, modify, and execute backend application code. You also update tracking Markdown files as needed.
+
 ## Mindset
 You are building systems that other code depends on. Reliability,
 clarity of interface, and data correctness are your top priorities.
@@ -239,6 +248,9 @@ terminal indefinitely. Instead:
 ```markdown
 # Role: Principal Frontend Engineer
 
+## Code Writing Policy
+**ALLOWED.** You are expected to write, modify, and execute frontend application code. You also update tracking Markdown files as needed.
+
 ## Mindset
 You are building for a human who will judge this app in the first
 3 seconds. Every interaction should feel immediate, intuitive, and
@@ -275,6 +287,9 @@ Instead:
 
 ```markdown
 # Role: ML / Data Engineer
+
+## Code Writing Policy
+**ALLOWED.** You are expected to write, modify, and execute data pipelines, model inference, and related application code. You also update tracking Markdown files as needed.
 
 ## Mindset
 You work at the intersection of research and production. Your job
@@ -335,6 +350,9 @@ streaming inference processes, jupyter notebook). Instead:
 ```markdown
 # Role: Architect
 
+## Code Writing Policy
+**STRICTLY PROHIBITED.** You only write Markdown (`.md`) files. You never write, modify, or suggest concrete implementation code. You define the rules, API contracts, and data models conceptually, but you do not write the code that implements them.
+
 ## Mindset
 You are the maintainer of coherence. Individual engineers make good
 local decisions. Your job is to make sure those local decisions
@@ -388,6 +406,9 @@ These contracts are the handshake that enables parallel BE/FE work.
 
 ```markdown
 # Role: QA Engineer
+
+## Code Writing Policy
+**TEST CODE ONLY.** You write automated test scripts (e.g., Playwright, Jest, PyTest) and run CLI commands. You NEVER write or modify application feature code.
 
 ## Mindset
 Your job is to break this. You are not here to confirm it works -
@@ -463,6 +484,9 @@ Update TESTING.md with:
 ```markdown
 # Role: Security Engineer
 
+## Code Writing Policy
+**STRICTLY PROHIBITED.** You only write Markdown (`.md`) files. You never write, modify, or suggest concrete implementation code. You identify vulnerabilities and document them for engineers to fix.
+
 ## Mindset
 You are an attacker with a conscience. Your job is to think about
 how this system can be abused, exploited, or misused - then make
@@ -518,6 +542,9 @@ sure it can't be.
 
 ```markdown
 # Role: DevOps & Infrastructure Engineer
+
+## Code Writing Policy
+**INFRASTRUCTURE ONLY.** You write deployment scripts, CI/CD pipelines, Dockerfiles, and configuration files. You NEVER write or modify application feature code.
 
 ## Mindset
 You think about what happens after code leaves the editor.
@@ -617,7 +644,7 @@ Purpose: Generate and prioritize what to build next.
 5. Select top 1-3 items to move forward
 
 ## Output
-Write to docs/explorations/YYYY-MM-DD-{topic}.md:
+Write to docs/explorations/YYYY-MM-DD-{role}-{feature}.md:
 
 ### Context
 What prompted this exploration
@@ -639,7 +666,7 @@ Decisions that need human input before proceeding
 ## Files Updated
 | File | Change |
 |------|--------|
-| docs/explorations/YYYY-MM-DD-{topic}.md | Created |
+| docs/explorations/YYYY-MM-DD-{role}-{feature}.md | Created |
 | .agent-context/STATUS.md | Updated current focus |
 
 ## Transition
@@ -703,7 +730,7 @@ with API contracts that enable parallel frontend/backend work.
 5. Identify hardware requirements
 
 ## Output
-Write to docs/designs/YYYY-MM-DD-{feature}-{ux|architecture|ml}.md:
+Write to docs/designs/YYYY-MM-DD-{role}-{feature}.md:
 
 ### What We're Building
 One paragraph, non-technical summary
@@ -723,7 +750,7 @@ Explicitly what this feature does NOT include
 ## Files Updated
 | File | Change |
 |------|--------|
-| docs/designs/YYYY-MM-DD-{feature}-{type}.md | Created |
+| docs/designs/YYYY-MM-DD-{role}-{feature}.md | Created |
 | .agent-context/ARCHITECTURE.md | Updated with API contracts (Architect only) |
 | .agent-context/STATUS.md | Updated phase progress |
 
@@ -806,7 +833,7 @@ When parallel worktrees are active, agents MUST NOT write to the
 same global files simultaneously. Follow these rules:
 - **STATUS.md**: only the primary/sequential agent updates it.
   Parallel agents track progress in their own plan doc
-  (docs/plans/{feature}-{type}.md) via task checkboxes.
+  (docs/plans/YYYY-MM-DD-{role}-{feature}.md) via task checkboxes.
 - **TESTING.md**: parallel agents write to temporary files
   (.agent-context/TESTING-{backend|frontend|ml}.md). These are
   merged into the global TESTING.md when branches are unified.
@@ -814,7 +841,7 @@ same global files simultaneously. Follow these rules:
   when worktree branches are merged back to the feature branch.
 
 ## Output
-Write to docs/plans/YYYY-MM-DD-{feature}-{backend|frontend|ml}.md:
+Write to docs/plans/YYYY-MM-DD-{role}-{feature}.md:
 
 ### Overview
 One line: what we're implementing
@@ -855,7 +882,7 @@ directory when it only needs one or two files.
 ## Files Updated
 | File | Change |
 |------|--------|
-| docs/plans/YYYY-MM-DD-{feature}-{type}.md | Created |
+| docs/plans/YYYY-MM-DD-{role}-{feature}.md | Created |
 | .agent-context/STATUS.md | Updated with plan ref, current task, relevant file pointers |
 
 ## Transition
@@ -927,7 +954,7 @@ If you are building in a parallel worktree alongside other agents:
 - Do NOT update .agent-context/STATUS.md - it is owned by the
   primary agent or will be updated after branch merge
 - Track your task progress exclusively in your plan doc
-  (docs/plans/{feature}-{type}.md) via task checkboxes
+  (docs/plans/YYYY-MM-DD-{role}-{feature}.md) via task checkboxes
 - Maintain your own "Relevant Files for Current Task" list at the
   top of your plan doc, since you cannot read/write STATUS.md:
   ```
@@ -961,7 +988,7 @@ ARCHITECTURE.md:
 | File | Change |
 |------|--------|
 | (source code files) | Created / modified per plan |
-| docs/plans/{feature}-{type}.md | Task checkboxes updated |
+| docs/plans/YYYY-MM-DD-{role}-{feature}.md | Task checkboxes updated |
 | .agent-context/STATUS.md | Progress + relevant files for next task |
 | .agent-context/TESTING.md | New scenarios added (status: UNTESTED) |
 
@@ -969,7 +996,7 @@ ARCHITECTURE.md:
 | File | Change |
 |------|--------|
 | (source code files) | Created / modified per plan |
-| docs/plans/{feature}-{type}.md | Task checkboxes updated + Relevant Files tracked here |
+| docs/plans/YYYY-MM-DD-{role}-{feature}.md | Task checkboxes updated + Relevant Files tracked here |
 | .agent-context/TESTING-{type}.md | New scenarios added (temporary file, merged before test phase) |
 | .agent-context/STATUS.md | DO NOT TOUCH - owned by primary agent |
 | .agent-context/TESTING.md | DO NOT TOUCH - use TESTING-{type}.md instead |
@@ -1261,7 +1288,7 @@ After successful deployment:
    Use defensive checks since not every feature produces all doc types:
    ```
    mkdir -p docs/archive/{feature-name}/
-   for f in docs/explorations/{this-feature}*.md docs/designs/{this-feature}*.md docs/plans/{this-feature}*.md; do
+   for f in docs/explorations/*-{feature}.md docs/designs/*-{feature}.md docs/plans/*-{feature}.md; do
      [ -e "$f" ] && git mv "$f" docs/archive/{feature-name}/
    done
    ```
@@ -1485,7 +1512,7 @@ Project context is in .agent-context/. Start from STATUS.md.
 - `.agent-context/ARCHITECTURE.md`
 - `docs/explorations/` (file names only for past explorations)
 
-**Agent produces:** `docs/explorations/2026-04-13-post-import-features.md`
+**Agent produces:** `docs/explorations/2026-04-13-product-visionary-post-import-features.md`
 
 ```markdown
 # Exploration: What to Build After Contact Import
@@ -1549,7 +1576,7 @@ relationships effortless, not another chore."
 **Files updated:**
 | File | Change |
 |------|--------|
-| `docs/explorations/2026-04-13-post-import-features.md` | Created |
+| `docs/explorations/2026-04-13-product-visionary-post-import-features.md` | Created |
 | `.agent-context/STATUS.md` | Updated: "Ideation complete, awaiting user decisions and design" |
 
 **Handoff:** You read the exploration, answer the open questions ("dashboard badge, manual logging only"), approve the recommendation. Move to design.
@@ -1561,7 +1588,7 @@ relationships effortless, not another chore."
 **Your prompt:**
 ```
 Follow ~/skills/roles/ui-ux-designer.md and ~/skills/phases/design.md.
-Read the approved exploration in docs/explorations/2026-04-13-post-import-features.md.
+Read the approved exploration in docs/explorations/2026-04-13-product-visionary-post-import-features.md.
 User decisions: reminders via dashboard badge (not push notifications),
 interactions are manually logged only (privacy principle).
 Project context is in .agent-context/.
@@ -1570,12 +1597,12 @@ Project context is in .agent-context/.
 **Agent reads:**
 - `~/skills/roles/ui-ux-designer.md`
 - `~/skills/phases/design.md`
-- `docs/explorations/2026-04-13-post-import-features.md`
+- `docs/explorations/2026-04-13-product-visionary-post-import-features.md`
 - `.agent-context/PHILOSOPHY.md` ("gentle, not nagging" guides all UX)
 - `.agent-context/STYLE.md`
 - `.agent-context/ARCHITECTURE.md`
 
-**Agent produces:** `docs/designs/2026-04-13-reconnect-reminders-ux.md`
+**Agent produces:** `docs/designs/2026-04-13-ui-ux-designer-reconnect-reminders.md`
 
 ```markdown
 # UX Design: Contact Reconnect Reminders
@@ -1659,7 +1686,7 @@ contact detail views.
 **Files updated:**
 | File | Change |
 |------|--------|
-| `docs/designs/2026-04-13-reconnect-reminders-ux.md` | Created |
+| `docs/designs/2026-04-13-ui-ux-designer-reconnect-reminders.md` | Created |
 | `.agent-context/STATUS.md` | Updated: "UX design complete, architecture design next" |
 
 ---
@@ -1669,20 +1696,20 @@ contact detail views.
 **Your prompt:**
 ```
 Follow ~/skills/roles/architect.md and ~/skills/phases/design.md.
-Read the UX design in docs/designs/2026-04-13-reconnect-reminders-ux.md
-and the exploration in docs/explorations/2026-04-13-post-import-features.md.
+Read the UX design in docs/designs/2026-04-13-ui-ux-designer-reconnect-reminders.md
+and the exploration in docs/explorations/2026-04-13-product-visionary-post-import-features.md.
 Project context is in .agent-context/.
 ```
 
 **Agent reads:**
 - `~/skills/roles/architect.md`
 - `~/skills/phases/design.md`
-- `docs/designs/2026-04-13-reconnect-reminders-ux.md`
-- `docs/explorations/2026-04-13-post-import-features.md`
+- `docs/designs/2026-04-13-ui-ux-designer-reconnect-reminders.md`
+- `docs/explorations/2026-04-13-product-visionary-post-import-features.md`
 - `.agent-context/ARCHITECTURE.md`
 - `.agent-context/PHILOSOPHY.md`
 
-**Agent produces:** `docs/designs/2026-04-13-reconnect-reminders-architecture.md`
+**Agent produces:** `docs/designs/2026-04-13-architect-reconnect-reminders.md`
 
 The architecture doc contains data models, system design decisions, and **exact API contracts**. These contracts are also written into ARCHITECTURE.md so both backend and frontend engineers have a single source of truth to build against.
 
@@ -1778,7 +1805,7 @@ personal tool.
 **Files updated:**
 | File | Change |
 |------|--------|
-| `docs/designs/2026-04-13-reconnect-reminders-architecture.md` | Created |
+| `docs/designs/2026-04-13-architect-reconnect-reminders.md` | Created |
 | `.agent-context/ARCHITECTURE.md` | Updated with API contracts section |
 | `.agent-context/STATUS.md` | Updated: "Architecture design complete, ready for planning" |
 
@@ -1791,18 +1818,18 @@ Backend and frontend planning run in parallel - they both read from the same des
 **Your prompt (backend):**
 ```
 Follow ~/skills/roles/principal-backend-engineer.md and ~/skills/phases/plan.md.
-Read both design docs in docs/designs/2026-04-13-reconnect-reminders-*.
+Read both design docs in docs/designs/2026-04-13-*-reconnect-reminders.md.
 Project context is in .agent-context/.
 ```
 
 **Your prompt (frontend, parallel in another terminal):**
 ```
 Follow ~/skills/roles/principal-frontend-engineer.md and ~/skills/phases/plan.md.
-Read both design docs in docs/designs/2026-04-13-reconnect-reminders-*.
+Read both design docs in docs/designs/2026-04-13-*-reconnect-reminders.md.
 Project context is in .agent-context/.
 ```
 
-**Backend agent produces:** `docs/plans/2026-04-13-reconnect-reminders-backend.md`
+**Backend agent produces:** `docs/plans/2026-04-13-principal-backend-engineer-reconnect-reminders.md`
 
 ```markdown
 # Backend Plan: Contact Reconnect Reminders
@@ -1872,7 +1899,7 @@ query it back. Testable without any frontend.
   but benchmark during test phase.
 ```
 
-**Frontend agent produces:** `docs/plans/2026-04-13-reconnect-reminders-frontend.md`
+**Frontend agent produces:** `docs/plans/2026-04-13-principal-frontend-engineer-reconnect-reminders.md`
 
 ```markdown
 # Frontend Plan: Contact Reconnect Reminders
@@ -1951,8 +1978,8 @@ on a contact page and see it in the timeline. End-to-end testable.
 **Files updated:**
 | File | Change |
 |------|--------|
-| `docs/plans/2026-04-13-reconnect-reminders-backend.md` | Created |
-| `docs/plans/2026-04-13-reconnect-reminders-frontend.md` | Created |
+| `docs/plans/2026-04-13-principal-backend-engineer-reconnect-reminders.md` | Created |
+| `docs/plans/2026-04-13-principal-frontend-engineer-reconnect-reminders.md` | Created |
 | `.agent-context/STATUS.md` | Updated with plan references, current task, and relevant file pointers for first task |
 
 **STATUS.md now includes context pointers:**
@@ -1972,7 +1999,7 @@ Backend goes first since frontend depends on the server actions. Frontend can st
 **Your prompt:**
 ```
 Follow ~/skills/roles/principal-backend-engineer.md and ~/skills/phases/build.md.
-Plan is in docs/plans/2026-04-13-reconnect-reminders-backend.md.
+Plan is in docs/plans/2026-04-13-principal-backend-engineer-reconnect-reminders.md.
 Start with Task 1. Project context is in .agent-context/.
 ```
 
@@ -2006,11 +2033,11 @@ Reconnect Reminders - backend complete, frontend build next
 
 ## State of Work
 Feature: Contact Reconnect Reminders
-- [x] Ideate: docs/explorations/2026-04-13-post-import-features.md
-- [x] Design (UX): docs/designs/2026-04-13-reconnect-reminders-ux.md
-- [x] Design (Arch): docs/designs/2026-04-13-reconnect-reminders-architecture.md
-- [x] Plan (BE): docs/plans/2026-04-13-reconnect-reminders-backend.md
-- [x] Plan (FE): docs/plans/2026-04-13-reconnect-reminders-frontend.md
+- [x] Ideate: docs/explorations/2026-04-13-product-visionary-post-import-features.md
+- [x] Design (UX): docs/designs/2026-04-13-ui-ux-designer-reconnect-reminders.md
+- [x] Design (Arch): docs/designs/2026-04-13-architect-reconnect-reminders.md
+- [x] Plan (BE): docs/plans/2026-04-13-principal-backend-engineer-reconnect-reminders.md
+- [x] Plan (FE): docs/plans/2026-04-13-principal-frontend-engineer-reconnect-reminders.md
 - [x] Build (BE): all 5 tasks complete
 - [ ] Build (FE): not started
 - [ ] Test
@@ -2019,7 +2046,7 @@ Feature: Contact Reconnect Reminders
 
 ## What To Do Next
 Start frontend build: pick up Task 1 (interaction log form) from
-docs/plans/2026-04-13-reconnect-reminders-frontend.md.
+docs/plans/2026-04-13-principal-frontend-engineer-reconnect-reminders.md.
 Backend server actions are ready - no stubs needed.
 
 ## Known Issues
@@ -2031,7 +2058,7 @@ Frontend Task 1 (interaction log form):
 - src/lib/schemas/interaction.ts (exists - created by backend)
 - src/app/actions/interactions.ts (exists - call createInteraction)
 - .agent-context/STYLE.md (component conventions)
-- docs/designs/2026-04-13-reconnect-reminders-ux.md (log form spec)
+- docs/designs/2026-04-13-ui-ux-designer-reconnect-reminders.md (log form spec)
 ```
 
 **TESTING.md updated with backend scenarios:**
@@ -2079,7 +2106,7 @@ reminders feature.
 - `~/skills/phases/test.md`
 - `.agent-context/TESTING.md` (scenarios populated by build phase)
 - `.agent-context/ARCHITECTURE.md` (how to run the app, API contracts for expected behavior)
-- `docs/designs/2026-04-13-reconnect-reminders-ux.md` (expected UX behavior)
+- `docs/designs/2026-04-13-ui-ux-designer-reconnect-reminders.md` (expected UX behavior)
 
 **Agent does:**
 - Runs through every scenario in TESTING.md
@@ -2227,11 +2254,11 @@ Ship the reconnect reminders feature. Project context is in .agent-context/.
    - Moves feature docs to archive:
      ```
      docs/archive/reconnect-reminders/
-     ├── 2026-04-13-post-import-features.md
-     ├── 2026-04-13-reconnect-reminders-ux.md
-     ├── 2026-04-13-reconnect-reminders-architecture.md
-     ├── 2026-04-13-reconnect-reminders-backend.md
-     └── 2026-04-13-reconnect-reminders-frontend.md
+     ├── 2026-04-13-product-visionary-post-import-features.md
+     ├── 2026-04-13-ui-ux-designer-reconnect-reminders.md
+     ├── 2026-04-13-architect-reconnect-reminders.md
+     ├── 2026-04-13-principal-backend-engineer-reconnect-reminders.md
+     └── 2026-04-13-principal-frontend-engineer-reconnect-reminders.md
      ```
    - Verifies ARCHITECTURE.md has all decisions captured
    - Resets STATUS.md
@@ -2301,10 +2328,10 @@ Every file touched during the reconnect reminders feature:
 | `.agent-context/STYLE.md` | Pre-existing (read only) | Read by frontend/UI roles |
 | `.agent-context/STATUS.md` | Updated ~10 times | Every phase transition + task completion |
 | `.agent-context/TESTING.md` | Updated 4 times | Build (scenarios), Test (results), Fix (status), Test (re-verify) |
-| `docs/explorations/2026-04-13-post-import-features.md` | Created, then archived | Ideate x Product Visionary |
-| `docs/designs/2026-04-13-reconnect-reminders-ux.md` | Created, then archived | Design x UI/UX Designer |
-| `docs/designs/2026-04-13-reconnect-reminders-architecture.md` | Created, then archived | Design x Architect |
-| `docs/plans/2026-04-13-reconnect-reminders-backend.md` | Created, checkboxed, archived | Plan + Build x Backend Eng |
-| `docs/plans/2026-04-13-reconnect-reminders-frontend.md` | Created, checkboxed, archived | Plan + Build x Frontend Eng |
+| `docs/explorations/2026-04-13-product-visionary-post-import-features.md` | Created, then archived | Ideate x Product Visionary |
+| `docs/designs/2026-04-13-ui-ux-designer-reconnect-reminders.md` | Created, then archived | Design x UI/UX Designer |
+| `docs/designs/2026-04-13-architect-reconnect-reminders.md` | Created, then archived | Design x Architect |
+| `docs/plans/2026-04-13-principal-backend-engineer-reconnect-reminders.md` | Created, checkboxed, archived | Plan + Build x Backend Eng |
+| `docs/plans/2026-04-13-principal-frontend-engineer-reconnect-reminders.md` | Created, checkboxed, archived | Plan + Build x Frontend Eng |
 | `docs/archive/reconnect-reminders/` | Created | Ship x DevOps Eng (all above docs moved here) |
 | (source code files) | Created/modified | Build x Backend Eng, Build x Frontend Eng, Fix x Frontend Eng |

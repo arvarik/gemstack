@@ -54,7 +54,7 @@ After successful deployment:
    Use defensive checks since not every feature produces all doc types:
    ```
    mkdir -p docs/archive/{feature-name}/
-   for f in docs/explorations/{this-feature}*.md docs/designs/{this-feature}*.md docs/plans/{this-feature}*.md; do
+   for f in docs/explorations/*-{feature}.md docs/designs/*-{feature}.md docs/plans/*-{feature}.md; do
      [ -e "$f" ] && git mv "$f" docs/archive/{feature-name}/
    done
    ```

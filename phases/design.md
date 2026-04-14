@@ -50,7 +50,7 @@ with API contracts that enable parallel frontend/backend work.
 5. Identify hardware requirements
 
 ## Output
-Write to docs/designs/YYYY-MM-DD-{feature}-{ux|architecture|ml}.md:
+Write to docs/designs/YYYY-MM-DD-{role}-{feature}.md:
 
 ### What We're Building
 One paragraph, non-technical summary
@@ -70,7 +70,7 @@ Explicitly what this feature does NOT include
 ## Files Updated
 | File | Change |
 |------|--------|
-| docs/designs/YYYY-MM-DD-{feature}-{type}.md | Created |
+| docs/designs/YYYY-MM-DD-{role}-{feature}.md | Created |
 | .agent/ARCHITECTURE.md | Updated with API contracts (Architect only) |
 | .agent/STATUS.md | Updated phase progress |
 

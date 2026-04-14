@@ -70,17 +70,19 @@ ideate --> design --> plan --> build --> test ----> review --> ship
 ```
 
 ### Role x Phase Matrix
-| | ideate | design | plan | build | fix | test | review | ship |
+*(📝 = Produces/Updates Markdown files | 💻 = Produces/Modifies Code or Infra)*
+
+| Role | Ideate | Design | Plan | Build | Fix | Test | Review | Ship |
 |---|---|---|---|---|---|---|---|---|
-| Product Visionary | **primary** | | | | | | periodic | |
-| UI/UX Designer | secondary | **primary** | | | | | | |
-| Architect | | **primary** | advisory | | | | **primary** | |
-| Backend Engineer | secondary | secondary | **primary** | **primary** | **primary** | | | |
-| Frontend Engineer | secondary | secondary | **primary** | **primary** | **primary** | | | |
-| ML Engineer | secondary | **primary** | **primary** | **primary** | **primary** | **primary** | | |
-| QA Engineer | | | | | | **primary** | | |
-| Security Engineer | | | | | | | **primary** | advisory |
-| DevOps Engineer | | | | | | | | **primary** |
+| Product Visionary | 📝 Primary | | | | | | 📝 Periodic | |
+| UI/UX Designer | 📝 Secondary | 📝 Primary | | | | | | |
+| Architect | | 📝 Primary | 📝 Advisory | | | | 📝 Primary | |
+| Backend Engineer | 📝 Secondary | 📝 Secondary | 📝 Primary | 💻 Primary | 💻 Primary | | | |
+| Frontend Engineer | 📝 Secondary | 📝 Secondary | 📝 Primary | 💻 Primary | 💻 Primary | | | |
+| ML Engineer | 📝 Secondary | 📝 Primary | 📝 Primary | 💻 Primary | 💻 Primary | 💻/📝 Primary | | |
+| QA Engineer | | | | | | 💻/📝 Primary | | |
+| Security Engineer | | | | | | | 📝 Primary | 📝 Advisory |
+| DevOps Engineer | | | | | | | | 💻 Primary |
 
 ### Bootstrapping a New Project with AI
 You do not need to manually fill out the `.agent/` files for a new project. We have automated it:
