@@ -26,6 +26,29 @@ The `roles/`, `phases/`, and `workflows/` folders act as global commands. You ed
 
 Because both tools reference the files in this repository, **any edits you make here will instantly apply globally across all your projects.**
 
+### The Roles
+Roles define **mindset** - how the agent thinks and what it prioritizes. Roles are stack-agnostic.
+*   **Product Visionary**: Thinks like a founder. Focuses on user pain points, product workflows, and vision. (Markdown only)
+*   **UI/UX Designer**: The user's advocate. Focuses on information hierarchy, cognitive load, consistency, and interaction states. (Markdown only)
+*   **Architect**: The maintainer of coherence. Defines API contracts, data models, and system boundaries to ensure long-term stability. (Markdown only)
+*   **Principal Backend Engineer**: Focuses on reliability, API design, data correctness, and scalability. (Writes code)
+*   **Principal Frontend Engineer**: Focuses on UI implementation, visual consistency, accessibility, and client-side performance. (Writes code)
+*   **ML / Data Engineer**: Works at the intersection of research and production. Focuses on robust data pipelines, model selection, and performance targets. (Writes code)
+*   **QA Engineer**: Focuses on breaking the application systematically. Writes automated tests and executes manual test plans. (Test scripts only)
+*   **Security Engineer**: An attacker with a conscience. Assesses threat models, vulnerabilities, and data exposure. (Markdown only)
+*   **DevOps & Infrastructure Engineer**: Focuses on repeatable deployments, security best practices, and robust infrastructure. (Infra/Config only)
+
+### The Phases
+Phases define **process** - what steps to follow and what to produce. Each phase has clear inputs, outputs, and a transition condition to the next phase.
+*   **Ideate**: Generate and prioritize what to build next based on user pain and project philosophy. (Outputs: Exploration docs)
+*   **Design**: Define what the feature should be before anyone writes code, producing UX specs and exact API contracts. (Outputs: Design docs)
+*   **Plan**: Break a design into an ordered, implementable task list, identifying parallelization opportunities and branch dependencies. (Outputs: Plan docs)
+*   **Build**: Write the actual application code, strictly following the plan and established architectural patterns. (Outputs: Source code)
+*   **Fix**: Repair specific, localized bugs found during testing or review without rewriting unrelated code. (Outputs: Source code patches)
+*   **Test**: Find out what's broken before the user does by running automated scripts and structured manual scenarios. (Outputs: Test evidence)
+*   **Review**: Step back and evaluate the bigger picture for architectural coherence, security, and product fit before shipping. (Outputs: Review findings)
+*   **Ship**: Deploy safely, verify the deployment works, and clean up feature documents into an archive folder. (Outputs: Deployed app & archived docs)
+
 ### Usage Example
 In Gemini CLI (namespaced):
 > `/roles:principal-frontend-engineer /phases:build Help me implement the UI component defined in the plan.`
