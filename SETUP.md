@@ -11,16 +11,16 @@ cd ~/Documents/github/gemstack
 ```
 
 ### 2. Setup Antigravity (Global Slash Commands)
-Antigravity looks for `.md` files in `~/.agent/workflows/`. It does not read subdirectories, so we symlink the files directly.
+Antigravity looks for `.md` files in `~/.agent/workflows/`. It does not currently follow subdirectories or symlinks reliably, so we copy the files directly.
 
 ```bash
 # Create the global workflows directory
 mkdir -p ~/.agent/workflows
 
-# Symlink all roles, phases, and composed workflows directly into the workflows folder
-find $(pwd)/roles -name "*.md" -exec ln -sfn {} ~/.agent/workflows/ \;
-find $(pwd)/phases -name "*.md" -exec ln -sfn {} ~/.agent/workflows/ \;
-find $(pwd)/workflows -name "*.md" -exec ln -sfn {} ~/.agent/workflows/ \;
+# Copy all roles, phases, and composed workflows directly into the workflows folder
+cp $(pwd)/roles/*.md ~/.agent/workflows/
+cp $(pwd)/phases/*.md ~/.agent/workflows/
+cp $(pwd)/workflows/*.md ~/.agent/workflows/
 ```
 
 ### 3. Setup Gemini CLI (Global Slash Commands)
@@ -120,4 +120,4 @@ If you want to create a brand new role, phase, or composed workflow in the futur
    ```bash
    ln -sfn $(pwd)/roles/new-file.md ~/.agent/workflows/new-file.md
    ```
-4. **Link to Gemini CLI:** Create a `new-file.toml` file in `~/.gemini/commands/roles/` pointing to your new markdown file, using the same `!{cat ...}` format as the others. Run `/commands reload` in the CLI.
+4. **Link to Gemini CLI:** Create a `new-file.toml` file in `~/.gemini/commands/roles/` pointing to your new markdown file, using the same `!{cat ...}` format as the others. Run `/commands reload` in the CLI.` format as the others. Run `/commands reload` in the CLI.
