@@ -31,6 +31,13 @@ _How does the system handle parallelism? Document queue bounds, worker pools, an
 - Example (Go): Goroutines for concurrent polling/webhook workers. `sync.Mutex` for ad-hoc sync locking. `context.Context` for cancellation propagation. Advisory DB locks (`pg_advisory_xact_lock`) prevent concurrent syncs per user.
 - Example (Bash): Sequential processing — one MKV at a time. `flock`/`mkdir` lockfile prevents concurrent runs on the same directory.
 
+### State Machines & Workflows
+_How are long-running asynchronous processes managed?_
+- Example: Temporal.io or AWS Step Functions for distributed sagas. 
+- Example: Ad-hoc DB-backed state machines (e.g., `Job` table with `status ENUM('PENDING', 'RUNNING', 'FAILED', 'COMPLETED')`).
+- Example: Dead Letter Queues (DLQ) for failed events and retry backoff policies.
+- Example: N/A — Standard stateless request/response only.
+
 ## 3. Data Models & Database Schema
 _Document the core entities and their relationships. Highlight complex junction tables, cascading deletion rules, virtual tables, or search indexes._
 - **`User`**: Primary entity.
@@ -93,7 +100,30 @@ _How does the system handle and report errors?_
 - Example (Go): Explicit `if err != nil` error propagation. Custom error types with HTTP status codes. Middleware-level panic recovery with structured logging.
 - Example (Bash): `set -uo pipefail` at script top. `trap` for cleanup on `INT`/`TERM`. Duration mismatch = abort and preserve original file.
 
-## 8. Directory Structure
+## 8. Security & Authentication Boundaries
+_How is identity verified and what are the trust boundaries?_
+- Example: NextAuth.js (Auth.js) for session management via JWT in HttpOnly cookies.
+- Example: RBAC (Role-Based Access Control) defined in `server/middleware/requireRole.ts`.
+- Example: API token authentication using SHA-256 hashing at rest. 
+- Example: WAF (Web Application Firewall) rate-limiting per IP at the Nginx edge.
+- Example: PII (Personally Identifiable Information) must be encrypted at rest and never logged in plaintext.
+
+## 9. Observability & Telemetry
+_How do we know the system is healthy?_
+- Example: Structured JSON logging via Pino (Node) or slog (Go).
+- Example: Prometheus metrics exported at `/metrics`. Grafana dashboards for P99 latency.
+- Example: Sentry integration for unhandled exceptions in frontend and backend.
+- Example: Distributed tracing via OpenTelemetry (traces passed via headers).
+- Example: N/A — Logs written to simple `stdout` only.
+
+## 10. Deployment & CI/CD Pipelines
+_How does code get from local to production?_
+- Example: GitHub Actions runs lint/test → builds Docker image → pushes to AWS ECR.
+- Example: Vercel automatic branch deployments. Main branch auto-deploys to production.
+- Example: Infrastructure as Code (Terraform/Pulumi) mapped in `infra/` directory.
+- Example: Database migrations automatically run during the container init script, never implicitly on start.
+
+## 11. Directory Structure
 _Outline the purpose of key directories in the repository._
 - `src/app/` — Routing and pages (Next.js/Vite)
 - `src/components/` — Reusable UI components
@@ -104,7 +134,7 @@ _Outline the purpose of key directories in the repository._
 - `migrations/` — Database migration files (SQL, Drizzle, Alembic)
 - `docs/` — Feature lifecycle documents (explorations, designs, plans, archive)
 
-## 9. Local Development
+## 12. Local Development
 _Exact commands to get a working development environment. Agents should be able to copy-paste these._
 - **Install**: `npm install` / `pip install -e ".[dev]"` / `go mod download`
 - **Build**: `npm run build` / `go build ./cmd/app` / `make build`
@@ -114,7 +144,7 @@ _Exact commands to get a working development environment. Agents should be able 
 - **Code Generation**: `sqlc generate` / `go generate ./...` / `swag init` (if applicable)
 - **Required Environment**: List critical env vars from `.env.example` (e.g., `GEMINI_API_KEY`, `DATABASE_URL`, `ENCRYPTION_KEY`)
 
-## 10. Environment Variables
+## 13. Environment Variables
 _Inventory of all environment variables. Keep in sync with `.env.example`._
 
 | Variable | Required | Description |

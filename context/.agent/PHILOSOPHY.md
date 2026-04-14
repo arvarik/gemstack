@@ -26,7 +26,22 @@ _High-level experiential principles. These apply whether the project has a visua
 - Example (Editorial): "Magazine-quality typography. Every heading uses `text-balance`, every paragraph uses `text-pretty`."
 - Example (All): "Every user action needs acknowledgment. Buttons respond on press, forms confirm on submit, destructive actions require confirmation."
 
-## 5. What This Is NOT
+## 5. Operational Maturity
+_What are the expectations for uptime, reliability, and support?_
+- Example: "This is a tier-1 production service. Must maintain 99.99% uptime. On-call engineers will be paged if error rate exceeds 1%."
+- Example: "Best-effort internal tool. No SLAs. If it breaks, file an issue and it will be fixed during business hours."
+
+## 6. Release Philosophy
+_How do features reach the users?_
+- Example: "Continuous Delivery. Every merge to `main` is shipped to production. We use feature flags for large changes."
+- Example: "Big-bang releases. We cut semantic versioned tags manually after a two-week QA cycle."
+
+## 7. Ecosystem & Community
+_How does this project interact with the broader community or ecosystem?_
+- Example: "Open-source first. All tooling must be self-hostable. We welcome PRs and maintain clear `CONTRIBUTING.md` guides."
+- Example: "Closed-source B2B product. Extensibility is provided via a generic Webhook/API layer, but core repo is private."
+
+## 8. What This Is NOT
 _Explicitly scope out what's out of bounds to prevent feature creep. State the anti-goals._
 - Not a B2B SaaS tool. No "leads", "pipelines", or "conversion tracking".
 - Not a social media aggregator.

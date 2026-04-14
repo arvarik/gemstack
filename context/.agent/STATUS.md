@@ -7,6 +7,11 @@ _This file tracks the detailed explore/plan/build/test sub-phases per feature. I
 _One-sentence description of the active feature or bug fix phase._
 Example: Reconnect Reminders - backend complete, frontend build next
 
+## Current Milestone Tracking
+_How does the current focus map to broader goals (Sprint, Quarter, Release)?_
+- **Target**: e.g., "v1.2 Launch (End of Q3)"
+- **Progress**: "4 of 7 features merged, currently working on [Feature X] downstream."
+
 ## State of Work
 _List the lifecycle phases for the current feature and check them off as you progress. Remove lines that don't apply (e.g., if no frontend, delete the Frontend lines; if no ML, delete the ML line)._
 - [ ] Ideate: `docs/explorations/YYYY-MM-DD-{topic}.md`
@@ -41,6 +46,16 @@ _List ONLY the files the agent needs to read or modify for the immediate next ta
 - `src/components/...` (modify)
 - `src/lib/...` (read-only)
 - `docs/designs/...` (spec)
+
+## Blockers & Upstream Dependencies
+_List items actively preventing progress on Current Focus._
+- Example: **BLOCKED** on `#PR-123` (Auth service updates).
+- Example: waiting for updated Figma specs for mobile nav behavior.
+- N/A — no current blockers.
+
+## Feature Rollout State
+_Track which environments have what features enabled (Feature Flags, A/B tests)._
+- Example: `ENABLE_EXPERIMENTAL_DEDUPE` — Dev (ON), Staging (ON), Prod (OFF).
 
 ## Review Results
 _Populated during the Review phase. Keep the most recent review here; archive older ones with shipped features._

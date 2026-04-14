@@ -28,7 +28,25 @@ _Specify how common UI elements should be built. If no frontend, write "N/A"._
 - **Inputs**: e.g., Focus states must use `focus:ring-2 focus:ring-primary/30`.
 - **Animations**: e.g., "Animate `transform` and `opacity` only. Use spring physics for interactive islands: `transition={{ type: 'spring', stiffness: 200, damping: 20 }}`"
 
-## 3. Code Conventions
+## 3. Quality & Constraints
+_Define constraints that ensure the product is accessible, global, and performant. If no frontend, skip a11y/i18n._
+
+### Accessibility (a11y)
+- **Keyboard Navigation**: e.g., "All interactive elements must be focusable via `Tab`. Outline should use `focus-visible:ring-2`."
+- **Screen Readers**: e.g., "Use semantic HTML. Use `aria-hidden="true"` on decorative icons and `sr-only` for visually hidden text."
+- **Contrast**: e.g., "All text must meet WCAG AA (4.5:1 ratio) against its background."
+
+### Internationalization (i18n)
+- **Strings**: e.g., "Never hardcode user-facing strings. Use `next-intl` keys like `t('hero.title')`."
+- **Layout**: e.g., "Use CSS logical properties (`margin-inline-start` instead of `margin-left`) for future RTL layout support."
+- **Formatting**: e.g., "Always use `Intl.NumberFormat` and `Intl.DateTimeFormat` for dates and currencies."
+
+### Performance Budgets
+- **Bundle Size**: e.g., "Maximum initial JS bundle size is 150kb (gzipped). Lazy-load heavy dependencies (e.g., charting libraries)."
+- **Re-renders**: e.g., "Avoid inline objects in context providers to prevent unnecessary re-renders. Use `React.memo` where measured necessary."
+- **API Latency**: e.g., "Server routes must respond within 200ms. Background offload long tasks to a queue."
+
+## 4. Code Conventions
 _Define how logic should be structured. These apply to all projects regardless of stack._
 
 ### Architecture Patterns
@@ -50,7 +68,13 @@ _Define how logic should be structured. These apply to all projects regardless o
 - Example (Python): "All code MUST pass `mypy src/ tests/ --strict`. No `Any` types unless absolutely necessary."
 - Example (Go): "All code MUST pass `golangci-lint run ./...` with zero warnings. Use custom error types (not raw `errors.New` in handlers). Emit JSON struct tags on all API response types."
 
-## 4. Naming Conventions
+### Linting & Formatting
+- Example (TypeScript): "Use Prettier for formatting. Max line length 100. Single quotes. Trailing commas."
+- Example (Python): "Use `ruff format .` for formatting. Set `line-length = 88`. Use `ruff check .` for linting."
+- Example (Go): "Enforce `gofmt` universally. Run `golangci-lint` in CI pipeline to catch styling anti-patterns."
+- Example (Bash): "Use `shfmt -i 2 -ci` for consistent indentation. Validate with `shellcheck`."
+
+## 5. Naming Conventions
 _Define consistent naming patterns for files, variables, and exports._
 - **Files**: e.g., `kebab-case.ts` for modules, `PascalCase.tsx` for React components — or `snake_case.py` for Python — or `snake_case.go` for Go files
 - **Variables / Functions**: e.g., `camelCase` in TypeScript, `snake_case` in Python, `camelCase` (unexported) / `PascalCase` (exported) in Go (compiler-enforced)
@@ -60,7 +84,7 @@ _Define consistent naming patterns for files, variables, and exports._
 - **Packages**: e.g., "Go packages are lowercase, single-word. Never use underscores or camelCase in Go package names."
 - **Bash functions**: e.g., `snake_case` for functions, `UPPER_SNAKE_CASE` for config variables.
 
-## 5. Import Ordering
+## 6. Import Ordering
 _Define the canonical import order for consistency across all files._
 - Example (TypeScript):
   1. Node built-ins (`path`, `fs`)
@@ -77,14 +101,14 @@ _Define the canonical import order for consistency across all files._
   2. Third-party (`github.com/go-chi/chi/v5`)
   3. Internal packages (`github.com/arvarik/project/internal/service`)
 
-## 6. Documentation Standards
+## 7. Documentation Standards
 _How should code be documented?_
 - **Docstrings**: e.g., "Use Google-style docstrings for all classes and public methods" — or "JSDoc for exported functions" — or "godoc-compatible comments on all exported types and functions (`// FunctionName does X.`)"
 - **Comments**: e.g., "Comments explain *why*, not *what*. Self-documenting code is preferred."
 - **Type Hints**: e.g., "All function signatures must include type annotations." / "Go is statically typed — leverage the type system instead of comments."
 - **README**: e.g., "Keep README focused on setup and usage. Architecture details go in `.agent/ARCHITECTURE.md`."
 
-## 7. Anti-Patterns (FORBIDDEN)
+## 8. Anti-Patterns (FORBIDDEN)
 _Explicitly list approaches that agents should NEVER use. Be specific — cite the exact class, function, or pattern._
 - ❌ NEVER use `overflow-hidden` on flex containers that have children with focus rings. (Use `ring-inset` instead)
 - ❌ NEVER inline SVG icons directly in components; use the designated Icon component.

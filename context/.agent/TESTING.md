@@ -57,6 +57,15 @@ _How do we test this project locally? Give the exact CLI commands and tools._
 ### Frontend / UI Testing
 - Write and execute Playwright/Puppeteer scripts for interaction flows, or run component tests via `npm run test:ui`.
 - Test at responsive breakpoints: 375px (mobile), 768px (tablet), 1440px (desktop).
+- **End-to-End (E2E) & Flakiness**: Enforce the Page Object Model (POM) for Cypress/Playwright. Tests must pass locally 3 times in a row before committing to avoid flaky behaviors. Use `--retries=2` in CI.
+
+### Mocking Data & Fixtures
+- Specify where mock data resides (e.g., `tests/fixtures/`).
+- Distinguish between unit mocks (using `jest.mock` or Go interfaces) vs. integration mocks (using network interceptors like `msw` or WireMock).
+
+### Performance & Load Testing
+- E.g., Use `k6` or `artillery` to verify standard endpoints meet latency targets (e.g., P99 < 500ms).
+- Execute memory leak tests for long-running pipelines (e.g., streaming 10 hours of video without increasing resident memory).
 
 ### Manual / Visual
 - Mark scenarios as `NEEDS_HUMAN_REVIEW` if they require visual confirmation (e.g., colors, spacing, animations, drag-and-drop).
@@ -68,6 +77,13 @@ _Never mark a test as PASS without evidence._
 - For frontend automated tests, paste the output of the test runner (e.g., Playwright/Jest output).
 - For type checking / linting, paste the command and its output (e.g., `npx tsc --noEmit → 0 errors`, `golangci-lint run → no issues`).
 - "PASS" with no evidence is treated as UNTESTED.
+
+## 3. Definition of Done (QA Sign-off)
+_What constitutes a completed feature?_
+- Must have all relevant test scenarios marked as PASS with pasted evidence.
+- Must not introduce any new `golangci-lint`, `tsc`, or `eslint` warnings.
+- Must pass automated accessibility audits (e.g., axe-core).
+- If modifying schemas or boundaries, `ARCHITECTURE.md` must be updated.
 
 ---
 

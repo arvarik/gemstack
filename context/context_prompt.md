@@ -105,24 +105,26 @@ Before writing any files, you MUST use your search and read tools to investigate
 4. **Database & State**: Review ORM schemas (e.g., `prisma/schema.prisma`, `src/db/schema.ts`, `models/*.py`, `migrations/`, `queries/query.sql`, Drizzle migrations). Identify primary entities, relationships, and critical constraints. Check for virtual tables, search indexes, hypertables, continuous aggregates, or vector stores.
 5. **Error Handling**: Search for centralized error patterns (`AppError`, `asyncHandler`, error middleware, `if err != nil` patterns, custom error types, try/catch wrappers).
 6. **Environment Variables**: Read `.env.example` (if it exists) to understand required configuration. Catalog all variables.
+7. **Security & Auth**: Locate authentication configurations (NextAuth, JWT secret handling, RBAC arrays) and API boundaries.
+8. **Observability & Deployment**: Look for logging configurations (Pino, slog), metric exporters, OpenTelemetry hooks, and CI/CD pipelines (`.github/workflows/`, `vercel.json`).
 
 ### For Frontend / Full-Stack Projects:
-7. **Styling & UI**: Analyze core UI components (e.g., `src/components/ui/`). Understand color token usage, class naming conventions, and layout rules. Identify if a component library (e.g., Shadcn, Radix, Material UI) is used.
-8. **State Management**: Identify the data fetching pattern (React Query, SWR, Apollo, Redux, Zustand, native fetch) and client state strategy.
+9. **Styling & UI**: Analyze core UI components (e.g., `src/components/ui/`). Understand color token usage, class naming conventions, layout rules, and accessibility (a11y) usages like ARIA attributes. Identify if a component library (e.g., Shadcn, Radix, Material UI) is used.
+10. **State Management & i18n**: Identify the data fetching pattern (React Query, SWR), client state strategy, and any internationalization libraries (`next-intl`, `i18next`).
 
 ### For Backend / CLI / Pipeline Projects:
-9. **Concurrency Model**: Identify threading, async patterns, queue bounds, worker pools, goroutines, channels, mutexes, or event-loop constraints.
-10. **Safety Invariants**: Search for "NEVER", "MUST", "CRITICAL" comments in the codebase — these reveal load-bearing constraints.
+11. **Concurrency & Workflows**: Identify threading, async patterns, queue bounds, worker pools, goroutines, channels, mutexes, and distributed state machines / DLQs.
+12. **Safety Invariants**: Search for "NEVER", "MUST", "CRITICAL" comments in the codebase — these reveal load-bearing constraints.
 
 ### For Go Projects:
-11. **Project Layout**: Check for `cmd/`, `internal/`, `pkg/` standard Go project layout. Identify the binary entrypoints in `cmd/`.
-12. **Build System**: Read `Makefile` targets — these are the primary dev interface (build, test, lint, setup, docker-up/down).
-13. **Code Generation**: Check for `sqlc.yaml` (SQL-to-Go), `protobuf` definitions, `go generate` directives, or Swagger generation configs (`.swaggo`, `swag init`).
-14. **Concurrency Patterns**: Look for goroutine usage, `sync.Mutex`, `sync.WaitGroup`, `context.Context` propagation, advisory locks, and channel patterns.
+13. **Project Layout**: Check for `cmd/`, `internal/`, `pkg/` standard Go project layout. Identify the binary entrypoints in `cmd/`.
+14. **Build System**: Read `Makefile` targets — these are the primary dev interface (build, test, lint, setup, docker-up/down).
+15. **Code Generation**: Check for `sqlc.yaml` (SQL-to-Go), `protobuf` definitions, `go generate` directives, or Swagger generation configs (`.swaggo`, `swag init`).
+16. **Concurrency Patterns**: Look for goroutine usage, `sync.Mutex`, `sync.WaitGroup`, `context.Context` propagation, advisory locks, and channel patterns.
 
 ### For All Projects:
-15. **Testing**: Check testing configs (`vitest.config.ts`, `playwright.config.ts`, `jest.config.js`, `pytest.ini`, `pyproject.toml [tool.pytest]`, `Makefile test target`) and read a few existing test files to determine testing paradigms, commands, and coverage expectations.
-16. **AI & External Integrations**: Look for AI SDKs, third-party API clients, adapter patterns, rate limiters, OAuth2 flows, and caching layers.
+17. **Testing**: Check testing configs (`vitest.config.ts`, `playwright.config.ts`, `jest.config.js`, `pytest.ini`) and read tests to determine testing paradigms (Mocking strategies, E2E POM usage, Load tests).
+18. **AI & External Integrations**: Look for AI SDKs, third-party API clients, adapter patterns, rate limiters, OAuth2 flows, and caching layers.
 
 ---
 
@@ -132,24 +134,24 @@ Now, read the template files currently located in the `.agent/` directory. Use t
 
 ### 1. `.agent/ARCHITECTURE.md`
 - **Goal**: The definitive anchor for system design.
-- **Instructions**: Detail the exact tech stack with pinned versions. Map out the data flow (e.g., "Client Components → React Query → Express → Drizzle → SQLite" or "CLI → asyncio.TaskGroup → bounded queues → GPU worker" or "HTTP → go-chi middleware → handler → service → sqlc → PostgreSQL"). Document all core database entities and their relational rules (cascading deletes, virtual tables, hypertables, manual cleanup requirements). Define API contracts (methods, paths, request/response shapes) for primary endpoints. For SDK libraries, document the exported public API surface and versioning guarantees. Note any AI providers, external APIs, or complex integrations. Document the concurrency/threading model (goroutines, asyncio, Node.js event loop). List all environment variables from `.env.example`. Include exact local development commands. Document invariants and safety rules found in the codebase.
+- **Instructions**: Detail the exact tech stack with pinned versions. Map out the data flow. Document all core database entities and their relational rules. Define API contracts for primary endpoints. Document the concurrency/threading model and State Machine dependencies. Define Security & Authentication boundaries (RBAC, JWT). Explain Observability & Telemetry rules (logging schemas). Map the Deployment & CI/CD pipeline steps. Document invariants and safety rules.
 
 ### 2. `.agent/STYLE.md`
 - **Goal**: Enforce visual identity and structural code patterns.
-- **Instructions**: Extract the exact design system rules. Define primary colors, surface hierarchy, and spacing tokens. Document concrete component patterns (show exact CSS classes or Tailwind utilities). Define naming conventions (file naming, variable casing, Go export rules, package naming). Define import ordering rules (goimports standard for Go, ESLint for TS). Document docstring/comment standards (godoc, JSDoc, Google-style).
-- **CRITICAL**: Formulate explicit "Anti-Patterns (FORBIDDEN)" based on what the codebase avoids (e.g., "NEVER use `useEffect` for data fetching", "NEVER use `border-gray-200` for sectioning", "NEVER write temp files to disk", "NEVER use `Any`/`interface{}` types", "NEVER write raw SQL outside sqlc queries").
+- **Instructions**: Extract exact design system rules. Document Accessibility (a11y), Internationalization (i18n), and Performance Constraints (bundle size/latency expectations). Define constant naming formats, go/TS/Python linting formatting rules (e.g. `gofmt`, `ruff`, `prettier`). 
+- **CRITICAL**: Formulate explicit "Anti-Patterns (FORBIDDEN)" based on what the codebase avoids.
 
 ### 3. `.agent/TESTING.md`
 - **Goal**: Track test methods, execution evidence, and local dev setup.
-- **Instructions**: Document the exact steps to get the app running locally (prerequisites, install, start, seed, database, code generation). Document the exact CLI commands to run tests, type checking, and linting (including `go test -race`, `golangci-lint`, `shellcheck` where applicable). Keep the "Execution Evidence Rules" from the template intact. Set up the empty scenario tables ready for the first feature. Initialize the empty Regression Scenarios table.
+- **Instructions**: Document exact steps to get the app running locally. Document CLI commands to run tests (`pytest`, `vitest`). Document Mocking strategies & Fixtures, E2E protocols, load testing, and QA Definition of Done sign-offs.
 
 ### 4. `.agent/PHILOSOPHY.md`
 - **Goal**: The soul of the product.
-- **Instructions**: Read the project's `README.md` and any existing context files. Infer the core pain point the project solves. Define the target user persona. Synthesize 3-5 core beliefs that drive technical and product decisions. Document design/UX principles (applies to CLI, web, SDK, and headless projects). Define explicit anti-goals (What This Is NOT). *If the product purpose is completely ambiguous, stop and ask the user for a 1-paragraph description before writing this file.*
+- **Instructions**: Read the project's `README.md`. Define target persona, core beliefs, and UX principles. Define Operational Maturity targets (SLAs) and the Release/Community Ecosystem Philosophy (e.g. `feature flags` vs `big bang`). *If ambiguous, stop and ask the user.*
 
 ### 5. `.agent/STATUS.md`
 - **Goal**: The single source of truth for progress.
-- **Instructions**: Initialize the tracking state. Set "Current Focus" to "Project Bootstrapped". Leave the lifecycle checkboxes unchecked. Leave "Relevant Files" empty. Leave "Review Results" empty. Set "Active Worktrees" to "(none — sequential execution)".
+- **Instructions**: Initialize tracking state. Set "Current Focus" and map it to a "Current Milestone". Ensure the Blockers and Feature Rollout tracking headers are preserved and accurately set based on current git state.
 
 ---
 
