@@ -1,1 +1,0 @@
-/Users/arvind/Documents/github/gemstack/roles/principal-frontend-engineer.md

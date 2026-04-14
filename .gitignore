@@ -1,0 +1,5 @@
+# Local Antigravity symlinks (machine-specific, not portable)
+.agent/
+
+# OS
+.DS_Store
