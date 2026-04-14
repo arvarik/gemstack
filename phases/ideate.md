@@ -27,7 +27,7 @@ Purpose: Generate and prioritize what to build next.
 5. Select top 1-3 items to move forward
 
 ## Output
-Write to docs/explorations/YYYY-MM-DD-{role}-{feature}.md:
+Write to docs/explorations/YYYY-MM-DD-{role}-{feature}.md (Replace `{role}` with your current role name in lowercase, e.g., `product-visionary`):
 
 ### Context
 What prompted this exploration

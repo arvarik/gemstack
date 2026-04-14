@@ -50,7 +50,7 @@ with API contracts that enable parallel frontend/backend work.
 5. Identify hardware requirements
 
 ## Output
-Write to docs/designs/YYYY-MM-DD-{role}-{feature}.md:
+Write to docs/designs/YYYY-MM-DD-{role}-{feature}.md (Replace `{role}` with your current role name in lowercase, e.g., `architect`):
 
 ### What We're Building
 One paragraph, non-technical summary

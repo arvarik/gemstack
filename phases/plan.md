@@ -75,7 +75,7 @@ same global files simultaneously. Follow these rules:
   when worktree branches are merged back to the feature branch.
 
 ## Output
-Write to docs/plans/YYYY-MM-DD-{role}-{feature}.md:
+Write to docs/plans/YYYY-MM-DD-{role}-{feature}.md (Replace `{role}` with your current role name in lowercase, e.g., `principal-backend-engineer`):
 
 ### Overview
 One line: what we're implementing
