@@ -1,16 +1,16 @@
 # Gemstack: Agentic Development Framework
 
-A complete framework for standardizing AI Agent orchestration across all your software projects. Whether you are using Gemini CLI, Antigravity, Claude Code, or any LLM-based coding tool, Gemstack defines a unified system of composable **roles** (how the agent thinks), **phases** (what process the agent follows), and **project context** (the boundaries and rules of the specific codebase).
+A complete framework for standardizing AI Agent orchestration across all your software projects. Built on the principles of **Contract-Driven Development (CDD)** and **Compiler-in-the-Loop Feedback**, Gemstack defines a unified system of composable **roles** (how the agent thinks), **phases** (what process the agent follows), and an **Optimized 5-Step Sequence** to eliminate "Logic Drift" and hallucinations.
 
-This repository serves as your **single source of truth**. By defining roles, phases, and templates here, you ensure consistent, high-quality, and non-hallucinated AI output across multiple projects and tech stacks. 
+This repository serves as your **single source of truth**. By defining roles, phases, and workflows here, you ensure consistent, high-accuracy, and non-hallucinated AI output across multiple projects and tech stacks. 
 
 For setup and installation instructions, please refer to [SETUP.md](SETUP.md).
 
 ## Directory Structure
 
-*   `roles/`: Contains markdown files defining agent mindsets (e.g., `architect.md`, `product-visionary.md`).
-*   `phases/`: Contains markdown files defining the workflow steps (e.g., `plan.md`, `build.md`).
-*   `workflows/`: Contains composed workflows that combine multiple roles and phases (e.g., `product-definition.md`).
+*   `roles/`: Contains markdown files defining agent mindsets (e.g., `architect.md`, `sdet.md`).
+*   `phases/`: Contains markdown files defining the workflow steps (e.g., `contract-and-plan.md`, `build.md`).
+*   `workflows/`: Contains the strict 5-step sequence that combines multiple roles and phases (e.g., `spec.md`, `build.md`).
 *   `context/`: Contains the master templates for project-specific rules (e.g., `ARCHITECTURE.md`, `STYLE.md`, `TESTING.md`) and the AI bootstrapping script.
 *   `roles_phases.md`: The original master document containing all definitions.
 
@@ -20,60 +20,61 @@ For setup and installation instructions, please refer to [SETUP.md](SETUP.md).
 
 The `roles/`, `phases/`, and `workflows/` folders act as global commands. You edit the markdown files here, and they become instantly available as slash commands (`/`) in both **Gemini CLI** and **Antigravity**.
 
-### How It Works
-*   **Antigravity:** Uses the `.md` files directly via symlinks in `~/.gemini/antigravity/global_workflows/`. It requires a YAML frontmatter block (e.g., `--- name: architect ---`) at the top of each file.
-*   **Gemini CLI:** Uses `.toml` wrappers that dynamically read (inject) the contents of your `.md` files using the `!{cat ...}` shell command.
-
-Because both tools reference the files in this repository, **any edits you make here will instantly apply globally across all your projects.**
-
 ### The Roles
-Roles define **mindset** - how the agent thinks and what it prioritizes. Roles are stack-agnostic.
-*   **Product Visionary**: Thinks like a founder. Focuses on user pain points, product workflows, and vision. (Markdown only)
-*   **UI/UX Designer**: The user's advocate. Focuses on information hierarchy, cognitive load, consistency, and interaction states. (Markdown only)
-*   **Architect**: The maintainer of coherence. Defines API contracts, data models, and system boundaries to ensure long-term stability. (Markdown only)
-*   **Principal Backend Engineer**: Focuses on reliability, API design, data correctness, and scalability. (Writes code)
-*   **Principal Frontend Engineer**: Focuses on UI implementation, visual consistency, accessibility, and client-side performance. (Writes code)
-*   **ML / Data Engineer**: Works at the intersection of research and production. Focuses on robust data pipelines, model selection, and performance targets. (Writes code)
-*   **QA Engineer**: Focuses on breaking the application systematically. Writes automated tests and executes manual test plans. (Test scripts only)
-*   **Security Engineer**: An attacker with a conscience. Assesses threat models, vulnerabilities, and data exposure. (Markdown only)
-*   **DevOps & Infrastructure Engineer**: Focuses on repeatable deployments, security best practices, and robust infrastructure. (Infra/Config only)
+Roles define **mindset**. Roles are stack-agnostic.
+*   **Product Visionary**: Thinks like a founder. Focuses on user pain points, product workflows, and vision.
+*   **UI/UX Designer**: The user's advocate. Focuses on information hierarchy and interaction states.
+*   **Architect**: The author of Executable Truth. Defines strict, executable API contracts (`schema.prisma`, `types/api.ts`) to ensure boundaries.
+*   **Principal Backend Engineer**: Focuses on reliability, API design, and data correctness.
+*   **Principal Frontend Engineer**: Focuses on UI implementation, accessibility, and client-side performance.
+*   **SDET (Contract Enforcer)**: Formally QA. Writes automated, failing test suites *before* code is built based on the Architect's contracts.
+*   **Security Engineer**: An attacker with a conscience. Assesses threat models and logic drift.
+*   **DevOps & Infrastructure Engineer**: Focuses on repeatable deployments and robust infrastructure.
 
 ### The Phases
-Phases define **process** - what steps to follow and what to produce. Each phase has clear inputs, outputs, and a transition condition to the next phase.
-*   **Ideate**: Generate and prioritize what to build next based on user pain and project philosophy. (Outputs: Exploration docs)
-*   **Design**: Define what the feature should be before anyone writes code, producing UX specs and exact API contracts. (Outputs: Design docs)
-*   **Plan**: Break a design into an ordered, implementable task list, identifying parallelization opportunities and branch dependencies. (Outputs: Plan docs)
-*   **Build**: Write the actual application code, strictly following the plan and established architectural patterns. (Outputs: Source code)
-*   **Fix**: Repair specific, localized bugs found during testing or review without rewriting unrelated code. (Outputs: Source code patches)
-*   **Test**: Find out what's broken before the user does by running automated scripts and structured manual scenarios. (Outputs: Test evidence)
-*   **Review**: Step back and evaluate the bigger picture for architectural coherence, security, and product fit before shipping. (Outputs: Review findings)
-*   **Ship**: Deploy safely, verify the deployment works, and clean up feature documents into an archive folder. (Outputs: Deployed app & archived docs)
-
-### Usage Example
-In Gemini CLI (namespaced):
-> `/roles:principal-frontend-engineer /phases:build Help me implement the UI component defined in the plan.`
-
-In Antigravity (flat):
-> `/principal-frontend-engineer /build Help me implement the UI component defined in the plan.`
+Phases define **process**. Each phase has clear inputs, outputs, and a transition condition.
+*   **Ideate**: Generate and prioritize what to build next.
+*   **Design**: Define the UX and architecture.
+*   **Contract & Plan**: Enforce executable contracts and break the design into an ordered task list.
+*   **Build**: The Autonomous Factory. Write the code and loop against the terminal until the test suite passes with Exit Code 0.
+*   **Integrate**: Strictly tasked to strip mock data (`// TODO: remove stub`) and wire real systems together.
+*   **Audit**: A read-only phase for SAST, edge cases, and catching "Logic Drift".
+*   **Ship**: Merge, deploy, and clean up.
 
 ---
 
-## 2. Composed Workflows
+## 2. The Optimized 5-Step Workflow Sequence
 
-To reduce manual prompt interventions and keep the LLM's cognitive load focused, Gemstack includes composed workflows. These workflows group roles and phases by cognitive boundaries.
+To maximize absolute accuracy and eliminate LLM hallucination, Gemstack uses a highly accurate, blocker-free 5-step sequence. This sequence provides "New Chat" airgaps and forces the LLM to prove its work mathematically against the terminal.
 
-1. **The `Product Definition` Workflow (`/workflows:product-definition`)**
-   *   **Composes:** `Product Visionary` + `UI/UX Designer` + `Ideate Phase` + `Design Phase (UX)`
-   *   **Goal:** Go from a raw idea to a concrete feature proposal and UX specification.
-2. **The `Technical Blueprint` Workflow (`/workflows:tech-blueprint`)**
-   *   **Composes:** `Architect` + `Engineers (Advisory)` + `Design Phase (Arch)` + `Plan Phase`
-   *   **Goal:** Take the UX spec and turn it into API contracts, data models, and an actionable implementation task list.
-3. **The `Implementation Loop` Workflows (`/workflows:implement-backend` & `/workflows:implement-frontend`)**
-   *   **Composes:** `Principal Engineer` + `Build Phase` + `Fix Phase`
-   *   **Goal:** Read the plan, write the code, and fix localized bugs.
-4. **The `Release Gatekeeper` Workflow (`/workflows:release-gatekeeper`)**
-   *   **Composes:** `QA Engineer` + `Security Engineer` + `DevOps Engineer` + `Test`, `Review`, `Ship` Phases
-   *   **Goal:** Break the app, log evidence, do a final sanity check, deploy, and clean up the archive folders.
+### 🟢 Step 1: `/workflow:spec` (The Contract)
+*   **Roles:** Product Visionary + UI/UX Designer + Architect
+*   **Action:** The human defines the feature. The agents design the UX. Crucially, the Architect exports strict TypeScript/OpenAPI interfaces and DB schemas to `ARCHITECTURE.md`.
+*   **Accuracy Check:** No application code is written yet. We are locking in the exact boundaries.
+
+### 🟢 Step 2: `/workflow:trap` (Setting the Trap)
+*   **Roles:** Planner (Principal Eng) + SDET
+*   **Action:** The Planner writes the step-by-step task list. The SDET reads the API contracts from Step 1 and writes the failing test suite.
+*   **Accuracy Check:** The definition of "done" is now mathematically locked in code. The Builder's biases cannot corrupt the process.
+
+### 🟢 Step 3: `/workflow:build` (The Autonomous Factory)
+*   **Roles:** Principal Engineer (BE/FE)
+*   **Action:** The Builder reads the plan and writes the code. They are locked in this phase running the test suite in the terminal until it outputs Exit Code 0.
+*   **Accuracy Check:** The bash terminal is the objective, unyielding referee. The human does not intervene.
+
+### 🟢 Step 4: `/workflow:audit` (The Jury)
+*   **Roles:** Security Engineer + SDET
+*   **Action:** Fresh context window in read-only mode. They run SAST linters, test edge cases, and look for shortcuts the Builder took to pass the tests. Findings are written to `.agent/AUDIT_FINDINGS.md`.
+*   **Routing Loop:** If issues are found, a new `/workflow:build` is spawned to fix them.
+
+### 🟢 Step 5: `/workflow:ship` (The Gatekeeper)
+*   **Roles:** DevOps Engineer + Principal Eng
+*   **Action:** Merges branches, runs the **Integrate** phase to strip stubs and wire systems, deploys, cleans up artifacts, and resets `STATUS.md`.
+
+### State Machine Routing: Guaranteeing Zero Blockers
+To prevent agents from hanging when they hit unknown variables, Gemstack implements a strict **Yield & Prompt Protocol**:
+*   **The Mutex Lock**: The Architect manages `.agent/STATUS.md` using explicit ENUM states (e.g., `[STATE: READY_FOR_BUILD]`). Agents must halt if the state does not match their phase.
+*   **The Routing Directive**: If an agent hits an unresolvable blocker, it outputs a `### SYSTEM ROUTING` block telling the human orchestrator the exact slash command to run next, completely eliminating orchestration ambiguity.
 
 ---
 
@@ -85,13 +86,13 @@ While roles and phases are global, every project has unique rules. The `context/
 Every repository you build should contain this structure at its root:
 ```text
 .agent/
-├── STATUS.md           # where we are, what to do next, relevant file pointers
-├── ARCHITECTURE.md     # how the system is built, data models, API contracts
-├── STYLE.md            # code and visual patterns, explicit anti-patterns
-├── TESTING.md          # test methods, scenarios, results with evidence
-└── PHILOSOPHY.md       # product soul - why this exists, core beliefs
+├── STATUS.md           # where we are, what to do next
+├── ARCHITECTURE.md     # executable API contracts and architecture
+├── STYLE.md            # code and visual patterns
+├── TESTING.md          # test methods and results
+└── PHILOSOPHY.md       # product soul
 
-.env.example            # all required env vars with placeholder values and comments
+.env.example            # env vars with placeholder values
 
 docs/
 ├── explorations/       # ideate phase output
@@ -99,32 +100,3 @@ docs/
 ├── plans/              # plan phase output
 └── archive/            # shipped feature docs
 ```
-
-### Feature Lifecycle Flow
-```
-ideate --> design --> plan --> build --> test ----> review --> ship
-                       ^        ^         |          |
-                       |        |         v          |
-                       |        +------ fix  <-------+ (localized bugs)
-                       |        (scoped bug fixes
-                       |         return to test)
-                       |                             |
-                       +-----------------------------+ (architectural issues
-                        (structural problems go back    skip fix, return to
-                         to plan + build, not fix)      plan + build)
-```
-
-### Role x Phase Matrix
-*(📝 = Produces/Updates Markdown files | 💻 = Produces/Modifies Code or Infra)*
-
-| Role | Ideate | Design | Plan | Build | Fix | Test | Review | Ship |
-|---|---|---|---|---|---|---|---|---|
-| Product Visionary | 📝 Primary | | | | | | 📝 Periodic | |
-| UI/UX Designer | 📝 Secondary | 📝 Primary | | | | | | |
-| Architect | | 📝 Primary | 📝 Advisory | | | | 📝 Primary | |
-| Backend Engineer | 📝 Secondary | 📝 Secondary | 📝 Primary | 💻 Primary | 💻 Primary | | | |
-| Frontend Engineer | 📝 Secondary | 📝 Secondary | 📝 Primary | 💻 Primary | 💻 Primary | | | |
-| ML Engineer | 📝 Secondary | 📝 Primary | 📝 Primary | 💻 Primary | 💻 Primary | 💻/📝 Primary | | |
-| QA Engineer | | | | | | 💻/📝 Primary | | |
-| Security Engineer | | | | | | | 📝 Primary | 📝 Advisory |
-| DevOps Engineer | | | | | | | | 💻 Primary |

@@ -1,5 +1,6 @@
 # {Project Name} Status
 Last updated: YYYY-MM-DD
+[STATE: IDLE]
 
 _This file tracks the detailed explore/plan/build/test sub-phases per feature. It is the single source of truth for "where am I?" Agents should update this file after completing tasks or making progress._
 

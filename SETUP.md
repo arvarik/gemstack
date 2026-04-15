@@ -121,4 +121,3 @@ If you want to create a brand new role, phase, or composed workflow in the futur
    ln -sfn $(pwd)/roles/new-file.md ~/.gemini/antigravity/global_workflows/new-file.md
    ```
 4. **Link to Gemini CLI:** Create a `new-file.toml` file in `~/.gemini/commands/roles/` pointing to your new markdown file, using the same `!{cat ...}` format as the others. Run `/commands reload` in the CLI.
-4. **Link to Gemini CLI:** Create a `new-file.toml` file in `~/.gemini/commands/roles/` pointing to your new markdown file, using the same `!{cat ...}` format as the others. Run `/commands reload` in the CLI.` format as the others. Run `/commands reload` in the CLI.ds/roles/` pointing to your new markdown file, using the same `!{cat ...}` format as the others. Run `/commands reload` in the CLI.` format as the others. Run `/commands reload` in the CLI.
