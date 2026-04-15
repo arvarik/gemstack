@@ -61,10 +61,14 @@ After successful deployment:
    This prevents docs/ folders from growing unbounded. Active folders
    should only contain docs for features currently in progress.
 
-2. **Synthesize into permanent files**: Any architectural decisions,
+2. **Synthesize and Prune permanent files**: Any architectural decisions,
    new patterns, or style changes from the archived docs should
    already be captured in ARCHITECTURE.md and STYLE.md from the
-   review phase. Verify nothing was missed.
+   review phase. Verify nothing was missed. **Critically, also remove
+   stale content:** delete deprecated schemas, renamed interfaces,
+   and replaced contracts. If a contract was superseded by this
+   feature, delete the old version. ARCHITECTURE.md must contain
+   only *current* executable truth, never historical artifacts.
 
 3. **Reset STATUS.md**: Clear completed feature state. The new
    STATUS.md should show:

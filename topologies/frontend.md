@@ -34,9 +34,11 @@ Populate this matrix in the project's `TESTING.md` for every interactive compone
 
 Write Playwright or component tests that render each state and assert DOM structure. Mark these PASS/FAIL with execution evidence.
 
-### What Cannot Be Automated
+### What Cannot Be Fully Automated
 
-Visual appearance (colors, spacing, animations) cannot be verified by CLI agents. Mark visual checks as `NEEDS_HUMAN_REVIEW` per the QA Engineer role rules.
+**Structural verification (automated):** If the agent has vision capabilities (VLM), use Playwright or equivalent to take screenshots of each component state (empty, loading, success, error, partial). Feed the screenshots back into the agent context to verify structural correctness — component renders, layout isn't broken, error states display correctly, elements are present and positioned.
+
+**Aesthetic verification (human):** Visual *quality* — brand alignment, color harmony, spacing feel, animation polish — cannot be reliably judged by current VLMs. Mark aesthetic checks as `NEEDS_HUMAN_REVIEW` per the QA Engineer role rules. Do not remove this designation even when VLM structural checks pass.
 
 ---
 

@@ -1,5 +1,5 @@
 ---
-name: ship
+name: step5-ship
 description: "Step 5: Integrate, merge, deploy, and reset for the next feature"
 ---
 # Workflow: Ship (The Gatekeeper)
@@ -33,5 +33,5 @@ At the end of your execution, or if you hit a blocker you cannot resolve, you mu
 ```markdown
 ### SYSTEM ROUTING
 [🛑] BLOCKED: I am building the frontend, but the backend `Interaction` schema is missing from ARCHITECTURE.md. I am yielding.
-🟠 NEXT ACTION: Open a New Chat, run `/workflow:spec`, and instruct the Architect to define the Interaction schema.
+🟠 NEXT ACTION: Open a New Chat, run `/step1-spec`, and instruct the Architect to define the Interaction schema.
 ```

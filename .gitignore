@@ -1,5 +1,8 @@
 # Local Antigravity symlinks (machine-specific, not portable)
 .agent/
 
+# Legacy master document (superseded by examples/)
+roles_phases.md
+
 # OS
 .DS_Store
