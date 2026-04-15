@@ -21,7 +21,7 @@ For setup and installation instructions, please refer to [SETUP.md](SETUP.md).
 The `roles/`, `phases/`, and `workflows/` folders act as global commands. You edit the markdown files here, and they become instantly available as slash commands (`/`) in both **Gemini CLI** and **Antigravity**.
 
 ### How It Works
-*   **Antigravity:** Uses the `.md` files directly via symlinks. It requires a YAML frontmatter block (e.g., `--- name: architect ---`) at the top of each file.
+*   **Antigravity:** Uses the `.md` files directly via symlinks in `~/.gemini/antigravity/global_workflows/`. It requires a YAML frontmatter block (e.g., `--- name: architect ---`) at the top of each file.
 *   **Gemini CLI:** Uses `.toml` wrappers that dynamically read (inject) the contents of your `.md` files using the `!{cat ...}` shell command.
 
 Because both tools reference the files in this repository, **any edits you make here will instantly apply globally across all your projects.**
