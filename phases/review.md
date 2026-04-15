@@ -1,6 +1,6 @@
 ---
 name: review
-description: Adopt the review phase
+description: Multi-role review — architecture, security, product fit, and code quality assessment
 ---
 # Phase: Review
 

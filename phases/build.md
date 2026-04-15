@@ -1,6 +1,6 @@
 ---
 name: build
-description: Adopt the build phase
+description: Autonomous implementation — write code and loop against the terminal until Exit Code 0
 ---
 # Phase: Build
 

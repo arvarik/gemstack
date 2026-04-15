@@ -1,6 +1,6 @@
 ---
 name: principal-frontend-engineer
-description: Adopt the principal-frontend-engineer role
+description: Frontend implementation — UI components, accessibility, client-side performance, and state management
 ---
 # Role: Principal Frontend Engineer
 

@@ -69,3 +69,29 @@ _Track parallel agent work when using git worktrees. Remove entries during Ship 
 | _Example: ../project-feat-frontend_ | `feat/reconnect-frontend` | :3002 | Blocked on BE merge | Frontend Eng |
 
 _If no parallel worktrees are active, write "(none — sequential execution)"._
+
+---
+
+## Stub Audit Tracker (Full-Stack Projects Only)
+
+_Track mock/stub status across the frontend. This section is populated during the Build phase and cleared during Ship._
+
+| Stub Location | Type | Real API Endpoint | Status |
+|---------------|------|-------------------|--------|
+| _(e.g., src/mocks/handlers.ts)_ | _(MSW / inline stub / hardcoded data)_ | _(e.g., GET /api/v1/users)_ | _(ACTIVE / REMOVED)_ |
+
+_When all stubs show REMOVED, the Integration phase is complete._
+
+_If not a full-stack project, write "N/A — No frontend stubs."_
+
+---
+
+## Prompt Versioning Changelog (ML/AI Projects Only)
+
+_Track changes to LLM prompts so we can diff versions and rollback if evals degrade._
+
+| Version | Date | Change Description | Eval Score | Delta | File |
+|---------|------|--------------------|------------|-------|------|
+| _(populated during build)_ | | | | | |
+
+_If not an ML/AI project, write "N/A — No LLM prompts."_

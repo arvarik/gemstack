@@ -1,6 +1,6 @@
 ---
 name: spec
-description: Run the spec workflow (Step 1)
+description: "Step 1: Define the feature, design UX, and lock in executable contracts"
 ---
 # Workflow: Spec (The Contract)
 

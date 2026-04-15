@@ -1,6 +1,6 @@
 ---
 name: ideate
-description: Adopt the ideate phase
+description: Generate and prioritize feature ideas, explore problems, and recommend what to build next
 ---
 # Phase: Ideate
 

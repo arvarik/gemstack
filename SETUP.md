@@ -11,16 +11,17 @@ cd ~/Documents/github/gemstack
 ```
 
 ### 2. Setup Antigravity (Global Slash Commands)
-Antigravity looks for `.md` files in `~/.agent/workflows/`. It does not currently follow subdirectories or symlinks reliably, so we copy the files directly.
+Antigravity looks for `.md` files in `~/.gemini/antigravity/global_workflows/`. We symlink or copy the files directly into this directory.
 
 ```bash
 # Create the global workflows directory
-mkdir -p ~/.agent/workflows
+mkdir -p ~/.gemini/antigravity/global_workflows
 
-# Copy all roles, phases, and composed workflows directly into the workflows folder
-cp $(pwd)/roles/*.md ~/.agent/workflows/
-cp $(pwd)/phases/*.md ~/.agent/workflows/
-cp $(pwd)/workflows/*.md ~/.agent/workflows/
+# Copy all roles, phases, composed workflows, and topology profiles into the workflows folder
+cp $(pwd)/roles/*.md ~/.gemini/antigravity/global_workflows/
+cp $(pwd)/phases/*.md ~/.gemini/antigravity/global_workflows/
+cp $(pwd)/workflows/*.md ~/.gemini/antigravity/global_workflows/
+cp $(pwd)/topologies/*.md ~/.gemini/antigravity/global_workflows/
 ```
 
 ### 3. Setup Gemini CLI (Global Slash Commands)
@@ -38,11 +39,13 @@ const geminiCommandsDir = path.join(os.homedir(), '.gemini', 'commands');
 const repoRolesDir = path.join(process.cwd(), 'roles');
 const repoPhasesDir = path.join(process.cwd(), 'phases');
 const repoWorkflowsDir = path.join(process.cwd(), 'workflows');
+const repoTopologiesDir = path.join(process.cwd(), 'topologies');
 
 // Ensure directories exist
 fs.mkdirSync(path.join(geminiCommandsDir, 'roles'), { recursive: true });
 fs.mkdirSync(path.join(geminiCommandsDir, 'phases'), { recursive: true });
 fs.mkdirSync(path.join(geminiCommandsDir, 'workflows'), { recursive: true });
+fs.mkdirSync(path.join(geminiCommandsDir, 'topologies'), { recursive: true });
 
 function generateToml(sourceDir, destDir, type) {
     if (!fs.existsSync(sourceDir)) return;
@@ -69,6 +72,7 @@ Please apply this ${type} to my following request:
 generateToml(repoRolesDir, path.join(geminiCommandsDir, 'roles'), 'role');
 generateToml(repoPhasesDir, path.join(geminiCommandsDir, 'phases'), 'phase');
 generateToml(repoWorkflowsDir, path.join(geminiCommandsDir, 'workflows'), 'workflow');
+generateToml(repoTopologiesDir, path.join(geminiCommandsDir, 'topologies'), 'topology');
 ```
 
 Run it:
@@ -102,11 +106,11 @@ You do not need to manually fill out the `.agent/` files for a new project. We h
 
 ---
 
-## Adding a New Role, Phase, or Workflow
+## Adding a New Role, Phase, Workflow, or Topology
 
-If you want to create a brand new role, phase, or composed workflow in the future:
+If you want to create a brand new role, phase, composed workflow, or topology profile in the future:
 
-1. **Create the file:** Create `new-file.md` inside the `roles/`, `phases/`, or `workflows/` directory.
+1. **Create the file:** Create `new-file.md` inside the `roles/`, `phases/`, `workflows/`, or `topologies/` directory.
 2. **Add Frontmatter:** You MUST add YAML frontmatter at the very top for Antigravity to see it:
    ```yaml
    ---

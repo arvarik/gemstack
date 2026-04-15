@@ -1,6 +1,6 @@
 ---
 name: architect
-description: Adopt the architect role
+description: Executable contracts, API boundaries, and database schemas — the author of architectural truth
 ---
 # Role: Architect
 

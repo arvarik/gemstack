@@ -2,6 +2,14 @@
 
 _This document acts as the definitive anchor for understanding system design, data models, API contracts, and technology boundaries. Update this document during the Design and Review phases._
 
+## 0. Project Topology
+
+**Topology:** [e.g., `backend`, `frontend`, `ml-ai`, `infrastructure`, `library-sdk`]
+
+_Declare one or more topology attributes that describe this project. Agents MUST read the corresponding topology profile(s) from the Gemstack `topologies/` directory (available at `~/.gemini/antigravity/global_workflows/`) before proceeding with any workflow step. Multiple topologies can be combined (e.g., a full-stack app with AI features declares `[frontend, backend, ml-ai]`)._
+
+_For projects that don't fit any topology (e.g., documentation repos), write `[none]` and rely on the standard role/phase guardrails._
+
 ## 1. Tech Stack & Infrastructure
 _List the core technologies and briefly explain *why* they were chosen. Pin exact major versions._
 - **Language / Runtime**: e.g., TypeScript 5 / Node.js 22 — or Python 3.11+ — or Go 1.25
@@ -75,6 +83,16 @@ _How is data cached? At which layers?_
 - Example: React Query with stale-while-revalidate. Server-side LRU cache for search results (60s TTL).
 - Example: Upstash Redis at the edge for rate limiting and telemetry aggregation.
 - Example: Go in-memory cache with TTL for API responses. TimescaleDB continuous aggregates for pre-computed analytics.
+
+### 5.1 Model Ledger (ML/AI Topology Only)
+
+_If this project uses LLM APIs or ML models, document every model in use. This ledger drives the Circuit Breaker cost calculations defined in the `ml-ai` topology profile._
+
+| Model | Role | Cost (1M in / 1M out) | Context Window | Structured Output | Rate Limit | Circuit Breaker Cost Cap |
+|-------|------|----------------------|----------------|-------------------|------------|--------------------------|
+| _(e.g., gemini-2.5-pro)_ | _(e.g., primary reasoning)_ | _($1.25 / $10.00)_ | _(1M tokens)_ | _(Yes/No)_ | _(5 RPM)_ | _($5.00/session)_ |
+
+_If not an ML/AI project, write "N/A — No ML models utilized."_
 
 ## 6. Invariants & Safety Rules
 _Critical constraints that MUST NEVER be violated. These are the "load-bearing walls" of the architecture. Agents should treat violations as blocking issues._

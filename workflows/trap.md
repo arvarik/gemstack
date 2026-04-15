@@ -1,6 +1,6 @@
 ---
 name: trap
-description: Run the trap workflow (Step 2)
+description: "Step 2: Write the task plan and lay the failing test suite trap"
 ---
 # Workflow: Trap (Setting the Trap)
 

@@ -1,6 +1,6 @@
 ---
 name: ui-ux-designer
-description: Adopt the ui-ux-designer role
+description: User advocate — information hierarchy, interaction states, and experience design
 ---
 # Role: UI/UX Designer
 

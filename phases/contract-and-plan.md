@@ -1,6 +1,6 @@
 ---
 name: contract-and-plan
-description: Adopt the contract and plan phase
+description: Define executable contracts, schemas, and break the design into an ordered task list
 ---
 # Phase: Contract & Plan
 

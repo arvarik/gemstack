@@ -1,6 +1,6 @@
 ---
 name: ship
-description: Adopt the ship phase
+description: Merge, deploy, archive docs, reset STATUS.md, and prepare for the next feature cycle
 ---
 # Phase: Ship
 

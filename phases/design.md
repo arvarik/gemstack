@@ -1,6 +1,6 @@
 ---
 name: design
-description: Adopt the design phase
+description: UX flows, architecture decisions, and technical design documents
 ---
 # Phase: Design
 

@@ -1,6 +1,6 @@
 ---
 name: integrate
-description: Adopt the integrate phase
+description: Strip mock data, wire real systems together, and verify end-to-end integration
 ---
 # Phase: Integrate
 

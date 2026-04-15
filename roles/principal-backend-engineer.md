@@ -1,6 +1,6 @@
 ---
 name: principal-backend-engineer
-description: Adopt the principal-backend-engineer role
+description: Backend implementation — API routes, database operations, reliability, and data correctness
 ---
 # Role: Principal Backend Engineer
 

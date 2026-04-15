@@ -1,6 +1,6 @@
 ---
 name: ship
-description: Run the ship workflow (Step 5)
+description: "Step 5: Integrate, merge, deploy, and reset for the next feature"
 ---
 # Workflow: Ship (The Gatekeeper)
 

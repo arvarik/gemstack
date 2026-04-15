@@ -83,6 +83,48 @@ _Never mark a test as PASS without evidence._
 | Responsive check (375px mobile) | NEEDS_HUMAN_REVIEW | Check that cards stack vertically. |
 | Responsive check (1440px desktop) | NEEDS_HUMAN_REVIEW | Check max-width constraints. |
 
+---
+
+## Backend Route Coverage Matrix (Backend Topology Only)
+
+_Populated by the SDET during the Trap phase. One row per API endpoint. All cells must show PASS with execution evidence or FAIL with reproduction steps._
+
+| Endpoint | Method | 200 OK | 400 Bad Req | 401/403 Auth | 404 Not Found | Idempotent | Edge Cases |
+|----------|--------|--------|-------------|--------------|---------------|------------|------------|
+| _(populated per feature)_ | | | | | | | |
+
+_If not a backend project, write "N/A — No backend API endpoints."_
+
+---
+
+## Frontend Component State Matrix (Frontend Topology Only)
+
+_Populated by the SDET during the Trap phase. Every interactive component must be tested across all visual states._
+
+| Component | Empty | Loading | Success | Error | Partial |
+|-----------|-------|---------|---------|-------|---------|
+| _(populated per feature)_ | | | | | |
+
+_If not a frontend project, write "N/A — No frontend UI components."_
+
+---
+
+## ML / AI Evaluation Thresholds (ML/AI Topology Only)
+
+_Populated by the ML Engineer during the Build phase. Track eval scores over time to detect regression._
+
+| Metric | Target | Current | Method | Eval Set | Prompt Ver. | Last Run |
+|--------|--------|---------|--------|----------|-------------|----------|
+| _(populated per feature)_ | | | | | | |
+
+### Eval / Holdout Boundary
+- **eval_set**: `eval/` directory — Agent may read and optimize against these.
+- **holdout_set**: `eval/holdout/` directory — HUMAN-ONLY. Agent must never reference these files.
+
+_If not an ML/AI project, write "N/A — No ML evaluation metrics."_
+
+---
+
 ## Bugs Found (Fix Phase Queue)
 _List specific bugs discovered during testing. Agents in the 'Fix' phase will read this section._
 

@@ -1,8 +1,8 @@
 # Gemstack: Agentic Development Framework
 
-A complete framework for standardizing AI Agent orchestration across all your software projects. Built on the principles of **Contract-Driven Development (CDD)** and **Compiler-in-the-Loop Feedback**, Gemstack defines a unified system of composable **roles** (how the agent thinks), **phases** (what process the agent follows), and an **Optimized 5-Step Sequence** to eliminate "Logic Drift" and hallucinations.
+A complete framework for standardizing AI Agent orchestration across all your software projects. Built on the principles of **Contract-Driven Development (CDD)** and **Compiler-in-the-Loop Feedback**, Gemstack defines a unified system of composable **roles** (how the agent thinks), **phases** (what process the agent follows), **topologies** (domain-specific guardrails), and an **Optimized 5-Step Sequence** to eliminate "Logic Drift" and hallucinations.
 
-This repository serves as your **single source of truth**. By defining roles, phases, and workflows here, you ensure consistent, high-accuracy, and non-hallucinated AI output across multiple projects and tech stacks. 
+This repository serves as your **single source of truth**. By defining roles, phases, topologies, and workflows here, you ensure consistent, high-accuracy, and non-hallucinated AI output across multiple projects and tech stacks. 
 
 For setup and installation instructions, please refer to [SETUP.md](SETUP.md).
 
@@ -11,6 +11,7 @@ For setup and installation instructions, please refer to [SETUP.md](SETUP.md).
 *   `roles/`: Contains markdown files defining agent mindsets (e.g., `architect.md`, `sdet.md`).
 *   `phases/`: Contains markdown files defining the workflow steps (e.g., `contract-and-plan.md`, `build.md`).
 *   `workflows/`: Contains the strict 5-step sequence that combines multiple roles and phases (e.g., `spec.md`, `build.md`).
+*   `topologies/`: Contains domain-specific guardrail profiles (e.g., `backend.md`, `frontend.md`, `ml-ai.md`) and the LLM failure modes reference.
 *   `context/`: Contains the master templates for project-specific rules (e.g., `ARCHITECTURE.md`, `STYLE.md`, `TESTING.md`) and the AI bootstrapping script.
 *   `roles_phases.md`: The original master document containing all definitions.
 
@@ -40,6 +41,14 @@ Phases define **process**. Each phase has clear inputs, outputs, and a transitio
 *   **Integrate**: Strictly tasked to strip mock data (`// TODO: remove stub`) and wire real systems together.
 *   **Audit**: A read-only phase for SAST, edge cases, and catching "Logic Drift".
 *   **Ship**: Merge, deploy, and clean up.
+
+### Topology-Aware Guardrails
+Topologies are domain-specific behavioral modifiers that layer on top of roles and phases. Each project declares its topology attributes (e.g., `[frontend, backend, ml-ai]`) in `ARCHITECTURE.md`, and agents automatically load the corresponding guardrail profiles. Available topologies:
+*   **Backend**: Data integrity testing, anti-mocking rules, N+1 query detection.
+*   **Frontend**: Component state coverage matrix, hydration safety, state management discipline.
+*   **ML/AI**: Evaluation-Driven Development (EDD), circuit breaker for cost control, prompt versioning.
+*   **Infrastructure**: Configuration validation, no-auto-apply policy, port isolation.
+*   **Library/SDK**: API surface stability, backward compatibility, zero-dependency discipline.
 
 ---
 

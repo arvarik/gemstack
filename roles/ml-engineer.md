@@ -1,6 +1,6 @@
 ---
 name: ml-engineer
-description: Adopt the ml-engineer role
+description: ML pipelines, LLM integration, model selection, and Evaluation-Driven Development
 ---
 # Role: ML / Data Engineer
 
@@ -59,3 +59,37 @@ streaming inference processes, jupyter notebook). Instead:
 - Test with representative data, not just clean samples
 - Document model versions and performance baselines in ARCHITECTURE.md
 - Add test fixtures to the repo for regression testing
+
+---
+
+## Evaluation-Driven Development (EDD)
+
+When the ML/AI topology is active, your Build phase follows EDD instead of standard TDD:
+
+### The Loop
+1. Read the eval harness and threshold table from TESTING.md
+2. Run the eval harness against the current implementation
+3. Record the scores in the Eval Thresholds table
+4. If thresholds are met → proceed to next task
+5. If thresholds are not met → modify the implementation (prompt, model config, preprocessing) and re-run
+6. Log every prompt change in the Prompt Versioning Changelog in STATUS.md
+
+### Circuit Breaker
+You MUST halt and yield to the human if ANY of these conditions are met:
+- 5 consecutive attempts without metric improvement
+- Total API cost for this session exceeds the Circuit Breaker Cost Cap in the Model Ledger (ARCHITECTURE.md)
+- Per-attempt improvement rate < 2% for 3 consecutive attempts
+- Total wall-clock time in tuning loop exceeds 30 minutes
+
+When the circuit breaker trips, output a SYSTEM ROUTING block with your progress summary.
+
+### Prompt Discipline
+- Externalize ALL prompts to a `/prompts` directory (or the location specified in ARCHITECTURE.md)
+- Never use inline prompt strings in application code
+- After every prompt change: update the Prompt Versioning Changelog, re-run evals, record the delta
+- If eval scores degrade after a prompt change, rollback to the previous version immediately
+
+### Context Window Protection
+- NEVER run `print(df)`, `console.log(fullResponse)`, or dump raw datasets to terminal
+- Use `.info()`, `.describe()`, `.head(5)`, or summary statistics
+- If you need to inspect data, write to a temp file and read specific lines

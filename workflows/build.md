@@ -1,6 +1,6 @@
 ---
 name: build
-description: Run the build workflow (Step 3)
+description: "Step 3: Autonomous code factory — implement and loop until tests pass"
 ---
 # Workflow: Build (The Autonomous Factory)
 

@@ -1,6 +1,6 @@
 ---
 name: devops-engineer
-description: Adopt the devops-engineer role
+description: Repeatable deployments, Docker, CI/CD pipelines, and infrastructure automation
 ---
 # Role: DevOps & Infrastructure Engineer
 

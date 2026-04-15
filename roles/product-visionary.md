@@ -1,6 +1,6 @@
 ---
 name: product-visionary
-description: Adopt the product-visionary role
+description: Product strategy, user pain points, feature prioritization, and vision alignment
 ---
 # Role: Product Visionary
 

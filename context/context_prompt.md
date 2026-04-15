@@ -124,6 +124,17 @@ Before writing any files, you MUST use your search and read tools to investigate
 15. **Testing**: Check testing configs (`vitest.config.ts`, `playwright.config.ts`, `jest.config.js`, `pytest.ini`, `pyproject.toml [tool.pytest]`, `Makefile test target`) and read a few existing test files to determine testing paradigms, commands, and coverage expectations.
 16. **AI & External Integrations**: Look for AI SDKs, third-party API clients, adapter patterns, rate limiters, OAuth2 flows, and caching layers.
 
+### Topology Detection:
+17. **Determine Project Topology**: Based on your analysis, identify which topology attributes apply:
+    - **`backend`**: Has server-side code, API routes, database operations, or CLI entrypoints. Also applies to the backend portion of a full-stack project
+    - **`frontend`**: Has web UI components (React, Vue, Svelte), CSS/styling, client-side routing
+    - **`ml-ai`**: Uses LLM APIs (Gemini, OpenAI, Claude SDKs), ML frameworks (PyTorch, TensorFlow, scikit-learn), or has any probabilistic/non-deterministic outputs
+    - **`infrastructure`**: Primarily Docker Compose, Terraform, Kubernetes manifests, CI/CD definitions
+    - **`library-sdk`**: Consumed as a dependency by other projects (Go modules, npm packages, Python libraries)
+    - **`[none]`**: Documentation repos, simple scripts, or projects that don't fit any category
+    
+    A project can have multiple topology attributes. A Next.js app with a Prisma backend is `[frontend, backend]`. A Go API with a RAG pipeline is `[backend, ml-ai]`.
+
 ---
 
 ## Phase 2: Template Population & Overwrite
@@ -132,7 +143,7 @@ Now, read the template files currently located in the `.agent/` directory. Use t
 
 ### 1. `.agent/ARCHITECTURE.md`
 - **Goal**: The definitive anchor for system design.
-- **Instructions**: Detail the exact tech stack with pinned versions. Map out the data flow (e.g., "Client Components → React Query → Express → Drizzle → SQLite" or "CLI → asyncio.TaskGroup → bounded queues → GPU worker" or "HTTP → go-chi middleware → handler → service → sqlc → PostgreSQL"). Document all core database entities and their relational rules (cascading deletes, virtual tables, hypertables, manual cleanup requirements). Define API contracts (methods, paths, request/response shapes) for primary endpoints. For SDK libraries, document the exported public API surface and versioning guarantees. Note any AI providers, external APIs, or complex integrations. Document the concurrency/threading model (goroutines, asyncio, Node.js event loop). List all environment variables from `.env.example`. Include exact local development commands. Document invariants and safety rules found in the codebase.
+- **Instructions**: At the top of the file, set the `## 0. Project Topology` section with the detected topology attributes. Detail the exact tech stack with pinned versions. Map out the data flow (e.g., "Client Components → React Query → Express → Drizzle → SQLite" or "CLI → asyncio.TaskGroup → bounded queues → GPU worker" or "HTTP → go-chi middleware → handler → service → sqlc → PostgreSQL"). Document all core database entities and their relational rules (cascading deletes, virtual tables, hypertables, manual cleanup requirements). Define API contracts (methods, paths, request/response shapes) for primary endpoints. For SDK libraries, document the exported public API surface and versioning guarantees. Note any AI providers, external APIs, or complex integrations. If the ML/AI topology is active, populate the Model Ledger in Section 5.1 with all models identified during analysis. Document the concurrency/threading model (goroutines, asyncio, Node.js event loop). List all environment variables from `.env.example`. Include exact local development commands. Document invariants and safety rules found in the codebase.
 
 ### 2. `.agent/STYLE.md`
 - **Goal**: Enforce visual identity and structural code patterns.
@@ -141,7 +152,7 @@ Now, read the template files currently located in the `.agent/` directory. Use t
 
 ### 3. `.agent/TESTING.md`
 - **Goal**: Track test methods, execution evidence, and local dev setup.
-- **Instructions**: Document the exact steps to get the app running locally (prerequisites, install, start, seed, database, code generation). Document the exact CLI commands to run tests, type checking, and linting (including `go test -race`, `golangci-lint`, `shellcheck` where applicable). Keep the "Execution Evidence Rules" from the template intact. Set up the empty scenario tables ready for the first feature. Initialize the empty Regression Scenarios table.
+- **Instructions**: Document the exact steps to get the app running locally (prerequisites, install, start, seed, database, code generation). Document the exact CLI commands to run tests, type checking, and linting (including `go test -race`, `golangci-lint`, `shellcheck` where applicable). Keep the "Execution Evidence Rules" from the template intact. Set up the empty scenario tables ready for the first feature. Initialize the empty Regression Scenarios table. Based on the active topologies, retain or mark as "N/A" the conditional sections: Backend Route Coverage Matrix, Frontend Component State Matrix, and ML/AI Evaluation Thresholds. Populate headers and set up empty tables ready for the first feature.
 
 ### 4. `.agent/PHILOSOPHY.md`
 - **Goal**: The soul of the product.
@@ -149,7 +160,7 @@ Now, read the template files currently located in the `.agent/` directory. Use t
 
 ### 5. `.agent/STATUS.md`
 - **Goal**: The single source of truth for progress.
-- **Instructions**: Initialize the tracking state. Set "Current Focus" to "Project Bootstrapped". Leave the lifecycle checkboxes unchecked. Leave "Relevant Files" empty. Leave "Review Results" empty. Set "Active Worktrees" to "(none — sequential execution)".
+- **Instructions**: Initialize the tracking state. Set "Current Focus" to "Project Bootstrapped". Leave the lifecycle checkboxes unchecked. Leave "Relevant Files" empty. Leave "Review Results" empty. Set "Active Worktrees" to "(none — sequential execution)". Based on the active topologies, retain or mark as "N/A" the conditional sections: Stub Audit Tracker (for projects with both frontend and backend), and Prompt Versioning Changelog (for ML/AI projects).
 
 ---
 

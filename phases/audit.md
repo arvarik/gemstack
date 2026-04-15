@@ -1,6 +1,6 @@
 ---
 name: audit
-description: Adopt the audit phase
+description: Read-only security review, SAST linting, and Logic Drift detection
 ---
 # Phase: Audit
 

@@ -1,6 +1,6 @@
 ---
 name: audit
-description: Run the audit workflow (Step 4)
+description: "Step 4: Fresh-context security and logic review with fix loop protocol"
 ---
 # Workflow: Audit (The Jury)
 
@@ -35,3 +35,26 @@ At the end of your execution, or if you hit a blocker you cannot resolve, you mu
 [🛑] BLOCKED: I am building the frontend, but the backend `Interaction` schema is missing from ARCHITECTURE.md. I am yielding.
 🟠 NEXT ACTION: Open a New Chat, run `/workflow:spec`, and instruct the Architect to define the Interaction schema.
 ```
+
+---
+
+## Fix Loop Protocol
+
+When audit finds issues, this protocol defines the structured loop between Audit and Build:
+
+1. **Auditor** writes all findings to `.agent/AUDIT_FINDINGS.md` with:
+   - Severity: `[BLOCKS_RELEASE]` / `[DEGRADED]` / `[COSMETIC]`
+   - Exact reproduction steps or output evidence
+   - Expected vs. actual behavior
+   - File paths and line numbers
+
+2. **Human** opens New Chat → runs `/workflow:build` with instruction:
+   "You are in Fix-only mode. Read `.agent/AUDIT_FINDINGS.md`.
+   Resolve all documented issues. Do not add new features."
+
+3. **Builder** patches each finding, runs tests, then clears
+   `.agent/AUDIT_FINDINGS.md` → writes "ALL ISSUES RESOLVED"
+
+4. **Human** opens New Chat → runs `/workflow:audit` for re-verification
+
+5. Loop repeats until audit passes (`.agent/AUDIT_FINDINGS.md` = "PASS")

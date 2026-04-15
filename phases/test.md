@@ -1,6 +1,6 @@
 ---
 name: test
-description: Adopt the test phase
+description: Execute test suites, capture evidence, and populate scenario tables in TESTING.md
 ---
 # Phase: Test
 

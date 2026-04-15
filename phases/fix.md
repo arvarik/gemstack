@@ -1,6 +1,6 @@
 ---
 name: fix
-description: Adopt the fix phase
+description: Targeted bug fixes from audit findings — fix-only mode, no new features
 ---
 # Phase: Fix
 
