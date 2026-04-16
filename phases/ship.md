@@ -26,18 +26,30 @@ Before deploying, verify:
 
 ## Process
 1. Determine deployment target and method from ARCHITECTURE.md
-2. Merge feature branch to main:
-   ```
+2. **Pre-Merge Cleanup (Critical):** On the feature branch, finalize all documentation and tracking files:
+   - **Archive feature docs**: Move all docs for this feature into a single archive folder using `git mv` (preserves history).
+     ```bash
+     mkdir -p docs/archive/{feature-name}/
+     for f in docs/explorations/* docs/designs/* docs/plans/*; do
+       [ -f "$f" ] && git mv "$f" docs/archive/{feature-name}/
+     done
+     ```
+   - **Synthesize and Prune**: Ensure decisions from archived docs are in `.agent/ARCHITECTURE.md`. Remove stale schemas or replaced contracts.
+   - **Reset STATUS.md**: Update `.agent/STATUS.md` to show what was just completed, clear "Relevant Files", and prep for the next feature.
+   - **Clean TESTING.md**: Clean `.agent/TESTING.md` by keeping regression scenarios but archiving feature-specific completed ones.
+   - **Commit Cleanup**: Commit all these changes to the feature branch in a single commit.
+3. Merge feature branch to main:
+   ```bash
    git checkout main
    git merge feat/{feature-name}
    git push origin main
    ```
-3. Run the full test suite on main to confirm nothing broke
-4. Deploy to staging/preview if available
-5. Smoke test the deployment
-6. Deploy to production
-7. Verify production deployment works
-8. Monitor for errors in the first 15 minutes
+4. Run the full test suite on main to confirm nothing broke
+5. Deploy to staging/preview if available
+6. Smoke test the deployment
+7. Deploy to production
+8. Verify production deployment works
+9. Monitor for errors in the first 15 minutes
 
 ## Rollback Plan
 Before every deploy, know how to undo it:
@@ -46,52 +58,17 @@ Before every deploy, know how to undo it:
 - Is there data migration that can't be rolled back?
   If yes, flag this before deploying.
 
-## Post-Ship Cleanup (Critical)
+## Post-Ship Cleanup
 After successful deployment:
 
-1. **Archive feature docs**: Move all docs for this feature into
-   a single archive folder using git mv (preserves history).
-   Use defensive checks since not every feature produces all doc types:
-   ```
-   mkdir -p docs/archive/{feature-name}/
-   for f in docs/explorations/*-{feature}.md docs/designs/*-{feature}.md docs/plans/*-{feature}.md; do
-     [ -e "$f" ] && git mv "$f" docs/archive/{feature-name}/
-   done
-   ```
-   This prevents docs/ folders from growing unbounded. Active folders
-   should only contain docs for features currently in progress.
-
-2. **Synthesize and Prune permanent files**: Any architectural decisions,
-   new patterns, or style changes from the archived docs should
-   already be captured in ARCHITECTURE.md and STYLE.md from the
-   review phase. Verify nothing was missed. **Critically, also remove
-   stale content:** delete deprecated schemas, renamed interfaces,
-   and replaced contracts. If a contract was superseded by this
-   feature, delete the old version. ARCHITECTURE.md must contain
-   only *current* executable truth, never historical artifacts.
-
-3. **Reset STATUS.md**: Clear completed feature state. The new
-   STATUS.md should show:
-   - What was just shipped (in "Recently Completed")
-   - Known issues carried forward
-   - What's next (from the original exploration doc's recommendations)
-   - Empty "Relevant Files" section (next feature hasn't started)
-
-4. **Clean TESTING.md**: Archive completed test results. Keep only:
-   - The test methods section (how to test this project)
-   - Any persistent regression scenarios worth re-running
-   - Clear the feature-specific scenario tables
-
-5. **Clean up worktrees**: If parallel worktrees were used during
-   this feature, remove them:
-   ```
+1. **Clean up worktrees**: If parallel worktrees were used during this feature, remove them:
+   ```bash
    git worktree list
    git worktree remove ../project-feature-worktree-name
    ```
-   Stale worktrees accumulate on disk and cause confusion. Clean
-   them up every time you ship.
+   Stale worktrees accumulate on disk and cause confusion. Clean them up every time you ship.
 
-6. **Update Linear**: Move the issue to Done
+2. **Update Tracker**: Move the issue to Done (e.g. in Linear, Jira).
 
 ## Output
 - Deployed, running application
