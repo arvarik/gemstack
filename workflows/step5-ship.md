@@ -17,11 +17,15 @@ This workflow composes:
    - Strictly strip all mock data (`// TODO: remove stub`).
    - Wire the real systems (frontend to backend) together.
 
-2. **Deploy & Cleanup (DevOps Engineer):**
-   - Merge branches.
+2. **Cleanup & Finalize (DevOps Engineer):**
+   - Move all feature-specific markdown files from `docs/` (e.g., explorations, designs, plans) into a new folder `docs/archive/{feature-name}`.
+   - Reset `.agent/STATUS.md` to clear completed feature state and prepare for the next feature.
+   - Clean `.agent/TESTING.md` by archiving completed feature-specific test scenarios.
+   - Commit all final cleanup changes (code, docs archive, and `.agent` files) to the feature branch in a single commit.
+
+3. **Merge & Deploy (DevOps Engineer):**
+   - Merge the feature branch into the main branch (or create/merge PR).
    - Execute deployment scripts safely.
-   - Clean up artifacts (e.g., move docs to archive folders).
-   - Reset `.agent/STATUS.md` to prepare for the next feature.
 
 ## Accuracy Check
 The application is not shipped until all stubs are verifiably removed and the systems are fully integrated.
