@@ -27,20 +27,21 @@ Every AI coding tool on the market today — Cursor, Copilot, Aider, Cline — i
 **Gemstack is top-down.** It acts as the orchestrator *above* your editor, purpose-built for **Gemini CLI** and **Google Antigravity** — Google's agentic AI coding platforms. Gemstack gives your Gemini agent the exact context, constraints, and verification loops it needs to produce production-quality code.
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                        GEMSTACK                                 │
-│   ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────────┐   │
-│   │ Context  │  │ Topology │  │  Phase   │  │  Autonomous  │   │
-│   │ Compiler │→ │ Guardrails│→ │  Router  │→ │   Executor   │   │
-│   └──────────┘  └──────────┘  └──────────┘  └──────────────┘   │
-│        ↑                                          ↓             │
-│   .agent/ files                          Terminal verification   │
-│   (ARCHITECTURE.md, STYLE.md,          (Exit Code 0 or retry)   │
-│    TESTING.md, STATUS.md)                                       │
-└─────────────────────────────────────────────────────────────────┘
-        ↕                    ↕                    ↕
-   Gemini CLI           Antigravity        Cursor / Claude / Cline
-   (native)             (native)           (via MCP Server)
+┌───────────────────────────────────────────────────────────────┐
+│                          GEMSTACK                             │
+│                                                               │
+│   ┌──────────┐  ┌────────────┐  ┌─────────┐  ┌────────────┐  │
+│   │ Context  │  │  Topology  │  │  Phase  │  │ Autonomous │  │
+│   │ Compiler │─▶│ Guardrails │─▶│ Router  │─▶│  Executor  │  │
+│   └────┬─────┘  └────────────┘  └─────────┘  └─────┬──────┘  │
+│        │                                           │          │
+│   .agent/ files                        Terminal verification  │
+│   (ARCHITECTURE, STYLE,              (Exit Code 0 or retry)  │
+│    TESTING, STATUS)                                           │
+└───────────────────────────────────────────────────────────────┘
+          ↕                  ↕                    ↕
+     Gemini CLI         Antigravity      Cursor / Claude / Cline
+      (native)           (native)          (via MCP Server)
 ```
 
 Gemstack's workflows install as **slash commands** (`/architect`, `/step1-spec`, `/step3-build`, etc.) directly into Gemini CLI and Antigravity. When you type `/step3-build` in a new Antigravity conversation, the full compiled context — roles, phases, topology guardrails, and your project's `.agent/` files — is loaded automatically. For other AI IDEs, the built-in [MCP server](docs/mcp-server.md) provides the same capabilities.
@@ -60,11 +61,11 @@ gemstack init --ai    # AI analyzes your codebase and auto-populates .agent/
 Every feature flows through **Spec → Trap → Build → Audit → Ship**, with each step running in a **fresh context window**. The Auditor can't be influenced by the Builder's justifications. Tests are written before code. This is how you crush hallucination.
 
 ```
-Step 1: Spec   — Define the feature, lock API contracts        (Product Visionary + Architect)
-Step 2: Trap   — Write the failing test suite + task plan      (SDET + Planner)
-Step 3: Build  — Implement until Exit Code 0                   (Principal Engineer)
-Step 4: Audit  — Fresh-eyes security & logic review            (Security Engineer)
-Step 5: Ship   — Integrate, merge, deploy, archive            (DevOps Engineer)
+Step 1: Spec  → Define the feature, lock API contracts    (Product Visionary + Architect)
+Step 2: Trap  → Write the failing test suite + task plan  (SDET + Planner)
+Step 3: Build → Implement until Exit Code 0               (Principal Engineer)
+Step 4: Audit → Fresh-eyes security & logic review        (Security Engineer)
+Step 5: Ship  → Integrate, merge, deploy, archive         (DevOps Engineer)
 ```
 
 ### 📐 Topology-Aware Guardrails
