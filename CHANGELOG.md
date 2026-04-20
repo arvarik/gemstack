@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1] — 2026-04-20
+
+### Fixed
+
+- Fix 15 CI test failures caused by `.gitignore` excluding test fixture `.agent/` directories.
+- Fix mypy `import-not-found` errors for `tomllib` by replacing `try/except` with `sys.version_info` guards.
+- Remove stale `noqa` comments from `worktree.py` after global ruff rule updates.
+- Fix unused variable in `doctor_cmd.py`.
+
+### Changed
+
+- Simplify CI to macOS + Python 3.11 only (removed 12-job matrix).
+- Upgrade README badges with `flat-square` style, logos, and CI status badge.
+- Fix ASCII architecture diagram and 5-step lifecycle alignment in README.
+- Add GitHub Release and Homebrew formula auto-update workflows.
+- Update author info, security contact, and development status to Beta.
+
 ## [1.0.0] — 2026-04-20
 
 ### Added
