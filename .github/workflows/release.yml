@@ -1,7 +1,7 @@
 name: Release
 
-# Triggered by the same v* tags as publish.yml.
-# Runs AFTER PyPI upload completes so the wheel/sdist are available for download.
+# Creates a GitHub Release with changelog and artifacts
+# when a version tag is pushed. Runs after PyPI upload.
 
 on:
   push:
@@ -9,16 +9,15 @@ on:
       - 'v*'
 
 jobs:
-  # ── GitHub Release ──────────────────────────────────────────────
   github-release:
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # Create releases and upload assets
+      contents: write
 
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Full history for changelog extraction
+          fetch-depth: 0
 
       - name: Extract version
         id: meta
@@ -46,29 +45,22 @@ jobs:
         run: |
           VERSION="${{ steps.meta.outputs.version }}"
           mkdir -p dist/
-          # Download wheel
           WHEEL_URL=$(curl -sf "https://pypi.org/pypi/gemstack/$VERSION/json" \
             | python3 -c "import sys,json; urls=json.load(sys.stdin)['urls']; print(next(u['url'] for u in urls if u['packagetype']=='bdist_wheel'))")
           curl -fSL "$WHEEL_URL" -o "dist/gemstack-${VERSION}-py3-none-any.whl"
-          # Download sdist
           SDIST_URL=$(curl -sf "https://pypi.org/pypi/gemstack/$VERSION/json" \
             | python3 -c "import sys,json; urls=json.load(sys.stdin)['urls']; print(next(u['url'] for u in urls if u['packagetype']=='sdist'))")
           curl -fSL "$SDIST_URL" -o "dist/gemstack-${VERSION}.tar.gz"
           ls -lh dist/
 
       - name: Extract changelog for this version
-        id: changelog
         run: |
           VERSION="${{ steps.meta.outputs.version }}"
-          # Extract the section for this version from CHANGELOG.md
-          # Matches from "## [X.Y.Z]" to the next "## [" or end of file
           NOTES=$(awk "/^## \\[$VERSION\\]/{found=1; next} /^## \\[/{if(found) exit} found{print}" CHANGELOG.md)
           if [ -z "$NOTES" ]; then
             NOTES="Release v${VERSION}. See [CHANGELOG.md](https://github.com/arvarik/gemstack/blob/main/CHANGELOG.md) for details."
           fi
-          # Write to file to avoid escaping issues
           echo "$NOTES" > /tmp/release-notes.md
-          # Append install instructions
           cat >> /tmp/release-notes.md << 'EOF'
 
           ---
@@ -76,17 +68,9 @@ jobs:
           ## Install
 
           ```bash
-          # Recommended
-          pipx install "gemstack[all]"
-
-          # Or with uv
-          uv tool install "gemstack[all]"
-
-          # Or with pip
-          pip install "gemstack[all]"
-
-          # Docker
-          docker pull arvarik/gemstack:latest
+          pipx install "gemstack[all]"     # Recommended
+          uv tool install "gemstack[all]"  # Fastest
+          pip install "gemstack[all]"      # Standard
           ```
           EOF
 
@@ -99,68 +83,3 @@ jobs:
           files: dist/*
           draft: false
           prerelease: ${{ contains(steps.meta.outputs.tag, '-') }}
-          # Tags like v1.0.0-beta.1 are marked as prerelease
-
-  # ── Docker Hub ──────────────────────────────────────────────────
-  docker:
-    runs-on: ubuntu-latest
-    needs: github-release  # Ensure release exists before pushing images
-    permissions:
-      contents: read
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Extract version metadata
-        id: meta
-        run: |
-          VERSION="${GITHUB_REF_NAME#v}"
-          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-
-          # Determine if this is the latest stable release (no pre-release suffix)
-          if [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            echo "is_stable=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "is_stable=false" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Wait for PyPI availability
-        run: |
-          VERSION="${{ steps.meta.outputs.version }}"
-          echo "Waiting for gemstack $VERSION on PyPI..."
-          for i in $(seq 1 30); do
-            if curl -sf "https://pypi.org/pypi/gemstack/$VERSION/json" > /dev/null 2>&1; then
-              echo "✅ Package available"
-              exit 0
-            fi
-            echo "  Attempt $i/30 — waiting 10s..."
-            sleep 10
-          done
-          echo "::error::Package not available on PyPI"
-          exit 1
-
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          push: true
-          build-args: |
-            GEMSTACK_VERSION=${{ steps.meta.outputs.version }}
-          tags: |
-            arvarik/gemstack:${{ steps.meta.outputs.version }}
-            ${{ steps.meta.outputs.is_stable == 'true' && 'arvarik/gemstack:latest' || '' }}
-          platforms: linux/amd64,linux/arm64
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-          labels: |
-            org.opencontainers.image.version=${{ steps.meta.outputs.version }}
-            org.opencontainers.image.revision=${{ github.sha }}
