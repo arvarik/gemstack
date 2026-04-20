@@ -2,10 +2,12 @@
 
 **Opinionated AI agent orchestration framework for [Gemini CLI](https://github.com/google-gemini/gemini-cli) and [Antigravity](https://github.com/google-gemini/antigravity).**
 
-[![PyPI version](https://img.shields.io/pypi/v/gemstack)](https://pypi.org/project/gemstack/)
-[![Python](https://img.shields.io/pypi/pyversions/gemstack)](https://pypi.org/project/gemstack/)
-[![License](https://img.shields.io/github/license/arvarik/gemstack)](LICENSE)
-[![Typed](https://img.shields.io/badge/typing-typed-blue)](https://peps.python.org/pep-0561/)
+[![PyPI](https://img.shields.io/pypi/v/gemstack?style=flat-square&logo=pypi&logoColor=white&label=PyPI)](https://pypi.org/project/gemstack/)
+[![Python](https://img.shields.io/pypi/pyversions/gemstack?style=flat-square&logo=python&logoColor=white)](https://pypi.org/project/gemstack/)
+[![CI](https://img.shields.io/github/actions/workflow/status/arvarik/gemstack/ci.yml?style=flat-square&logo=github&label=CI)](https://github.com/arvarik/gemstack/actions/workflows/ci.yml)
+[![License](https://img.shields.io/github/license/arvarik/gemstack?style=flat-square)](LICENSE)
+[![Downloads](https://img.shields.io/pypi/dm/gemstack?style=flat-square&label=Downloads)](https://pypi.org/project/gemstack/)
+[![Typed](https://img.shields.io/badge/typed-py.typed-blue?style=flat-square&logo=python&logoColor=white)](https://peps.python.org/pep-0561/)
 
 > Gemstack gives your Gemini-powered agents architectural memory, topology-aware guardrails, and a 5-step lifecycle that forces them to *verify their own work* against your terminal — not just hallucinate a solution and tell you it's done.
 >

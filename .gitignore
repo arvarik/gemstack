@@ -32,4 +32,5 @@ coverage.xml
 uv.lock
 
 # Local Antigravity symlinks (machine-specific, not portable)
-.agent/
+# Leading / restricts to repo root — do NOT ignore tests/fixtures/.agent/
+/.agent/
