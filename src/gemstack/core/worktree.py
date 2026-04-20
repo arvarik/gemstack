@@ -64,8 +64,8 @@ class WorktreeManager:
             worktree_path = project_root.parent / f"{project_root.name}-{role}"
 
             try:
-                subprocess.run(  # noqa: S603
-                    ["git", "worktree", "add", str(worktree_path), "-b", branch],  # noqa: S607
+                subprocess.run(
+                    ["git", "worktree", "add", str(worktree_path), "-b", branch],
                     cwd=str(project_root),
                     check=True,
                     capture_output=True,
@@ -107,7 +107,7 @@ class WorktreeManager:
         """
         try:
             result = subprocess.run(
-                ["git", "worktree", "list", "--porcelain"],  # noqa: S607
+                ["git", "worktree", "list", "--porcelain"],
                 cwd=str(project_root),
                 check=True,
                 capture_output=True,
@@ -162,8 +162,8 @@ class WorktreeManager:
 
         for target in target_branches:
             try:
-                subprocess.run(  # noqa: S603
-                    ["git", "merge", target, "--no-ff"],  # noqa: S607
+                subprocess.run(
+                    ["git", "merge", target, "--no-ff"],
                     cwd=str(project_root),
                     check=True,
                     capture_output=True,
@@ -199,8 +199,8 @@ class WorktreeManager:
             if wt.is_main:
                 continue
             try:
-                subprocess.run(  # noqa: S603
-                    ["git", "worktree", "remove", wt.path, "--force"],  # noqa: S607
+                subprocess.run(
+                    ["git", "worktree", "remove", wt.path, "--force"],
                     cwd=str(project_root),
                     check=True,
                     capture_output=True,

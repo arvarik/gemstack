@@ -71,7 +71,7 @@ def doctor() -> None:
     try:
         from importlib.resources import files
 
-        data = files("gemstack.data")
+        files("gemstack.data")  # Verify bundled data is accessible
         data_ok = True
         data_msg = "Bundled data accessible"
     except Exception as e:

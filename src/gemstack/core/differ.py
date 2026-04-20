@@ -201,7 +201,7 @@ class ContextDiffer:
                 try:
                     import tomllib
                 except ImportError:
-                    import tomli as tomllib  # noqa: N812
+                    import tomli as tomllib
                 data = tomllib.loads(pyproject.read_text())
                 for dep_str in data.get("project", {}).get("dependencies", []):
                     name = re.split(r"[>=<!~\[\s]", dep_str)[0].strip().lower()

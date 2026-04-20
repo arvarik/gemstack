@@ -13,7 +13,7 @@
 
 Instead, please report vulnerabilities by emailing:
 
-📧 **security@arvarik.com**
+📧 **arvind.arikatla@gmail.com**
 
 Include the following in your report:
 
