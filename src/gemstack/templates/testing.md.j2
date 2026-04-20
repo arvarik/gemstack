@@ -1,0 +1,79 @@
+# Testing Strategy
+
+_Testing conventions and coverage targets._
+
+## 1. Local Development Setup
+
+1. Clone the repository
+{%% if package_manager == "npm" %%}
+2. Run `npm install`
+3. Run `npm run dev`
+{%% elif package_manager == "pnpm" %%}
+2. Run `pnpm install`
+3. Run `pnpm dev`
+{%% elif package_manager == "uv" %%}
+2. Run `uv sync --all-extras`
+3. Run `uv run {= dev_command or "python -m app" =}`
+{%% elif package_manager == "pip" %%}
+2. Run `pip install -e ".[dev]"`
+3. Run `{= dev_command or "python -m app" =}`
+{%% elif package_manager == "go mod" %%}
+2. Run `go mod download`
+3. Run `{= dev_command or "go run ./cmd/server" =}`
+{%% else %%}
+2. _(Install dependencies)_
+3. _(Start development server)_
+{%% endif %%}
+
+## 2. Test Commands
+
+- **Test**: `{= test_command or "N/A" =}`
+- **Lint**: `{= lint_command or "N/A" =}`
+
+## 3. Test Matrix
+
+| Scenario | Expected | Status |
+|----------|----------|--------|
+| _(populated during first feature)_ | | |
+
+## 4. Execution Evidence Rules
+
+When running tests:
+- Always show the exact command executed
+- Always show the output including pass/fail counts
+- Never claim tests pass without showing terminal evidence
+
+## 5. Coverage Targets
+
+- **Unit tests**: ≥ 80% for core modules
+- **Integration tests**: Key user flows
+
+{%% if "backend" in topologies %%}
+## 6. Backend Route Coverage Matrix
+
+| Method | Path | Test File | Status |
+|--------|------|-----------|--------|
+| _(populated during first feature)_ | | | |
+{%% endif %%}
+
+{%% if "frontend" in topologies %%}
+## 7. Frontend Component State Matrix
+
+| Component | Empty | Loading | Error | Success | Partial |
+|-----------|-------|---------|-------|---------|---------|
+| _(populated during first feature)_ | | | | | |
+{%% endif %%}
+
+{%% if "ml-ai" in topologies %%}
+## 8. Evaluation Thresholds
+
+| Metric | Target | Current | Status |
+|--------|--------|---------|--------|
+| _(populated during first feature)_ | | | |
+{%% endif %%}
+
+## Regression Scenarios
+
+| ID | Scenario | Status |
+|----|----------|--------|
+| _(none yet)_ | | |

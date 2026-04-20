@@ -1,0 +1,53 @@
+# Style Guide
+
+_Coding conventions and patterns for this project._
+
+## 1. Design System
+
+_(Run `gemstack init --ai` or populate manually)_
+
+## 2. Naming Conventions
+
+{%% if language == "go" %%}
+- **Packages**: lowercase, single word preferred
+- **Exports**: PascalCase for public, camelCase for private
+- **Files**: snake_case.go
+{%% elif language in ("typescript", "javascript") %%}
+- **Components**: PascalCase
+- **Functions**: camelCase
+- **Files**: kebab-case
+{%% elif language == "python" %%}
+- **Modules**: snake_case
+- **Classes**: PascalCase
+- **Functions**: snake_case
+{%% elif language == "rust" %%}
+- **Types**: PascalCase
+- **Functions**: snake_case
+- **Modules**: snake_case
+{%% else %%}
+_(Populate with project-specific naming conventions)_
+{%% endif %%}
+
+## 3. Import Ordering
+
+_(Run `gemstack init --ai` or populate manually)_
+
+## 4. Component Patterns
+
+_(Run `gemstack init --ai` or populate manually)_
+
+## 5. Documentation Standards
+
+{%% if language == "go" %%}
+- Use godoc format for all exported types and functions
+{%% elif language in ("typescript", "javascript") %%}
+- Use JSDoc/TSDoc for public APIs
+{%% elif language == "python" %%}
+- Use Google-style docstrings
+{%% else %%}
+_(Populate with project-specific documentation standards)_
+{%% endif %%}
+
+## 6. Anti-Patterns (FORBIDDEN)
+
+_(Run `gemstack init --ai` to extract from codebase, or populate manually)_

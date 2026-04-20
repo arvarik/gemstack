@@ -1,0 +1,72 @@
+# Architecture
+
+_This document acts as the definitive anchor for system design._
+
+## 0. Project Topology
+
+**Topology:** [{= topologies | join(", ") =}]
+
+## 1. Tech Stack & Infrastructure
+- **Language / Runtime**: {= language =}{%% if runtime %%} / {= runtime =}{%% endif %%}
+{%% if frontend %%}
+- **Frontend**: {= frontend =}
+{%% endif %%}
+{%% if backend %%}
+- **Backend / API**: {= backend =}
+{%% endif %%}
+- **Database**: {= database or "N/A" =}
+- **Package Manager**: {= package_manager or "N/A" =}
+
+## 2. Development Commands
+- **Dev**: `{= dev_command or "N/A" =}`
+- **Test**: `{= test_command or "N/A" =}`
+- **Build**: `{= build_command or "N/A" =}`
+- **Lint**: `{= lint_command or "N/A" =}`
+
+## 3. Directory Structure
+
+_(Run `gemstack init --ai` or populate manually)_
+
+## 4. Data Flow
+
+_(Run `gemstack init --ai` or populate manually)_
+
+## 5. Core Entities & Schemas
+
+_(Run `gemstack init --ai` or populate manually)_
+
+{%% if "ml-ai" in topologies %%}
+### 5.1 Model Ledger
+
+| Model | Provider | Purpose | Cost Tier |
+|-------|----------|---------|-----------|
+| _(populated during bootstrapping)_ | | | |
+{%% endif %%}
+
+## 6. API Contracts
+
+_(Run `gemstack init --ai` or populate manually)_
+
+## 7. Error Handling
+
+_(Run `gemstack init --ai` or populate manually)_
+
+## 8. Concurrency Model
+
+_(Run `gemstack init --ai` or populate manually)_
+
+## 9. External Integrations
+
+_(Run `gemstack init --ai` or populate manually)_
+
+## 10. Environment Variables
+
+{%% if env_file %%}
+_See `{= env_file =}` for required configuration._
+{%% else %%}
+_(No `.env.example` detected. Create one and re-run `gemstack init`.)_
+{%% endif %%}
+
+## 11. Invariants & Safety Rules
+
+_(Run `gemstack init --ai` or populate manually)_

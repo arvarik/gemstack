@@ -1,0 +1,144 @@
+[build-system]
+requires = ["hatchling>=1.26", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[project]
+name = "gemstack"
+dynamic = ["version"]
+description = "Opinionated AI agent orchestration framework for software engineering"
+readme = "README.md"
+license = "Apache-2.0"
+requires-python = ">=3.10"
+authors = [
+    { name = "Arvind Varik" },
+]
+keywords = [
+    "ai", "agent", "orchestration", "llm", "gemini",
+    "software-engineering", "workflow", "cli", "mcp"
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries :: Application Frameworks",
+    "Topic :: Software Development :: Quality Assurance",
+    "Typing :: Typed",
+]
+
+dependencies = [
+    "typer>=0.12",              # CLI framework
+    "rich>=13.0",               # Beautiful terminal output
+    "jinja2>=3.1",              # Template rendering
+    "pyyaml>=6.0",              # YAML frontmatter parsing
+    "tomli>=2.0; python_version < '3.11'",  # TOML parsing (stdlib in 3.11+)
+    "tomli-w>=1.0",             # TOML writing
+    "pydantic>=2.0",            # Data validation and settings
+    "platformdirs>=4.0",        # Cross-platform config directories
+]
+
+[project.optional-dependencies]
+ai = [
+    "google-genai>=1.0",        # Gemini API for AI-powered bootstrapping
+]
+mcp = [
+    "mcp>=1.0",                 # Model Context Protocol SDK
+]
+tail = [
+    "watchdog>=4.0",            # Filesystem watching (for `tail`)
+    "textual>=0.50.0",          # TUI framework for live tail dashboard
+]
+plugins = [
+    "pluggy>=1.5",              # Plugin hook system
+]
+dev = [
+    "pytest>=8.0",
+    "pytest-cov>=5.0",
+    "pytest-asyncio>=0.24",
+    "mypy>=1.10",
+    "ruff>=0.4",
+    "hypothesis>=6.0",
+    "pip-audit>=2.7",
+    "mkdocs-material>=9.5",     # Official documentation generation
+]
+all = ["gemstack[ai,mcp,tail,plugins]"]
+
+[project.scripts]
+gemstack = "gemstack.cli.main:app"
+
+[project.urls]
+Homepage = "https://github.com/arvarik/gemstack"
+Documentation = "https://github.com/arvarik/gemstack#readme"
+Repository = "https://github.com/arvarik/gemstack"
+Issues = "https://github.com/arvarik/gemstack/issues"
+Changelog = "https://github.com/arvarik/gemstack/blob/main/CHANGELOG.md"
+
+# --- Plugin entry point group ---
+# Third-party plugins register here:
+# [project.entry-points."gemstack"]
+# my_topology = "gemstack_topology_mobile:plugin"
+
+# --- Version from Git tags ---
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build.hooks.vcs]
+version-file = "src/gemstack/_version.py"
+
+# --- Build targets ---
+[tool.hatch.build.targets.wheel]
+packages = ["src/gemstack"]
+
+# Include bundled markdown data in the wheel
+[tool.hatch.build.targets.wheel.force-include]
+"roles" = "src/gemstack/data/roles"
+"phases" = "src/gemstack/data/phases"
+"workflows" = "src/gemstack/data/workflows"
+"topologies" = "src/gemstack/data/topologies"
+"examples" = "src/gemstack/data/examples"
+"context" = "src/gemstack/data/context"
+
+# --- Ruff (linter + formatter) ---
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "F",    # pyflakes
+    "I",    # isort
+    "UP",   # pyupgrade
+    "B",    # flake8-bugbear
+    "SIM",  # flake8-simplify
+    "RUF",  # ruff-specific rules
+    "S",    # flake8-bandit (security)
+    "T20",  # flake8-print (no stray prints)
+    "PT",   # flake8-pytest-style
+]
+ignore = ["S101"]  # Allow assert in tests
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101", "T20"]
+
+# --- Mypy ---
+[tool.mypy]
+python_version = "3.10"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+
+# --- Pytest ---
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v --tb=short --strict-markers"
+asyncio_mode = "auto"
+markers = [
+    "slow: marks tests as slow (deselect with '-m not slow')",
+    "integration: marks integration tests requiring external services",
+]

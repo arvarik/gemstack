@@ -1,8 +1,35 @@
-# Local Antigravity symlinks (machine-specific, not portable)
-.agent/
+# Python package
+dist/
+build/
+*.egg-info/
+src/gemstack/_version.py
 
-# Legacy master document (superseded by examples/)
-roles_phases.md
+# Virtual environments
+.venv/
+__pycache__/
+*.pyc
+
+# IDE
+.idea/
+.vscode/
+*.swp
 
 # OS
 .DS_Store
+Thumbs.db
+
+# Test / coverage
+.coverage
+htmlcov/
+coverage.xml
+.pytest_cache/
+
+# Environment
+.env
+.env.local
+
+# uv
+uv.lock
+
+# Local Antigravity symlinks (machine-specific, not portable)
+.agent/

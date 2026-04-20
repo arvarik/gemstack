@@ -1,0 +1,35 @@
+# Git
+.git
+.gitignore
+
+# Python
+__pycache__
+*.pyc
+*.pyo
+.venv
+.eggs
+*.egg-info
+dist
+build
+
+# Testing & dev
+tests
+.pytest_cache
+.mypy_cache
+.ruff_cache
+htmlcov
+coverage.xml
+.coverage
+
+# IDE
+.vscode
+.cursor
+.idea
+
+# Project-specific
+.agent
+docs
+PACKAGE_GUIDE
+Formula
+*.md
+!README.md
