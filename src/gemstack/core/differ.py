@@ -198,9 +198,11 @@ class ContextDiffer:
         pyproject = root / "pyproject.toml"
         if pyproject.exists():
             try:
-                try:
+                import sys
+
+                if sys.version_info >= (3, 11):
                     import tomllib
-                except ImportError:
+                else:
                     import tomli as tomllib
                 data = tomllib.loads(pyproject.read_text())
                 for dep_str in data.get("project", {}).get("dependencies", []):

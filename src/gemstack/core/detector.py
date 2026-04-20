@@ -267,11 +267,14 @@ class ProjectDetector:
 
     def _parse_pyproject(self, pyproject: Path, profile: ProjectProfile) -> None:
         """Parse pyproject.toml for dependencies and tools."""
+        import sys
+
+        if sys.version_info >= (3, 11):
+            import tomllib
+        else:
+            import tomli as tomllib
+
         try:
-            try:
-                import tomllib
-            except ImportError:
-                import tomli as tomllib
             data = tomllib.loads(pyproject.read_text())
         except Exception as e:
             logger.warning(f"Malformed pyproject.toml: {e}")

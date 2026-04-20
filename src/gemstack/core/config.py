@@ -36,9 +36,11 @@ class GemstackConfig(BaseModel):
         """Load config from disk, creating defaults if missing."""
         path = cls.config_path()
         if path.exists():
-            try:
+            import sys
+
+            if sys.version_info >= (3, 11):
                 import tomllib
-            except ImportError:
+            else:
                 import tomli as tomllib
             return cls.model_validate(tomllib.loads(path.read_text()))
         return cls()
