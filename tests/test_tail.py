@@ -4,7 +4,6 @@ Tests the minimal mode directly. The Textual TUI tests require
 the [tail] extra and are skipped if not installed.
 """
 
-
 import pytest
 
 

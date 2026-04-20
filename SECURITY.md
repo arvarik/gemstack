@@ -49,3 +49,8 @@ Gemstack implements the following security controls:
 - **API key handling** — stored using Pydantic `SecretStr`, masked in all display output
 - **Subprocess safety** — no shell expansion; all subprocess calls use explicit argument lists
 - **Non-root Docker** — the container image runs as an unprivileged user
+
+## Known Limitations
+
+- **Clipboard content** — `gemstack compile --clipboard` pipes compiled context (which may include user-authored `.agent/` file content) to platform clipboard commands (`pbcopy`, `xclip`, `clip`) without sanitization. This is by design — the content is the user's own project context — but users should be aware that `.agent/` file content is passed through these commands unmodified.
+- **Concurrency lock (POSIX-only)** — the `gemstack run` lockfile mechanism uses `fcntl.flock`, which is only available on POSIX systems (macOS, Linux). On native Windows (outside WSL), concurrent execution guards will not function. WSL environments support `fcntl.flock` normally.

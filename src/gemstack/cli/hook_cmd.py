@@ -62,28 +62,17 @@ fi
 
 @hook_app.command()
 def install(
-    pre_commit: bool = typer.Option(
-        False, "--pre-commit", help="Install only pre-commit hook"
-    ),
-    pre_push: bool = typer.Option(
-        False, "--pre-push", help="Install only pre-push hook"
-    ),
-    post_merge: bool = typer.Option(
-        False, "--post-merge", help="Install only post-merge hook"
-    ),
-    project_root: Path = typer.Option(
-        ".", "--project", "-p", help="Project root directory"
-    ),
+    pre_commit: bool = typer.Option(False, "--pre-commit", help="Install only pre-commit hook"),
+    pre_push: bool = typer.Option(False, "--pre-push", help="Install only pre-push hook"),
+    post_merge: bool = typer.Option(False, "--post-merge", help="Install only post-merge hook"),
+    project_root: Path = typer.Option(".", "--project", "-p", help="Project root directory"),
 ) -> None:
     """Install git hooks that enforce Gemstack conventions."""
     project_root = project_root.resolve()
     hooks_dir = project_root / ".git" / "hooks"
 
     if not hooks_dir.exists():
-        console.print(
-            "[red]❌ No .git/hooks/ directory found. "
-            "Are you in a git repository?[/red]"
-        )
+        console.print("[red]❌ No .git/hooks/ directory found. Are you in a git repository?[/red]")
         raise typer.Exit(code=1)
 
     # Determine which hooks to install
@@ -106,8 +95,7 @@ def install(
             existing = hook_path.read_text()
             if "Gemstack" not in existing and "gemstack" not in existing:
                 console.print(
-                    f"  [yellow]⚠️[/yellow] Skipping {hook_name} "
-                    f"(non-Gemstack hook already exists)"
+                    f"  [yellow]⚠️[/yellow] Skipping {hook_name} (non-Gemstack hook already exists)"
                 )
                 continue
 
@@ -121,9 +109,7 @@ def install(
 
 @hook_app.command()
 def uninstall(
-    project_root: Path = typer.Option(
-        ".", "--project", "-p", help="Project root directory"
-    ),
+    project_root: Path = typer.Option(".", "--project", "-p", help="Project root directory"),
 ) -> None:
     """Remove all Gemstack git hooks."""
     project_root = project_root.resolve()

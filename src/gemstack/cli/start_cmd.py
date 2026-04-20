@@ -15,12 +15,8 @@ console = Console()
 
 def start(
     feature: str = typer.Argument(..., help="Feature name to start"),
-    project_root: Path = typer.Option(
-        ".", "--project", "-p", help="Project root directory"
-    ),
-    branch: bool = typer.Option(
-        False, "--branch", "-b", help="Create a feature branch"
-    ),
+    project_root: Path = typer.Option(".", "--project", "-p", help="Project root directory"),
+    branch: bool = typer.Option(False, "--branch", "-b", help="Create a feature branch"),
 ) -> None:
     """Initialize a new feature lifecycle in STATUS.md."""
     project_root = project_root.resolve()
@@ -53,7 +49,7 @@ def start(
     content = re.sub(r"- \[x\] (Spec|Trap|Build|Audit|Ship)", r"- [ ] \1", content)
 
     # Write atomically (spec §9.5)
-    from gemstack.core.fileutil import write_atomic
+    from gemstack.utils.fileutil import write_atomic
 
     write_atomic(status_path, content)
 

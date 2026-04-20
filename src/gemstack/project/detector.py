@@ -65,47 +65,111 @@ class ProjectProfile:
 
 # --- Dependency keywords for topology inference ---
 
-_FRONTEND_NODE_DEPS = frozenset({
-    "react", "react-dom", "next", "vue", "nuxt", "svelte", "@sveltejs/kit",
-    "solid-js", "astro", "angular", "@angular/core", "vite",
-})
+_FRONTEND_NODE_DEPS = frozenset(
+    {
+        "react",
+        "react-dom",
+        "next",
+        "vue",
+        "nuxt",
+        "svelte",
+        "@sveltejs/kit",
+        "solid-js",
+        "astro",
+        "angular",
+        "@angular/core",
+        "vite",
+    }
+)
 
-_BACKEND_NODE_DEPS = frozenset({
-    "express", "fastify", "hono", "koa", "nestjs", "@nestjs/core",
-    "hapi", "@hapi/hapi",
-})
+_BACKEND_NODE_DEPS = frozenset(
+    {
+        "express",
+        "fastify",
+        "hono",
+        "koa",
+        "nestjs",
+        "@nestjs/core",
+        "hapi",
+        "@hapi/hapi",
+    }
+)
 
-_MLAI_NODE_DEPS = frozenset({
-    "@google/genai", "openai", "anthropic", "langchain", "@langchain/core",
-    "ai", "@ai-sdk/openai",
-})
+_MLAI_NODE_DEPS = frozenset(
+    {
+        "@google/genai",
+        "openai",
+        "anthropic",
+        "langchain",
+        "@langchain/core",
+        "ai",
+        "@ai-sdk/openai",
+    }
+)
 
-_BACKEND_PYTHON_DEPS = frozenset({
-    "fastapi", "flask", "django", "starlette", "litestar", "sanic",
-    "uvicorn", "gunicorn",
-})
+_BACKEND_PYTHON_DEPS = frozenset(
+    {
+        "fastapi",
+        "flask",
+        "django",
+        "starlette",
+        "litestar",
+        "sanic",
+        "uvicorn",
+        "gunicorn",
+    }
+)
 
-_MLAI_PYTHON_DEPS = frozenset({
-    "google-genai", "openai", "anthropic", "langchain", "langchain-core",
-    "torch", "tensorflow", "transformers", "scikit-learn", "keras",
-    "huggingface-hub", "datasets", "accelerate", "vllm",
-})
+_MLAI_PYTHON_DEPS = frozenset(
+    {
+        "google-genai",
+        "openai",
+        "anthropic",
+        "langchain",
+        "langchain-core",
+        "torch",
+        "tensorflow",
+        "transformers",
+        "scikit-learn",
+        "keras",
+        "huggingface-hub",
+        "datasets",
+        "accelerate",
+        "vllm",
+    }
+)
 
-_BACKEND_GO_DEPS = frozenset({
-    "github.com/go-chi/chi", "github.com/gin-gonic/gin",
-    "github.com/labstack/echo", "github.com/gofiber/fiber",
-    "github.com/gorilla/mux",
-})
+_BACKEND_GO_DEPS = frozenset(
+    {
+        "github.com/go-chi/chi",
+        "github.com/gin-gonic/gin",
+        "github.com/labstack/echo",
+        "github.com/gofiber/fiber",
+        "github.com/gorilla/mux",
+    }
+)
 
 _LEGACY_CONTEXT_FILES = [
-    ".cursorrules", "GEMINI.md", "CLAUDE.md", "AGENTS.md",
+    ".cursorrules",
+    "GEMINI.md",
+    "CLAUDE.md",
+    "AGENTS.md",
 ]
 
 _CONFIG_GLOBS = [
-    "tsconfig.json", "vite.config.*", "next.config.*",
-    "tailwind.config.*", "Dockerfile", "docker-compose.yml",
-    "docker-compose.yaml", ".eslintrc*", "biome.json",
-    ".prettierrc*", "Makefile", ".golangci.yml", "sqlc.yaml",
+    "tsconfig.json",
+    "vite.config.*",
+    "next.config.*",
+    "tailwind.config.*",
+    "Dockerfile",
+    "docker-compose.yml",
+    "docker-compose.yaml",
+    ".eslintrc*",
+    "biome.json",
+    ".prettierrc*",
+    "Makefile",
+    ".golangci.yml",
+    "sqlc.yaml",
 ]
 
 
@@ -175,8 +239,8 @@ class ProjectDetector:
             return
 
         try:
-            data = json.loads(pkg_json.read_text())
-        except (json.JSONDecodeError, OSError) as e:
+            data = json.loads(pkg_json.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError, UnicodeDecodeError) as e:
             logger.warning(f"Malformed package.json: {e}")
             # Still mark as Node.js even if parsing fails
             profile.language = "typescript"
@@ -275,7 +339,7 @@ class ProjectDetector:
             import tomli as tomllib
 
         try:
-            data = tomllib.loads(pyproject.read_text())
+            data = tomllib.loads(pyproject.read_text(encoding="utf-8"))
         except Exception as e:
             logger.warning(f"Malformed pyproject.toml: {e}")
             return
@@ -364,8 +428,8 @@ class ProjectDetector:
         profile.package_manager = "go mod"
 
         try:
-            content = go_mod.read_text()
-        except OSError as e:
+            content = go_mod.read_text(encoding="utf-8")
+        except (OSError, UnicodeDecodeError) as e:
             logger.warning(f"Failed to read go.mod: {e}")
             return
 
@@ -460,8 +524,13 @@ class ProjectDetector:
 
         # Test config files
         test_configs = [
-            "vitest.config.ts", "vitest.config.js", "jest.config.ts", "jest.config.js",
-            "pytest.ini", "conftest.py", "playwright.config.ts",
+            "vitest.config.ts",
+            "vitest.config.js",
+            "jest.config.ts",
+            "jest.config.js",
+            "pytest.ini",
+            "conftest.py",
+            "playwright.config.ts",
         ]
         for cfg in test_configs:
             path = root / cfg

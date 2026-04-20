@@ -1,35 +1,35 @@
 """gemstack status — Project state dashboard."""
 
+import json
 import re
 from pathlib import Path
+from typing import Annotated
 
 import typer
 from rich import box
-from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
 
-console = Console()
+from gemstack.cli.context import console
+from gemstack.errors import ProjectError
 
 
 def status(
-    project_root: Path = typer.Argument(".", help="Project root directory"),
-    json_output: bool = typer.Option(False, "--json", help="Machine-readable JSON output"),
+    project_root: Annotated[
+        Path, typer.Argument(help="Project root directory", resolve_path=True)
+    ] = Path("."),
+    json_output: Annotated[
+        bool, typer.Option("--json", help="Machine-readable JSON output")
+    ] = False,
 ) -> None:
     """Display the current Gemstack project status."""
-    project_root = project_root.resolve()
     status_path = project_root / ".agent" / "STATUS.md"
 
     if not status_path.exists():
-        console.print(
-            Panel(
-                "[bold red]No .agent/STATUS.md found.[/bold red]\n\n"
-                "[dim]Run `gemstack init` to initialize this project.[/dim]",
-                title="❌ No Status",
-                border_style="red",
-            )
+        raise ProjectError(
+            "No .agent/STATUS.md found.",
+            suggestion="Run `gemstack init` to initialize this project.",
         )
-        raise typer.Exit(code=1)
 
     content = status_path.read_text()
 
@@ -48,8 +48,6 @@ def status(
         phases[phase_name] = bool(checked)
 
     if json_output:
-        import json
-
         data = {
             "state": state,
             "focus": focus,
@@ -62,8 +60,7 @@ def status(
     # Render beautiful dashboard
     console.print(
         Panel(
-            f"[bold cyan]{project_root.name}[/bold cyan]\n"
-            f"[dim]State: {state} | {focus}[/dim]",
+            f"[bold cyan]{project_root.name}[/bold cyan]\n[dim]State: {state} | {focus}[/dim]",
             title="🏗️ Gemstack Status",
             border_style="cyan",
             box=box.DOUBLE,

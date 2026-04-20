@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-from gemstack.core.differ import ContextDiffer, DriftReport
+from gemstack.utils.differ import ContextDiffer, DriftReport
 
 
 class TestDriftReport:
@@ -70,9 +70,7 @@ class TestContextDiffer:
         (agent_dir / "ARCHITECTURE.md").write_text(
             "# Architecture\n\n`DATABASE_URL` is required.\n"
         )
-        (tmp_path / ".env.example").write_text(
-            "DATABASE_URL=postgres://...\nNEW_SECRET=abc\n"
-        )
+        (tmp_path / ".env.example").write_text("DATABASE_URL=postgres://...\nNEW_SECRET=abc\n")
 
         differ = ContextDiffer()
         report = differ.analyze(tmp_path)
@@ -83,9 +81,7 @@ class TestContextDiffer:
         agent_dir.mkdir()
         (agent_dir / "ARCHITECTURE.md").write_text("# Architecture\n")
         (tmp_path / ".env.example").write_text("NEW_VAR=abc\n")
-        (agent_dir / "STATUS.md").write_text(
-            "## Relevant Files\n\n- `missing.py`\n"
-        )
+        (agent_dir / "STATUS.md").write_text("## Relevant Files\n\n- `missing.py`\n")
 
         differ = ContextDiffer()
         report = differ.analyze(tmp_path, architecture_only=True)

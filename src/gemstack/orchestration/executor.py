@@ -19,7 +19,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-from gemstack.core.fileutil import write_atomic
+from gemstack.utils.fileutil import write_atomic
 
 logger = logging.getLogger(__name__)
 
@@ -144,13 +144,11 @@ class StepExecutor:
         Returns:
             ExecutionResult with details of the execution.
         """
-        lock_fd = self._acquire_lock(project_root)
+        lock_path = self._acquire_lock(project_root)
         try:
-            return await self._execute_locked(
-                step, feature, project_root, dry_run=dry_run
-            )
+            return await self._execute_locked(step, feature, project_root, dry_run=dry_run)
         finally:
-            self._release_lock(lock_fd)
+            self._release_lock(lock_path)
 
     async def _execute_locked(
         self,
@@ -170,14 +168,11 @@ class StepExecutor:
                 step=step,
                 feature=feature,
                 success=False,
-                error=(
-                    f"Unknown step '{step}'. "
-                    f"Valid steps: {', '.join(_STEP_OUTPUTS)}"
-                ),
+                error=(f"Unknown step '{step}'. Valid steps: {', '.join(_STEP_OUTPUTS)}"),
             )
 
         # 1. Compile context
-        from gemstack.core.compiler import ContextCompiler
+        from gemstack.orchestration.compiler import ContextCompiler
 
         compiler = ContextCompiler()
         try:
@@ -203,7 +198,7 @@ class StepExecutor:
         full_prompt = compiled.total_content + "\n\n" + feature_section
 
         # 2. Determine next step from router
-        from gemstack.core.router import PhaseRouter
+        from gemstack.orchestration.router import PhaseRouter
 
         router = PhaseRouter()
         decision = router.route(project_root)
@@ -266,9 +261,7 @@ class StepExecutor:
             )
 
         # 7. Parse response and write files
-        files_written = self._write_results(
-            step, response_text, project_root
-        )
+        files_written = self._write_results(step, response_text, project_root)
 
         # 8. Record costs
         input_tokens = usage.get("input_tokens", compiled.token_estimate)
@@ -316,8 +309,7 @@ class StepExecutor:
             from google import genai
         except ImportError:
             raise ImportError(
-                "The 'ai' extra is required. "
-                "Install with: pip install gemstack[ai]"
+                "The 'ai' extra is required. Install with: pip install gemstack[ai]"
             ) from None
 
         client = genai.Client()
@@ -340,9 +332,7 @@ class StepExecutor:
             if candidates and hasattr(candidates[0], "content"):
                 content = candidates[0].content
                 if content is not None and content.parts is not None:
-                    text = "".join(
-                        str(p.text) for p in content.parts if hasattr(p, "text")
-                    )
+                    text = "".join(str(p.text) for p in content.parts if hasattr(p, "text"))
 
         # Extract usage metadata
         usage: dict[str, int] = {}
@@ -356,9 +346,7 @@ class StepExecutor:
         return text, usage
 
     @staticmethod
-    def _validate_write_path(
-        filepath: str, project_root: Path
-    ) -> Path | None:
+    def _validate_write_path(filepath: str, project_root: Path) -> Path | None:
         """Validate and resolve a write target path.
 
         Returns the resolved Path if safe, or None if the path
@@ -381,6 +369,23 @@ class StepExecutor:
         # Reject absolute paths
         if filepath.startswith("/") or (len(filepath) >= 2 and filepath[1] == ":"):
             logger.warning(f"Rejected absolute filepath: {filepath}")
+            return None
+
+        # Block dangerous internal directories
+        filepath_lower = filepath.lower()
+        if (
+            filepath_lower.startswith(".git/")
+            or "/.git/" in filepath_lower
+            or filepath_lower == ".git"
+        ):
+            logger.warning(f"Rejected attempt to write to .git directory: {filepath}")
+            return None
+        if (
+            filepath_lower.startswith(".agent/")
+            or "/.agent/" in filepath_lower
+            or filepath_lower == ".agent"
+        ):
+            logger.warning(f"Rejected attempt to write to .agent directory: {filepath}")
             return None
 
         full_path = (project_root / filepath).resolve()
@@ -429,22 +434,26 @@ class StepExecutor:
                 content = match.group(2)
 
                 # Validate path stays within project root
-                full_path = self._validate_write_path(
-                    filepath, project_root
-                )
+                full_path = self._validate_write_path(filepath, project_root)
                 if full_path is None:
                     logger.warning(f"Skipping unsafe path: {filepath}")
                     continue
 
+                if full_path.is_dir():
+                    logger.error(f"Cannot overwrite directory with file: {filepath}")
+                    continue
                 full_path.parent.mkdir(parents=True, exist_ok=True)
-                write_atomic(full_path, content)
-                files_written.append(filepath)
-                logger.info(f"Wrote: {filepath}")
+                try:
+                    write_atomic(full_path, content)
+                    files_written.append(filepath)
+                    logger.info(f"Wrote: {filepath}")
+                except IsADirectoryError:
+                    logger.error(f"Cannot overwrite directory with file: {filepath}")
+                except OSError as e:
+                    logger.error(f"Failed to write {filepath}: {e}")
         else:
             # Fallback: step-specific heuristic writing
-            files_written = self._write_heuristic(
-                step, response_text, project_root
-            )
+            files_written = self._write_heuristic(step, response_text, project_root)
 
         return files_written
 
@@ -494,60 +503,51 @@ class StepExecutor:
         return files_written
 
     @staticmethod
-    def _acquire_lock(project_root: Path) -> int | None:
+    def _acquire_lock(project_root: Path) -> Path | None:
         """Acquire a per-project lockfile to prevent concurrent execution.
 
-        Uses ``fcntl.flock()`` on POSIX systems. Falls back to no-op
-        on platforms without ``fcntl`` (Windows).
+        Uses exclusively created file lock, making it safe across
+        all platforms including Windows.
 
         Returns:
-            File descriptor of the lock file, or None if locking
-            is not available.
+            Path of the lock file, or None if locking fails implicitly.
         """
         agent_dir = project_root / ".agent"
         agent_dir.mkdir(parents=True, exist_ok=True)
         lock_path = agent_dir / ".gemstack.lock"
 
         try:
-            import fcntl
-        except ImportError:
-            # Windows — no fcntl, skip locking
-            logger.debug("fcntl not available, skipping lockfile")
-            return None
-
-        fd = os.open(str(lock_path), os.O_CREAT | os.O_RDWR)
-        try:
-            fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
-            logger.debug(f"Acquired lock: {lock_path}")
-            return fd
-        except OSError:
+            fd = os.open(str(lock_path), os.O_CREAT | os.O_EXCL | os.O_RDWR)
+            os.write(fd, str(os.getpid()).encode())
             os.close(fd)
+            logger.debug(f"Acquired lock: {lock_path}")
+            return lock_path
+        except FileExistsError:
             raise RuntimeError(
                 "Another `gemstack run` is already executing in this project. "
                 f"If this is incorrect, remove {lock_path}"
             ) from None
+        except OSError as e:
+            logger.warning(f"Failed to acquire lockfile: {e}")
+            return None
 
     @staticmethod
-    def _release_lock(lock_fd: int | None) -> None:
+    def _release_lock(lock_path: Path | None) -> None:
         """Release the lockfile."""
-        if lock_fd is None:
+        if lock_path is None:
             return
         with contextlib.suppress(OSError):
-            import fcntl
-
-            fcntl.flock(lock_fd, fcntl.LOCK_UN)
-        with contextlib.suppress(OSError):
-            os.close(lock_fd)
+            lock_path.unlink()
 
     def _get_cost_tracker(self, project_root: Path) -> Any:
         """Get a CostTracker if cost limits are configured."""
         if self.max_cost is None and self.max_tokens is None:
             # Still create a tracker for recording, just without limits
-            from gemstack.core.cost_tracker import CostTracker
+            from gemstack.orchestration.cost_tracker import CostTracker
 
             return CostTracker(project_root)
 
-        from gemstack.core.cost_tracker import CostTracker
+        from gemstack.orchestration.cost_tracker import CostTracker
 
         return CostTracker(
             project_root,

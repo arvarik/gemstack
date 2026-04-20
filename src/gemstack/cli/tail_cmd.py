@@ -14,21 +14,14 @@ console = Console()
 
 
 def tail(
-    project_root: Path = typer.Option(
-        ".", "--project", "-p", help="Project root directory"
-    ),
-    minimal: bool = typer.Option(
-        False, "--minimal", help="Compact one-line status"
-    ),
+    project_root: Path = typer.Option(".", "--project", "-p", help="Project root directory"),
+    minimal: bool = typer.Option(False, "--minimal", help="Compact one-line status"),
 ) -> None:
     """Live TUI dashboard showing agent orchestration activity."""
     project_root = project_root.resolve()
 
     if not (project_root / ".agent").exists():
-        console.print(
-            "[red]❌ No .agent/ directory found. "
-            "Run `gemstack init` first.[/red]"
-        )
+        console.print("[red]❌ No .agent/ directory found. Run `gemstack init` first.[/red]")
         raise typer.Exit(code=1)
 
     if minimal:
@@ -43,8 +36,7 @@ def _run_tui(project_root: Path) -> None:
         from gemstack.tui.tail_app import GemstackTailApp
     except ImportError:
         console.print(
-            "[red]❌ Tail extra not installed. "
-            "Install with: pip install gemstack[tail][/red]"
+            "[red]❌ Tail extra not installed. Install with: pip install gemstack[tail][/red]"
         )
         raise typer.Exit(code=1) from None
 

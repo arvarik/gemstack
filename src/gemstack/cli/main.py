@@ -1,9 +1,14 @@
 """Main CLI entry point for Gemstack."""
 
 import logging
+import sys
+from pathlib import Path
+from typing import Annotated
 
 import typer
-from rich.console import Console
+
+from gemstack.cli.context import CliContext, console, err_console, handle_error
+from gemstack.errors import GemstackError
 
 app = typer.Typer(
     name="gemstack",
@@ -12,8 +17,17 @@ app = typer.Typer(
     rich_markup_mode="rich",
 )
 
-console = Console()
-err_console = Console(stderr=True)
+
+def _gemstack_excepthook(exc_type, exc_value, exc_traceback):  # type: ignore
+    """Global exception handler for GemstackErrors."""
+    if issubclass(exc_type, GemstackError):
+        handle_error(exc_value)
+    else:
+        # Fall back to default exception formatting for pure bugs
+        sys.__excepthook__(exc_type, exc_value, exc_traceback)
+
+
+sys.excepthook = _gemstack_excepthook
 
 
 def version_callback(value: bool) -> None:
@@ -27,57 +41,43 @@ def version_callback(value: bool) -> None:
 
 @app.callback()
 def main(
-    verbose: bool = typer.Option(False, "--verbose", "-v", help="Enable verbose output"),
-    debug: bool = typer.Option(False, "--debug", help="Enable debug logging"),
-    version: bool | None = typer.Option(
-        None,
-        "--version",
-        "-V",
-        callback=version_callback,
-        is_eager=True,
-        help="Show version and exit",
-    ),
+    ctx: typer.Context,
+    project: Annotated[
+        Path,
+        typer.Option("--project", "-p", help="Project root directory", resolve_path=True),
+    ] = Path("."),
+    verbose: Annotated[bool, typer.Option("--verbose", "-v", help="Enable verbose output")] = False,
+    debug: Annotated[bool, typer.Option("--debug", help="Enable debug logging")] = False,
+    version: Annotated[
+        bool | None,
+        typer.Option(
+            "--version",
+            "-V",
+            callback=version_callback,
+            is_eager=True,
+            help="Show version and exit",
+        ),
+    ] = None,
 ) -> None:
     """Gemstack — structure your AI agent workflows."""
+    ctx.obj = CliContext(project_root=project, verbose=verbose, debug=debug)
+
     log_level = logging.DEBUG if debug else (logging.INFO if verbose else logging.WARNING)
+
+    from rich.logging import RichHandler
+
     logging.basicConfig(
         level=log_level,
         format="%(levelname)s %(name)s: %(message)s",
-        handlers=[_create_rich_handler(log_level)],
+        handlers=[
+            RichHandler(
+                level=log_level,
+                console=err_console,
+                show_path=False,
+                markup=True,
+            )
+        ],
     )
-
-
-def _create_rich_handler(level: int) -> logging.Handler:
-    """Create a Rich-powered log handler."""
-    from rich.logging import RichHandler
-
-    return RichHandler(
-        level=level,
-        console=err_console,
-        show_path=False,
-        markup=True,
-    )
-
-
-def handle_error(error: Exception) -> None:
-    """Display a structured error with suggestion.
-
-    CLI commands should catch GemstackError and call this function
-    instead of doing ad-hoc console.print("[red]...") formatting.
-    This ensures consistent error presentation per spec §5.3.
-    """
-    from rich.panel import Panel
-
-    from gemstack.errors import GemstackError
-
-    if isinstance(error, GemstackError):
-        content = f"[bold red]{error}[/bold red]"
-        if error.suggestion:
-            content += f"\n\n[dim]{error.suggestion}[/dim]"
-        err_console.print(Panel(content, title="❌ Error", border_style="red"))
-    else:
-        err_console.print(f"[red]Error: {error}[/red]")
-    raise typer.Exit(code=1)
 
 
 # --- Register all subcommands ---

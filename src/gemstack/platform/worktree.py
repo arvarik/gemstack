@@ -12,7 +12,7 @@ import subprocess
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from gemstack.core.fileutil import write_atomic
+from gemstack.utils.fileutil import write_atomic
 
 logger = logging.getLogger(__name__)
 
@@ -71,15 +71,23 @@ class WorktreeManager:
                     capture_output=True,
                     text=True,
                 )
-                created.append(WorktreeInfo(
-                    path=str(worktree_path),
-                    branch=branch,
-                ))
+                created.append(
+                    WorktreeInfo(
+                        path=str(worktree_path),
+                        branch=branch,
+                    )
+                )
                 logger.info(f"Created worktree: {worktree_path} ({branch})")
             except subprocess.CalledProcessError as e:
+                msg = e.stderr.strip()
+                if "dirty" in msg or "Please commit" in msg or "index" in msg.lower():
+                    msg = (
+                        "Git working tree is dirty. Please commit or stash "
+                        "changes before running parallel worktrees."
+                    )
                 return WorktreeResult(
                     success=False,
-                    message=f"Failed to create worktree for {role}: {e.stderr.strip()}",
+                    message=f"Failed to create worktree for {role}: {msg}",
                 )
             except FileNotFoundError:
                 return WorktreeResult(
@@ -130,7 +138,7 @@ class WorktreeManager:
                 current["branch"] = line.split(" ", 1)[1]
                 # Strip refs/heads/ prefix
                 if current["branch"].startswith("refs/heads/"):
-                    current["branch"] = current["branch"][len("refs/heads/"):]
+                    current["branch"] = current["branch"][len("refs/heads/") :]
 
         if current:
             worktrees.append(self._parse_worktree_entry(current))
@@ -156,8 +164,7 @@ class WorktreeManager:
             return status
 
         target_branches = (
-            [branch] if branch
-            else [wt.branch for wt in status.worktrees if not wt.is_main]
+            [branch] if branch else [wt.branch for wt in status.worktrees if not wt.is_main]
         )
 
         for target in target_branches:
@@ -229,9 +236,7 @@ class WorktreeManager:
             is_main="branch" not in entry or branch_basename in ("main", "master"),
         )
 
-    def _update_status_worktrees(
-        self, project_root: Path, worktrees: list[WorktreeInfo]
-    ) -> None:
+    def _update_status_worktrees(self, project_root: Path, worktrees: list[WorktreeInfo]) -> None:
         """Update STATUS.md with active worktree information."""
         status_path = project_root / ".agent" / "STATUS.md"
         if not status_path.exists():
@@ -291,7 +296,7 @@ class WorktreeManager:
         import asyncio
         import sys
 
-        from gemstack.core.executor import StepExecutor
+        from gemstack.orchestration.executor import StepExecutor
 
         # Create worktrees first (synchronous git operations)
         create_result = self.create(project_root, branches)
@@ -303,23 +308,35 @@ class WorktreeManager:
         async def _run_in_worktree(wt: WorktreeInfo) -> dict[str, object]:
             executor = StepExecutor(model=model)
             wt_path = Path(wt.path)
-            result = await executor.execute(
-                step=step,
-                feature=feature,
-                project_root=wt_path,
-                dry_run=False,
-            )
-            return {
-                "branch": wt.branch,
-                "path": wt.path,
-                "success": result.success,
-                "files_written": result.files_written,
-                "cost_usd": result.cost_usd,
-                "error": result.error,
-            }
+            try:
+                result = await executor.execute(
+                    step=step,
+                    feature=feature,
+                    project_root=wt_path,
+                    dry_run=False,
+                )
+                return {
+                    "branch": wt.branch,
+                    "path": wt.path,
+                    "success": result.success,
+                    "files_written": result.files_written,
+                    "cost_usd": result.cost_usd,
+                    "error": result.error,
+                }
+            except Exception as e:
+                logger.error(f"Agent failed in worktree {wt.branch}: {e}")
+                return {
+                    "branch": wt.branch,
+                    "path": wt.path,
+                    "success": False,
+                    "files_written": [],
+                    "cost_usd": 0.0,
+                    "error": f"Agent crashed: {e}",
+                }
 
         # Use TaskGroup on 3.11+, sequential fallback on 3.10
         if sys.version_info >= (3, 11):
+            tasks: list[asyncio.Task[dict[str, object]]] = []
             try:
                 async with asyncio.TaskGroup() as tg:
                     tasks = [
@@ -335,14 +352,16 @@ class WorktreeManager:
                         results.append(t.result())
                 # Add error entries for failed tasks
                 for exc in eg.exceptions:
-                    results.append({
-                        "branch": "unknown",
-                        "path": "",
-                        "success": False,
-                        "files_written": [],
-                        "cost_usd": 0.0,
-                        "error": str(exc),
-                    })
+                    results.append(
+                        {
+                            "branch": "unknown",
+                            "path": "",
+                            "success": False,
+                            "files_written": [],
+                            "cost_usd": 0.0,
+                            "error": str(exc),
+                        }
+                    )
         else:
             for wt in create_result.worktrees:
                 if not wt.is_main:
@@ -350,4 +369,3 @@ class WorktreeManager:
                     results.append(result)
 
         return results
-

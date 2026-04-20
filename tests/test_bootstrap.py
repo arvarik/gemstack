@@ -54,7 +54,7 @@ class TestBuildContext:
     """Test the context building logic."""
 
     def test_includes_manifest_file(self, python_fastapi: Path) -> None:
-        from gemstack.core.detector import ProjectDetector
+        from gemstack.project.detector import ProjectDetector
 
         detector = ProjectDetector()
         profile = detector.detect(python_fastapi)
@@ -70,7 +70,7 @@ class TestBuildContext:
         assert "pyproject.toml" in parts[0]
 
     def test_respects_char_budget(self, python_fastapi: Path) -> None:
-        from gemstack.core.detector import ProjectDetector
+        from gemstack.project.detector import ProjectDetector
 
         detector = ProjectDetector()
         profile = detector.detect(python_fastapi)
@@ -89,7 +89,7 @@ class TestRankSourceFiles:
     """Test the file ranking heuristic."""
 
     def test_ranks_route_files_higher(self, python_fastapi: Path) -> None:
-        from gemstack.core.detector import ProjectDetector
+        from gemstack.project.detector import ProjectDetector
 
         detector = ProjectDetector()
         profile = detector.detect(python_fastapi)
@@ -105,7 +105,7 @@ class TestRankSourceFiles:
             assert all(isinstance(p, Path) for p in ranked)
 
     def test_returns_limited_files(self, python_fastapi: Path) -> None:
-        from gemstack.core.detector import ProjectDetector
+        from gemstack.project.detector import ProjectDetector
 
         detector = ProjectDetector()
         profile = detector.detect(python_fastapi)

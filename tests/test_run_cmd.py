@@ -19,9 +19,7 @@ class TestRunCommand:
     def project(self, tmp_path: Path) -> Path:
         agent_dir = tmp_path / ".agent"
         agent_dir.mkdir()
-        (agent_dir / "STATUS.md").write_text(
-            "# Status\n\n[STATE: INITIALIZED]\n"
-        )
+        (agent_dir / "STATUS.md").write_text("# Status\n\n[STATE: INITIALIZED]\n")
         (agent_dir / "ARCHITECTURE.md").write_text("# Architecture\n")
         return tmp_path
 
@@ -29,8 +27,11 @@ class TestRunCommand:
         result = runner.invoke(
             app,
             [
-                "run", "step1-spec", "Test feature",
-                "--project", str(project),
+                "run",
+                "step1-spec",
+                "Test feature",
+                "--project",
+                str(project),
                 "--dry-run",
             ],
         )
@@ -41,8 +42,11 @@ class TestRunCommand:
         result = runner.invoke(
             app,
             [
-                "run", "step99-invalid", "Test feature",
-                "--project", str(project),
+                "run",
+                "step99-invalid",
+                "Test feature",
+                "--project",
+                str(project),
                 "--dry-run",
             ],
         )
@@ -52,19 +56,26 @@ class TestRunCommand:
         result = runner.invoke(
             app,
             [
-                "run", "step1-spec", "Test feature",
-                "--project", str(tmp_path),
+                "run",
+                "step1-spec",
+                "Test feature",
+                "--project",
+                str(tmp_path),
             ],
         )
         assert result.exit_code == 1
-        assert "gemstack init" in result.output
+        assert result.exception is not None
+        assert "gemstack init" in getattr(result.exception, "suggestion", "")
 
     def test_panel_shows_step_info(self, project: Path) -> None:
         result = runner.invoke(
             app,
             [
-                "run", "step1-spec", "My feature",
-                "--project", str(project),
+                "run",
+                "step1-spec",
+                "My feature",
+                "--project",
+                str(project),
                 "--dry-run",
             ],
         )

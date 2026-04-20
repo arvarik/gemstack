@@ -57,7 +57,7 @@ class PhaseProgress(Static):
                 parts.append(f"[green]✅ {step_name}[/green]")
             elif state == "IN_PROGRESS":
                 # Mark the first uncompleted as active
-                if not any(lifecycle.get(s, False) for s in steps[steps.index(step_name):]):
+                if not any(lifecycle.get(s, False) for s in steps[steps.index(step_name) :]):
                     parts.append(f"[yellow]▶ {step_name}[/yellow]")
                 else:
                     parts.append(f"[dim]○ {step_name}[/dim]")
@@ -133,6 +133,9 @@ class GemstackTailApp(App[None]):
         super().__init__()
         self.project_root = project_root
         self._observer: Observer | None = None  # type: ignore[valid-type]
+        
+        from typing import Any
+        self._debounce_timer: Any = None
 
     def compose(self) -> ComposeResult:
         yield Header()
@@ -163,8 +166,12 @@ class GemstackTailApp(App[None]):
             self._observer.join(timeout=2)  # type: ignore[attr-defined]
 
     def on_status_file_changed(self, _message: StatusFileChanged) -> None:
-        """Handle STATUS.md file change notification."""
-        self.call_from_thread(self._refresh_dashboard)
+        """Handle STATUS.md file change notification with debounce."""
+        # Debounce: cancel any pending refresh and schedule a new one in 300ms.
+        # Atomic writes (rename) can trigger multiple rapid events.
+        if hasattr(self, "_debounce_timer") and self._debounce_timer is not None:
+            self._debounce_timer.stop()
+        self._debounce_timer = self.set_timer(0.3, self._refresh_dashboard)
 
     def _refresh_dashboard(self) -> None:
         """Reload STATUS.md and update all panels."""
@@ -192,7 +199,7 @@ class GemstackTailApp(App[None]):
     def _refresh_router(self) -> None:
         """Refresh the routing decision panel."""
         try:
-            from gemstack.core.router import PhaseRouter
+            from gemstack.orchestration.router import PhaseRouter
 
             router = PhaseRouter()
             decision = router.route(self.project_root)
@@ -210,9 +217,7 @@ class GemstackTailApp(App[None]):
                 f"Next: [cyan]{decision.next_command}[/cyan]"
             )
         except Exception as e:
-            self.query_one("#router-content", RouterPanel).update(
-                f"[red]Router error: {e}[/red]"
-            )
+            self.query_one("#router-content", RouterPanel).update(f"[red]Router error: {e}[/red]")
 
     @staticmethod
     def _parse_state(content: str) -> str:

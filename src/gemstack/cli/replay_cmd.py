@@ -18,24 +18,16 @@ console = Console()
 
 
 def replay(
-    feature: str = typer.Argument(
-        "", help="Feature name to replay (empty = --all)"
-    ),
-    all_features: bool = typer.Option(
-        False, "--all", help="Summary of all shipped features"
-    ),
-    project_root: Path = typer.Option(
-        ".", "--project", "-p", help="Project root directory"
-    ),
+    feature: str = typer.Argument("", help="Feature name to replay (empty = --all)"),
+    all_features: bool = typer.Option(False, "--all", help="Summary of all shipped features"),
+    project_root: Path = typer.Option(".", "--project", "-p", help="Project root directory"),
 ) -> None:
     """Generate a retrospective report for a shipped feature."""
     project_root = project_root.resolve()
     archive_dir = project_root / "docs" / "archive"
 
     if not archive_dir.exists():
-        console.print(
-            "[yellow]⚠️  No docs/archive/ directory found.[/yellow]"
-        )
+        console.print("[yellow]⚠️  No docs/archive/ directory found.[/yellow]")
         raise typer.Exit(code=1)
 
     if all_features or not feature:
@@ -72,19 +64,13 @@ def _replay_all(archive_dir: Path, project_root: Path) -> None:
     console.print(table)
 
 
-def _replay_feature(
-    archive_dir: Path, feature: str, project_root: Path
-) -> None:
+def _replay_feature(archive_dir: Path, feature: str, project_root: Path) -> None:
     """Show detailed timeline for a specific feature."""
     feature_dir = archive_dir / feature
 
     if not feature_dir.exists():
-        console.print(
-            f"[red]❌ Feature '{feature}' not found in archive.[/red]"
-        )
-        available = ", ".join(
-            d.name for d in archive_dir.iterdir() if d.is_dir()
-        )
+        console.print(f"[red]❌ Feature '{feature}' not found in archive.[/red]")
+        available = ", ".join(d.name for d in archive_dir.iterdir() if d.is_dir())
         console.print(f"[dim]Available: {available}[/dim]")
         raise typer.Exit(code=1)
 
@@ -141,19 +127,14 @@ def _replay_feature(
     # Iteration metrics
     reroute_count = _count_reroutes(project_root, feature)
     if reroute_count > 0:
-        console.print(
-            f"\n[dim]Audit re-routes: {reroute_count}[/dim]"
-        )
+        console.print(f"\n[dim]Audit re-routes: {reroute_count}[/dim]")
 
     # Show all files in the feature directory
     all_files = sorted(f for f in feature_dir.iterdir() if f.is_file())
     lifecycle_names = {name for name, _, _ in lifecycle_files}
     extra = [f for f in all_files if f.name not in lifecycle_names]
     if extra:
-        console.print(
-            f"\n  [dim]Additional files: "
-            f"{', '.join(f.name for f in extra)}[/dim]"
-        )
+        console.print(f"\n  [dim]Additional files: {', '.join(f.name for f in extra)}[/dim]")
 
 
 # ── Helpers ────────────────────────────────────────────────────────
@@ -169,17 +150,13 @@ def _load_cost_data(project_root: Path) -> dict[str, float]:
         totals: dict[str, float] = {}
         for record in data.get("records", []):
             feat = record.get("feature", "unknown")
-            totals[feat] = totals.get(feat, 0.0) + record.get(
-                "cost_usd", 0.0
-            )
+            totals[feat] = totals.get(feat, 0.0) + record.get("cost_usd", 0.0)
         return totals
     except (json.JSONDecodeError, OSError):
         return {}
 
 
-def _load_cost_by_step(
-    project_root: Path, feature: str
-) -> dict[str, dict[str, float | int]]:
+def _load_cost_by_step(project_root: Path, feature: str) -> dict[str, dict[str, float | int]]:
     """Load cost breakdown by step for a specific feature."""
     costs_file = project_root / ".agent" / "costs.json"
     if not costs_file.exists():
@@ -193,13 +170,9 @@ def _load_cost_by_step(
             step = record.get("step", "unknown")
             if step not in by_step:
                 by_step[step] = {"tokens": 0, "cost": 0.0}
-            tokens = record.get("input_tokens", 0) + record.get(
-                "output_tokens", 0
-            )
+            tokens = record.get("input_tokens", 0) + record.get("output_tokens", 0)
             by_step[step]["tokens"] = int(by_step[step]["tokens"]) + tokens
-            by_step[step]["cost"] = (
-                float(by_step[step]["cost"]) + record.get("cost_usd", 0.0)
-            )
+            by_step[step]["cost"] = float(by_step[step]["cost"]) + record.get("cost_usd", 0.0)
         return by_step
     except (json.JSONDecodeError, OSError):
         return {}
@@ -215,8 +188,7 @@ def _count_reroutes(project_root: Path, feature: str) -> int:
         audit_count = sum(
             1
             for r in data.get("records", [])
-            if r.get("feature") == feature
-            and r.get("step") == "step4-audit"
+            if r.get("feature") == feature and r.get("step") == "step4-audit"
         )
         # Each audit beyond the first is a re-route
         return max(0, audit_count - 1)

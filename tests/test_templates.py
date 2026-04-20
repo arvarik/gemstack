@@ -2,8 +2,8 @@
 
 from pathlib import Path
 
-from gemstack.core.detector import ProjectProfile, Topology
-from gemstack.core.templates import create_template_env, render_agent_files
+from gemstack.project.detector import ProjectProfile, Topology
+from gemstack.project.templates import create_template_env, render_agent_files
 
 
 class TestCustomDelimiters:

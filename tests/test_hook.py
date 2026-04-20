@@ -17,15 +17,11 @@ class TestHookInstall:
 
     def test_hook_scripts_have_shebang(self) -> None:
         for hook_name, script in _HOOKS.items():
-            assert script.startswith("#!/usr/bin/env bash"), (
-                f"{hook_name} missing shebang"
-            )
+            assert script.startswith("#!/usr/bin/env bash"), f"{hook_name} missing shebang"
 
     def test_hook_scripts_reference_gemstack(self) -> None:
         for hook_name, script in _HOOKS.items():
-            assert "gemstack" in script.lower(), (
-                f"{hook_name} doesn't reference gemstack"
-            )
+            assert "gemstack" in script.lower(), f"{hook_name} doesn't reference gemstack"
 
     def test_pre_commit_runs_check(self) -> None:
         assert "gemstack check" in _HOOKS["pre-commit"]

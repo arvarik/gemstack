@@ -4,6 +4,7 @@ Validates the full cycle: plugin registration → topology discovery →
 hook firing. This is the Phase 4 exit criteria test.
 """
 
+from collections.abc import Generator
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
@@ -19,10 +20,10 @@ from gemstack.plugins import (
 
 
 @pytest.fixture(autouse=True)
-def _reset_pm() -> None:
+def _reset_pm() -> Generator[None, None, None]:
     """Reset the plugin manager singleton between tests."""
     reset_plugin_manager()
-    yield  # type: ignore[misc]
+    yield
     reset_plugin_manager()
 
 
@@ -48,11 +49,13 @@ class TestPluginTopologyRegistration:
         class MobilePlugin:
             @hookimpl
             def gemstack_register_topologies(self) -> list[dict[str, str]]:
-                return [{
-                    "name": "mobile",
-                    "description": "iOS/Android mobile app guardrails",
-                    "content": "# Mobile Topology\n\nMobile-specific rules.",
-                }]
+                return [
+                    {
+                        "name": "mobile",
+                        "description": "iOS/Android mobile app guardrails",
+                        "content": "# Mobile Topology\n\nMobile-specific rules.",
+                    }
+                ]
 
         pm = get_plugin_manager()
         pm.register(MobilePlugin())
@@ -186,18 +189,14 @@ class TestPhase5Hooks:
         """pre_run should not crash even if pluggy is not installed."""
         from gemstack.plugins import fire_pre_run
 
-        with patch(
-            "gemstack.plugins.get_plugin_manager", side_effect=ImportError
-        ):
+        with patch("gemstack.plugins.get_plugin_manager", side_effect=ImportError):
             fire_pre_run("step1-spec", "test feature")  # Should not raise
 
     def test_fire_post_run_noop_without_pluggy(self) -> None:
         """post_run should not crash even if pluggy is not installed."""
         from gemstack.plugins import fire_post_run
 
-        with patch(
-            "gemstack.plugins.get_plugin_manager", side_effect=ImportError
-        ):
+        with patch("gemstack.plugins.get_plugin_manager", side_effect=ImportError):
             fire_post_run("step1-spec", MagicMock())  # Should not raise
 
     def test_fire_pre_run_calls_hook(self) -> None:
@@ -264,4 +263,3 @@ class TestPhase5Hooks:
 
         # Should not raise — exception is caught and logged
         fire_pre_run("step1-spec", "test")
-

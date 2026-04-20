@@ -187,7 +187,7 @@ The **Context Compiler** is the engine that makes Gemstack work. When you run a 
 
 ```bash
 gemstack compile step3-build                   # View the full compiled prompt
-gemstack compile step3-build --token-budget 100000  # With token limits
+gemstack compile step3-build --max-tokens 100000  # With token limits
 ```
 
 ---

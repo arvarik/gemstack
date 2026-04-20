@@ -11,7 +11,7 @@ from pathlib import Path
 import typer
 from rich.console import Console
 
-from gemstack.core.fileutil import write_atomic
+from gemstack.utils.fileutil import write_atomic
 
 console = Console()
 
@@ -25,15 +25,9 @@ _AGENT_FILES = [
 
 
 def snapshot(
-    output: Path = typer.Option(
-        "gemstack-snapshot.md", "--output", "-o", help="Output file path"
-    ),
-    project_root: Path = typer.Option(
-        ".", "--project", "-p", help="Project root directory"
-    ),
-    compact: bool = typer.Option(
-        False, "--compact", help="Minimal snapshot (<8k tokens)"
-    ),
+    output: Path = typer.Option("gemstack-snapshot.md", "--output", "-o", help="Output file path"),
+    project_root: Path = typer.Option(".", "--project", "-p", help="Project root directory"),
+    compact: bool = typer.Option(False, "--compact", help="Minimal snapshot (<8k tokens)"),
     for_step: str = typer.Option(
         "", "--for-step", help="Tune context for a specific workflow step"
     ),
@@ -43,10 +37,7 @@ def snapshot(
     agent_dir = project_root / ".agent"
 
     if not agent_dir.exists():
-        console.print(
-            "[red]❌ No .agent/ directory found. "
-            "Run `gemstack init` first.[/red]"
-        )
+        console.print("[red]❌ No .agent/ directory found. Run `gemstack init` first.[/red]")
         raise typer.Exit(code=1)
 
     parts: list[str] = [
@@ -101,17 +92,13 @@ def _snapshot_full(
             )
             if section_match:
                 parts.append("\n---\n## Relevant Source Files\n")
-                for match in re.finditer(
-                    r"[-*]\s*`?([^\s`]+)`?", section_match.group(1)
-                ):
+                for match in re.finditer(r"[-*]\s*`?([^\s`]+)`?", section_match.group(1)):
                     filepath = match.group(1).strip()
                     full_path = project_root / filepath
                     if full_path.exists() and full_path.is_file():
                         try:
                             src = full_path.read_text()[:3000]
-                            parts.append(
-                                f"\n### `{filepath}`\n\n```\n{src}\n```\n"
-                            )
+                            parts.append(f"\n### `{filepath}`\n\n```\n{src}\n```\n")
                         except OSError:
                             pass
 
@@ -124,7 +111,7 @@ def _snapshot_for_step(
 ) -> None:
     """Use the compiler to generate a step-specific snapshot."""
     try:
-        from gemstack.core.compiler import ContextCompiler
+        from gemstack.orchestration.compiler import ContextCompiler
 
         compiler = ContextCompiler()
         max_tokens = 2000 if compact else None

@@ -10,9 +10,7 @@ class TestSnapshotFull:
         agent_dir = tmp_path / ".agent"
         agent_dir.mkdir()
         (agent_dir / "ARCHITECTURE.md").write_text("# Architecture\n\nProject arch.\n")
-        (agent_dir / "STATUS.md").write_text(
-            "[STATE: IN_PROGRESS]\n\n## Current Focus\n\nOAuth\n"
-        )
+        (agent_dir / "STATUS.md").write_text("[STATE: IN_PROGRESS]\n\n## Current Focus\n\nOAuth\n")
         (agent_dir / "STYLE.md").write_text("# Style\n")
         (agent_dir / "TESTING.md").write_text("# Testing\n")
         (agent_dir / "PHILOSOPHY.md").write_text("# Philosophy\n")

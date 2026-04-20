@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from gemstack.core.compiler import CompiledContext, ContextCompiler
+from gemstack.orchestration.compiler import CompiledContext, ContextCompiler
 
 
 class TestCompilePipeline:
@@ -104,9 +104,7 @@ class TestTokenBudget:
 
     def test_truncation_respects_budget(self, bootstrapped_project: Path) -> None:
         compiler = ContextCompiler()
-        result = compiler.compile(
-            "step1-spec", bootstrapped_project, max_tokens=500
-        )
+        result = compiler.compile("step1-spec", bootstrapped_project, max_tokens=500)
 
         assert result.truncated is True
         assert result.token_estimate <= 500
@@ -123,9 +121,7 @@ class TestNoSource:
 
     def test_no_source_excludes_source_sections(self, bootstrapped_project: Path) -> None:
         compiler = ContextCompiler()
-        result = compiler.compile(
-            "step1-spec", bootstrapped_project, include_source=False
-        )
+        result = compiler.compile("step1-spec", bootstrapped_project, include_source=False)
 
         source_names = [name for name, _ in result.sections]
         assert not any(name.startswith("Source:") for name in source_names)
@@ -162,9 +158,7 @@ class TestRelevantFiles:
 
     def test_extracts_file_paths(self, bootstrapped_project: Path) -> None:
         compiler = ContextCompiler()
-        files = compiler._extract_relevant_files(
-            bootstrapped_project / ".agent" / "STATUS.md"
-        )
+        files = compiler._extract_relevant_files(bootstrapped_project / ".agent" / "STATUS.md")
 
         assert "src/app/api/auth/route.ts" in files
         assert "src/components/LoginButton.tsx" in files

@@ -60,8 +60,10 @@ class AntigravityAdapter:
         removed = 0
         for link in self.TARGET_DIR.iterdir():
             if link.is_symlink():
-                link.unlink()
-                removed += 1
+                target = link.resolve()
+                if "gemstack" in str(target).lower():
+                    link.unlink()
+                    removed += 1
 
         return InstallResult(
             success=True,
@@ -77,9 +79,7 @@ class AntigravityAdapter:
             return issues
 
         broken = [
-            f.name
-            for f in self.TARGET_DIR.iterdir()
-            if f.is_symlink() and not f.resolve().exists()
+            f.name for f in self.TARGET_DIR.iterdir() if f.is_symlink() and not f.resolve().exists()
         ]
         if broken:
             issues.append(f"Broken symlinks: {', '.join(broken)}")

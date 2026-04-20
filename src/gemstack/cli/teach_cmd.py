@@ -78,9 +78,7 @@ _STEPS = [
 
 
 def teach(
-    step: int = typer.Option(
-        0, "--step", "-s", help="Jump to a specific step (1-5)"
-    ),
+    step: int = typer.Option(0, "--step", "-s", help="Jump to a specific step (1-5)"),
 ) -> None:
     """Interactive tutorial walking through the Gemstack workflow."""
     if step < 0 or step > 5:
@@ -145,6 +143,5 @@ def _setup_sample_project(root: Path) -> None:
         '"""Sample test."""\n\n\ndef test_hello():\n    assert True\n'
     )
     (root / "pyproject.toml").write_text(
-        '[project]\nname = "tutorial-app"\nversion = "0.1.0"\n'
-        'dependencies = ["fastapi"]\n'
+        '[project]\nname = "tutorial-app"\nversion = "0.1.0"\ndependencies = ["fastapi"]\n'
     )

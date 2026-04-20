@@ -2,38 +2,34 @@
 
 from pathlib import Path
 
-from gemstack.cli.scaffold_cmd import (
-    _detect_language,
-    _scaffold_python_route,
-    _scaffold_python_test,
-)
+from gemstack.project.scaffolder import Scaffolder
 
 
 class TestLanguageDetection:
     def test_detects_python(self, tmp_path: Path) -> None:
         (tmp_path / "pyproject.toml").touch()
-        assert _detect_language(tmp_path) == "python"
+        assert Scaffolder(tmp_path)._detect_language() == "python"
 
     def test_detects_go(self, tmp_path: Path) -> None:
         (tmp_path / "go.mod").touch()
-        assert _detect_language(tmp_path) == "go"
+        assert Scaffolder(tmp_path)._detect_language() == "go"
 
     def test_detects_typescript(self, tmp_path: Path) -> None:
         (tmp_path / "package.json").touch()
         (tmp_path / "tsconfig.json").touch()
-        assert _detect_language(tmp_path) == "typescript"
+        assert Scaffolder(tmp_path)._detect_language() == "typescript"
 
     def test_detects_javascript(self, tmp_path: Path) -> None:
         (tmp_path / "package.json").touch()
-        assert _detect_language(tmp_path) == "javascript"
+        assert Scaffolder(tmp_path)._detect_language() == "javascript"
 
     def test_unknown_project(self, tmp_path: Path) -> None:
-        assert _detect_language(tmp_path) == "unknown"
+        assert Scaffolder(tmp_path)._detect_language() == "unknown"
 
 
 class TestPythonScaffolding:
     def test_scaffold_route_creates_files(self, tmp_path: Path) -> None:
-        _scaffold_python_route(tmp_path, "/api/v1/notifications")
+        Scaffolder(tmp_path)._scaffold_python_route("/api/v1/notifications")
 
         route_file = tmp_path / "src" / "routes" / "api_v1_notifications.py"
         assert route_file.exists()
@@ -44,7 +40,7 @@ class TestPythonScaffolding:
         assert test_file.exists()
 
     def test_scaffold_test_creates_file(self, tmp_path: Path) -> None:
-        _scaffold_python_test(tmp_path, "notifications")
+        Scaffolder(tmp_path)._scaffold_python_test("notifications")
 
         test_file = tmp_path / "tests" / "test_notifications.py"
         assert test_file.exists()

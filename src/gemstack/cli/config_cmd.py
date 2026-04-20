@@ -35,7 +35,7 @@ def config_set(
     value: str = typer.Argument(..., help="Configuration value"),
 ) -> None:
     """Set a global configuration value."""
-    from gemstack.core.config import GemstackConfig
+    from gemstack.project.config import GemstackConfig
 
     if key not in _VALID_KEYS:
         console.print(
@@ -75,7 +75,7 @@ def config_get(
     key: str = typer.Argument(..., help="Configuration key"),
 ) -> None:
     """Get a global configuration value."""
-    from gemstack.core.config import GemstackConfig
+    from gemstack.project.config import GemstackConfig
 
     if key not in _VALID_KEYS:
         console.print(
@@ -106,7 +106,7 @@ def config_get(
 @config_app.command("list")
 def config_list() -> None:
     """List all configuration values."""
-    from gemstack.core.config import GemstackConfig
+    from gemstack.project.config import GemstackConfig
 
     config = GemstackConfig.load()
 

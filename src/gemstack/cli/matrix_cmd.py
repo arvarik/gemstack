@@ -18,15 +18,9 @@ console = Console()
 
 
 def matrix(
-    projects: str = typer.Option(
-        "", "--projects", help="Comma-separated project paths"
-    ),
-    scan: Path = typer.Option(
-        None, "--scan", help="Directory to auto-discover Gemstack projects"
-    ),
-    json_output: bool = typer.Option(
-        False, "--json", help="Output as JSON instead of table"
-    ),
+    projects: str = typer.Option("", "--projects", help="Comma-separated project paths"),
+    scan: Path = typer.Option(None, "--scan", help="Directory to auto-discover Gemstack projects"),
+    json_output: bool = typer.Option(False, "--json", help="Output as JSON instead of table"),
 ) -> None:
     """Show a unified status matrix across multiple Gemstack projects."""
     project_paths: list[Path] = []
@@ -34,13 +28,9 @@ def matrix(
     if scan:
         project_paths = _discover_projects(scan.resolve())
     elif projects:
-        project_paths = [
-            Path(p.strip()).resolve() for p in projects.split(",") if p.strip()
-        ]
+        project_paths = [Path(p.strip()).resolve() for p in projects.split(",") if p.strip()]
     else:
-        console.print(
-            "[yellow]⚠️  Specify --projects or --scan to find projects.[/yellow]"
-        )
+        console.print("[yellow]⚠️  Specify --projects or --scan to find projects.[/yellow]")
         raise typer.Exit(code=1)
 
     if not project_paths:

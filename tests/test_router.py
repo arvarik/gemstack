@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-from gemstack.core.router import PhaseRouter, RoutingAction
+from gemstack.orchestration.router import PhaseRouter, RoutingAction
 
 
 class TestRouterRules:
@@ -32,8 +32,7 @@ class TestRouterRules:
         agent_dir = tmp_path / ".agent"
         agent_dir.mkdir()
         (agent_dir / "STATUS.md").write_text(
-            "# Status\n\n[STATE: INITIALIZED]\n\n"
-            "## Feature Lifecycle\n- [ ] Spec\n- [ ] Build\n"
+            "# Status\n\n[STATE: INITIALIZED]\n\n## Feature Lifecycle\n- [ ] Spec\n- [ ] Build\n"
         )
 
         router = PhaseRouter()
@@ -118,8 +117,7 @@ class TestInProgressRouting:
         agent_dir = tmp_path / ".agent"
         agent_dir.mkdir()
         (agent_dir / "STATUS.md").write_text(
-            "[STATE: IN_PROGRESS]\n\n## Feature Lifecycle\n"
-            "- [x] Spec\n- [ ] Trap\n- [ ] Build\n"
+            "[STATE: IN_PROGRESS]\n\n## Feature Lifecycle\n- [x] Spec\n- [ ] Trap\n- [ ] Build\n"
         )
 
         router = PhaseRouter()
@@ -170,9 +168,7 @@ class TestStateParsing:
 
     def test_parse_lifecycle(self, tmp_path: Path) -> None:
         path = tmp_path / "STATUS.md"
-        path.write_text(
-            "- [x] Spec\n- [x] Trap\n- [ ] Build\n- [ ] Audit\n- [ ] Ship\n"
-        )
+        path.write_text("- [x] Spec\n- [x] Trap\n- [ ] Build\n- [ ] Audit\n- [ ] Ship\n")
 
         router = PhaseRouter()
         lifecycle = router._parse_lifecycle(path)

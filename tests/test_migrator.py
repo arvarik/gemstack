@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-from gemstack.core.migrator import TopologyMigrator
+from gemstack.project.migrator import TopologyMigrator
 
 
 class TestTopologyMigrator:
@@ -14,9 +14,7 @@ class TestTopologyMigrator:
         agent_dir.mkdir()
         (agent_dir / "ARCHITECTURE.md").write_text("# Architecture\n\nProject details.\n")
         (agent_dir / "TESTING.md").write_text("# Testing Strategy\n\nTest details.\n")
-        (agent_dir / "STATUS.md").write_text(
-            "[STATE: INITIALIZED]\n\n## Current Focus\n\nSetup\n"
-        )
+        (agent_dir / "STATUS.md").write_text("[STATE: INITIALIZED]\n\n## Current Focus\n\nSetup\n")
         return agent_dir
 
     def test_adds_topology_to_architecture(self, tmp_path: Path) -> None:

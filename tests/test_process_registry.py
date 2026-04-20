@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-from gemstack.core.process_registry import ProcessRecord, ProcessRegistry
+from gemstack.platform.process_registry import ProcessRecord, ProcessRegistry
 
 
 class TestProcessRecord:
@@ -72,9 +72,7 @@ class TestProcessRegistry:
 
     def test_persistence_between_instances(self, project: Path) -> None:
         registry1 = ProcessRegistry(project)
-        registry1.register(
-            pid=os.getpid(), step="step1-spec", feature="test"
-        )
+        registry1.register(pid=os.getpid(), step="step1-spec", feature="test")
 
         registry2 = ProcessRegistry(project)
         active = registry2.get_active()

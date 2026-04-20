@@ -13,7 +13,7 @@ from typing import TYPE_CHECKING, Any
 from jinja2 import Environment, FileSystemLoader, PackageLoader
 
 if TYPE_CHECKING:
-    from gemstack.core.detector import ProjectProfile
+    from gemstack.project.detector import ProjectProfile
 
 logger = logging.getLogger(__name__)
 
@@ -109,12 +109,12 @@ def _build_template_context(profile: ProjectProfile) -> dict[str, Any]:
         "runtime": profile.runtime,
         "framework": profile.framework,
         "package_manager": profile.package_manager,
-        "frontend": profile.framework if any(
-            t.value == "frontend" for t in profile.topologies
-        ) else None,
-        "backend": profile.framework if any(
-            t.value == "backend" for t in profile.topologies
-        ) else None,
+        "frontend": profile.framework
+        if any(t.value == "frontend" for t in profile.topologies)
+        else None,
+        "backend": profile.framework
+        if any(t.value == "backend" for t in profile.topologies)
+        else None,
         "database": "Yes" if profile.has_database else None,
         "dev_command": profile.dev_command,
         "test_command": profile.test_command,

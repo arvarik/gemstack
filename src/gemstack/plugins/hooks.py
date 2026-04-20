@@ -32,11 +32,12 @@ except ImportError:
         """No-op hookimpl marker when pluggy is not installed."""
         return func
 
+
 if TYPE_CHECKING:
     from collections.abc import Callable
     from pathlib import Path
 
-    from gemstack.core.detector import ProjectProfile
+    from gemstack.project.detector import ProjectProfile
 
 
 class GemstackHookSpec:
@@ -54,9 +55,7 @@ class GemstackHookSpec:
     # ── Lifecycle hooks ────────────────────────────────────────────
 
     @hookspec
-    def gemstack_post_init(
-        self, project_root: Path, profile: ProjectProfile
-    ) -> None:
+    def gemstack_post_init(self, project_root: Path, profile: ProjectProfile) -> None:
         """Called after ``gemstack init`` completes.
 
         Plugins can add custom files, modify generated content, etc.

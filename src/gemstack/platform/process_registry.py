@@ -16,7 +16,7 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any
 
-from gemstack.core.fileutil import write_atomic
+from gemstack.utils.fileutil import write_atomic
 
 logger = logging.getLogger(__name__)
 
@@ -92,9 +92,7 @@ class ProcessRegistry:
                     count += 1
                     logger.info(f"Terminated process {record.pid}")
                 except OSError as e:
-                    logger.warning(
-                        f"Failed to terminate PID {record.pid}: {e}"
-                    )
+                    logger.warning(f"Failed to terminate PID {record.pid}: {e}")
             else:
                 record.status = "completed"
         self._persist()
@@ -118,6 +116,7 @@ class ProcessRegistry:
 
     def install_signal_handlers(self) -> None:
         """Install signal handlers that terminate all tracked processes on exit."""
+
         def _handler(signum: int, frame: object) -> None:
             logger.info(f"Received signal {signum}, terminating tracked processes")
             self.terminate_all()
@@ -157,9 +156,7 @@ class ProcessRegistry:
             return []
         try:
             data = json.loads(self._registry_file.read_text())
-            return [
-                ProcessRecord.from_dict(r) for r in data.get("processes", [])
-            ]
+            return [ProcessRecord.from_dict(r) for r in data.get("processes", [])]
         except (json.JSONDecodeError, OSError, TypeError) as e:
             logger.warning(f"Failed to load process registry: {e}")
             return []

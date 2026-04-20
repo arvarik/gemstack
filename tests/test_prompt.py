@@ -55,9 +55,7 @@ class TestPromptChangelog:
             "|------|---------|------|-------------|\n"
         )
 
-        _update_prompt_changelog(
-            tmp_path, "extraction", "v1.0", "Initial prompt"
-        )
+        _update_prompt_changelog(tmp_path, "extraction", "v1.0", "Initial prompt")
 
         content = (agent_dir / "STATUS.md").read_text()
         assert "extraction" in content

@@ -13,7 +13,7 @@ from pathlib import Path
 import typer
 from rich.console import Console
 
-from gemstack.core.fileutil import write_atomic
+from gemstack.utils.fileutil import write_atomic
 
 console = Console()
 
@@ -24,9 +24,7 @@ prompt_app = typer.Typer(name="prompt", help="Prompt template manager (ML/AI)")
 def create(
     name: str = typer.Argument(..., help="Prompt name (e.g., 'extraction')"),
     description: str = typer.Argument(..., help="Description of the prompt"),
-    project_root: Path = typer.Option(
-        ".", "--project", "-p", help="Project root directory"
-    ),
+    project_root: Path = typer.Option(".", "--project", "-p", help="Project root directory"),
 ) -> None:
     """Create a new versioned prompt template."""
     project_root = project_root.resolve()
@@ -64,9 +62,7 @@ def create(
 def bump(
     name: str = typer.Argument(..., help="Prompt name"),
     description: str = typer.Argument(..., help="What changed in this version"),
-    project_root: Path = typer.Option(
-        ".", "--project", "-p", help="Project root directory"
-    ),
+    project_root: Path = typer.Option(".", "--project", "-p", help="Project root directory"),
 ) -> None:
     """Create a new version of an existing prompt."""
     project_root = project_root.resolve()
@@ -97,12 +93,8 @@ def bump(
 
     # Update frontmatter
     now = datetime.now(tz=timezone.utc).strftime("%Y-%m-%d")
-    new_content = re.sub(
-        r"version:\s*v[\d.]+", f"version: {new_version}", base_content
-    )
-    new_content = re.sub(
-        r"description:.*", f"description: {description}", new_content
-    )
+    new_content = re.sub(r"version:\s*v[\d.]+", f"version: {new_version}", base_content)
+    new_content = re.sub(r"description:.*", f"description: {description}", new_content)
     if "created:" in new_content:
         new_content = new_content.replace(
             new_content.split("created:")[1].split("\n")[0],
@@ -121,9 +113,7 @@ def diff_versions(
     name: str = typer.Argument(..., help="Prompt name"),
     v1: str = typer.Argument(..., help="First version (e.g., v1.0)"),
     v2: str = typer.Argument(..., help="Second version (e.g., v1.1)"),
-    project_root: Path = typer.Option(
-        ".", "--project", "-p", help="Project root directory"
-    ),
+    project_root: Path = typer.Option(".", "--project", "-p", help="Project root directory"),
 ) -> None:
     """Show differences between two prompt versions."""
     project_root = project_root.resolve()
@@ -157,9 +147,7 @@ def diff_versions(
 def rollback(
     name: str = typer.Argument(..., help="Prompt name"),
     version: str = typer.Argument(..., help="Version to rollback to"),
-    project_root: Path = typer.Option(
-        ".", "--project", "-p", help="Project root directory"
-    ),
+    project_root: Path = typer.Option(".", "--project", "-p", help="Project root directory"),
 ) -> None:
     """Rollback to a specific prompt version (mark as current)."""
     project_root = project_root.resolve()
@@ -170,9 +158,7 @@ def rollback(
         console.print(f"[red]❌ Version {version} not found.[/red]")
         raise typer.Exit(code=1)
 
-    _update_prompt_changelog(
-        project_root, name, version, f"Rolled back to {version}"
-    )
+    _update_prompt_changelog(project_root, name, version, f"Rolled back to {version}")
     console.print(f"[green]✅ Rolled back {name} → {version}[/green]")
 
 
@@ -187,9 +173,7 @@ def _get_versions(prompt_dir: Path) -> list[str]:
     return versions
 
 
-def _update_prompt_changelog(
-    project_root: Path, name: str, version: str, description: str
-) -> None:
+def _update_prompt_changelog(project_root: Path, name: str, version: str, description: str) -> None:
     """Update the Prompt Versioning Changelog in STATUS.md."""
     status_path = project_root / ".agent" / "STATUS.md"
     if not status_path.exists():

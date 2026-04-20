@@ -23,8 +23,7 @@ def serve(
         from gemstack.mcp.server import create_server
     except ImportError:
         console.print(
-            "[red]❌ MCP extra not installed. "
-            "Install with: pip install gemstack[mcp][/red]"
+            "[red]❌ MCP extra not installed. Install with: pip install gemstack[mcp][/red]"
         )
         raise typer.Exit(code=1) from None
 
@@ -37,10 +36,7 @@ def serve(
         )
 
     if transport not in ("stdio", "sse"):
-        console.print(
-            f"[red]❌ Unknown transport: '{transport}'. "
-            f"Use 'stdio' or 'sse'.[/red]"
-        )
+        console.print(f"[red]❌ Unknown transport: '{transport}'. Use 'stdio' or 'sse'.[/red]")
         raise typer.Exit(code=1)
 
     # FastMCP configures host/port via constructor, not via run()
@@ -55,21 +51,13 @@ def serve(
 
 @mcp_app.command()
 def register(
-    gemini_cli: bool = typer.Option(
-        False, "--gemini-cli", help="Register with Gemini CLI"
-    ),
+    gemini_cli: bool = typer.Option(False, "--gemini-cli", help="Register with Gemini CLI"),
     claude_desktop: bool = typer.Option(
         False, "--claude-desktop", help="Register with Claude Desktop"
     ),
-    cursor: bool = typer.Option(
-        False, "--cursor", help="Register with Cursor"
-    ),
-    cline: bool = typer.Option(
-        False, "--cline", help="Register with Cline"
-    ),
-    project_root: Path = typer.Option(
-        ".", "--project", "-p", help="Project root (for Cursor)"
-    ),
+    cursor: bool = typer.Option(False, "--cursor", help="Register with Cursor"),
+    cline: bool = typer.Option(False, "--cline", help="Register with Cline"),
+    project_root: Path = typer.Option(".", "--project", "-p", help="Project root (for Cursor)"),
 ) -> None:
     """Register the MCP server with an agent's configuration."""
     if not any([gemini_cli, claude_desktop, cursor, cline]):
@@ -91,4 +79,3 @@ def register(
 
     for msg in messages:
         console.print(msg)
-

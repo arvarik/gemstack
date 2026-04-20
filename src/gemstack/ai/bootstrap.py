@@ -14,7 +14,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from gemstack.core.detector import ProjectProfile
+    from gemstack.project.detector import ProjectProfile
 
 logger = logging.getLogger(__name__)
 
@@ -126,9 +126,7 @@ class AIBootstrapper:
 
         return self._parse_response(response)
 
-    async def analyze_with_fallback(
-        self, profile: ProjectProfile
-    ) -> BootstrapResult:
+    async def analyze_with_fallback(self, profile: ProjectProfile) -> BootstrapResult:
         """Attempt AI analysis with graceful fallback to template-only mode."""
         try:
             return await self.analyze(profile)
@@ -159,9 +157,7 @@ class AIBootstrapper:
         if profile.manifest_file and profile.manifest_file.exists():
             try:
                 content = profile.manifest_file.read_text()
-                parts.append(
-                    f"# {profile.manifest_file.name}\n```\n{content}\n```"
-                )
+                parts.append(f"# {profile.manifest_file.name}\n```\n{content}\n```")
                 char_budget -= len(content)
             except OSError:
                 pass
@@ -174,9 +170,7 @@ class AIBootstrapper:
                 content = config_file.read_text()
                 if len(content) > 5000:
                     content = content[:5000] + "\n... (truncated)"
-                parts.append(
-                    f"# {config_file.name}\n```\n{content}\n```"
-                )
+                parts.append(f"# {config_file.name}\n```\n{content}\n```")
                 char_budget -= len(content)
             except OSError:
                 continue
@@ -225,8 +219,18 @@ class AIBootstrapper:
 
                 # Skip non-text files and very large files
                 if path.suffix not in {
-                    ".py", ".ts", ".tsx", ".js", ".jsx", ".go", ".rs",
-                    ".java", ".rb", ".sql", ".graphql", ".prisma",
+                    ".py",
+                    ".ts",
+                    ".tsx",
+                    ".js",
+                    ".jsx",
+                    ".go",
+                    ".rs",
+                    ".java",
+                    ".rb",
+                    ".sql",
+                    ".graphql",
+                    ".prisma",
                 }:
                     continue
 
@@ -295,9 +299,7 @@ class AIBootstrapper:
             candidates = response.candidates
             if candidates and hasattr(candidates[0], "content"):
                 parts = candidates[0].content.parts
-                text = "".join(
-                    p.text for p in parts if hasattr(p, "text")
-                )
+                text = "".join(p.text for p in parts if hasattr(p, "text"))
 
         if not text:
             return BootstrapResult(

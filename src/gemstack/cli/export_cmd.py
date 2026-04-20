@@ -11,18 +11,14 @@ console = Console()
 
 
 def export(
-    target: str = typer.Argument(
-        ".", help="Target directory for template export"
-    ),
+    target: str = typer.Argument(".", help="Target directory for template export"),
     format: str = typer.Option(
         "",
         "--format",
         "-f",
         help="Export format: cursor, claude, gemini",
     ),
-    project_root: Path = typer.Option(
-        ".", "--project", "-p", help="Project root directory"
-    ),
+    project_root: Path = typer.Option(".", "--project", "-p", help="Project root directory"),
 ) -> None:
     """Export templates or generate agent-specific context files."""
     project_root = project_root.resolve()
@@ -38,17 +34,13 @@ def _export_agent_format(project_root: Path, fmt: str) -> None:
     valid_formats = {"cursor", "claude", "gemini"}
     if fmt not in valid_formats:
         console.print(
-            f"[red]❌ Unknown format: '{fmt}'. "
-            f"Valid formats: {', '.join(valid_formats)}[/red]"
+            f"[red]❌ Unknown format: '{fmt}'. Valid formats: {', '.join(valid_formats)}[/red]"
         )
         raise typer.Exit(code=1)
 
     agent_dir = project_root / ".agent"
     if not agent_dir.exists():
-        console.print(
-            "[red]❌ No .agent/ directory found. "
-            "Run `gemstack init` first.[/red]"
-        )
+        console.print("[red]❌ No .agent/ directory found. Run `gemstack init` first.[/red]")
         raise typer.Exit(code=1)
 
     if fmt == "cursor":
@@ -87,8 +79,13 @@ def _export_templates(target_dir: Path) -> None:
     template_pkg = files("gemstack.templates")
     count = 0
 
-    for item in ["architecture.md.j2", "style.md.j2", "testing.md.j2",
-                  "philosophy.md.j2", "status.md.j2"]:
+    for item in [
+        "architecture.md.j2",
+        "style.md.j2",
+        "testing.md.j2",
+        "philosophy.md.j2",
+        "status.md.j2",
+    ]:
         try:
             resource = template_pkg / item
             if hasattr(resource, "read_text"):

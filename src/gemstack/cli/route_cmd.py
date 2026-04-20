@@ -22,28 +22,29 @@ _ACTION_EMOJI = {
 
 
 def route(
-    project_root: Path = typer.Argument(
-        ".", help="Project root directory", exists=True
-    ),
-    json_output: bool = typer.Option(
-        False, "--json", help="Machine-readable JSON output"
-    ),
+    project_root: Path = typer.Argument(".", help="Project root directory", exists=True),
+    json_output: bool = typer.Option(False, "--json", help="Machine-readable JSON output"),
 ) -> None:
     """Get the recommended next action based on project state."""
-    from gemstack.core.router import PhaseRouter
+    from gemstack.orchestration.router import PhaseRouter
 
     project_root = project_root.resolve()
     router = PhaseRouter()
     decision = router.route(project_root)
 
     if json_output:
-        console.print(json_mod.dumps({
-            "action": decision.action.value,
-            "next_command": decision.next_command,
-            "reason": decision.reason,
-            "context_files": decision.context_files,
-            "blockers": decision.blockers,
-        }, indent=2))
+        console.print(
+            json_mod.dumps(
+                {
+                    "action": decision.action.value,
+                    "next_command": decision.next_command,
+                    "reason": decision.reason,
+                    "context_files": decision.context_files,
+                    "blockers": decision.blockers,
+                },
+                indent=2,
+            )
+        )
         return
 
     emoji = _ACTION_EMOJI.get(decision.action.value, "❓")
@@ -62,11 +63,13 @@ def route(
         for blocker in decision.blockers:
             content += f"\n  • {blocker}"
 
-    console.print(Panel(
-        content,
-        title="🧭 Gemstack Router",
-        border_style="cyan",
-    ))
+    console.print(
+        Panel(
+            content,
+            title="🧭 Gemstack Router",
+            border_style="cyan",
+        )
+    )
 
     # Exit code 1 if blocked
     if decision.action.value == "blocked":

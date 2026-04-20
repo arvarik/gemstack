@@ -14,7 +14,7 @@ import logging
 import sys
 from pathlib import Path
 
-from gemstack.core.fileutil import write_atomic
+from gemstack.utils.fileutil import write_atomic
 
 logger = logging.getLogger(__name__)
 

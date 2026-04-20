@@ -51,9 +51,15 @@ class ContextCompiler:
     """
 
     # Known valid workflow steps
-    VALID_STEPS = frozenset({
-        "step1-spec", "step2-trap", "step3-build", "step4-audit", "step5-ship",
-    })
+    VALID_STEPS = frozenset(
+        {
+            "step1-spec",
+            "step2-trap",
+            "step3-build",
+            "step4-audit",
+            "step5-ship",
+        }
+    )
 
     def compile(
         self,
@@ -107,8 +113,8 @@ class ContextCompiler:
             path = agent_dir / agent_file
             if path.exists():
                 try:
-                    sections.append((agent_file, path.read_text()))
-                except OSError as e:
+                    sections.append((agent_file, path.read_text(encoding="utf-8")))
+                except (OSError, UnicodeDecodeError) as e:
                     logger.warning(f"Failed to read {path}: {e}")
 
         # 6. Source files from STATUS.md → Relevant Files
@@ -118,8 +124,9 @@ class ContextCompiler:
                 full_path = project_root / filepath
                 if full_path.exists() and full_path.is_file():
                     try:
-                        sections.append((f"Source: {filepath}", full_path.read_text()))
-                    except OSError as e:
+                        content = full_path.read_text(encoding="utf-8")
+                        sections.append((f"Source: {filepath}", f"```file-content\n{content}\n```"))
+                    except (OSError, UnicodeDecodeError) as e:
                         logger.warning(f"Failed to read source file {filepath}: {e}")
 
         # 7. Add the full workflow content as routing protocol
@@ -185,26 +192,18 @@ class ContextCompiler:
         roles: list[str] = []
         phases: list[str] = []
 
-        roles_match = re.search(
-            r"\*\*Roles?:\*\*\s*(.+)", content
-        )
+        roles_match = re.search(r"\*\*Roles?:\*\*\s*(.+)", content)
         if roles_match:
             roles_str = roles_match.group(1)
             roles = [
-                r.strip().strip("`")
-                for r in re.split(r",\s*", roles_str)
-                if r.strip().strip("`")
+                r.strip().strip("`") for r in re.split(r",\s*", roles_str) if r.strip().strip("`")
             ]
 
-        phases_match = re.search(
-            r"\*\*Phases?:\*\*\s*(.+)", content
-        )
+        phases_match = re.search(r"\*\*Phases?:\*\*\s*(.+)", content)
         if phases_match:
             phases_str = phases_match.group(1)
             phases = [
-                p.strip().strip("`")
-                for p in re.split(r",\s*", phases_str)
-                if p.strip().strip("`")
+                p.strip().strip("`") for p in re.split(r",\s*", phases_str) if p.strip().strip("`")
             ]
 
         logger.debug(f"Parsed workflow {step}: roles={roles}, phases={phases}")
@@ -293,13 +292,11 @@ class ContextCompiler:
             return []
 
         try:
-            content = arch_path.read_text()
-        except OSError:
+            content = arch_path.read_text(encoding="utf-8")
+        except (OSError, UnicodeDecodeError):
             return []
 
-        match = re.search(
-            r"\*\*Topology:\*\*\s*\[([^\]]+)\]", content
-        )
+        match = re.search(r"\*\*Topology:\*\*\s*\[([^\]]+)\]", content)
         if not match:
             return []
 
@@ -313,8 +310,8 @@ class ContextCompiler:
             return []
 
         try:
-            content = status_path.read_text()
-        except OSError:
+            content = status_path.read_text(encoding="utf-8")
+        except (OSError, UnicodeDecodeError):
             return []
 
         # Find the "## Relevant Files" section
@@ -329,12 +326,13 @@ class ContextCompiler:
         section = section_match.group(1)
         files: list[str] = []
 
-        # Match lines like: - `src/app/api/auth/route.ts`
-        # or: - src/app/api/auth/route.ts
-        for match in re.finditer(r"[-*]\s*`?([^\s`]+)`?", section):
-            filepath = match.group(1).strip()
-            if filepath and not filepath.startswith("(") and not filepath.startswith("_"):
-                files.append(filepath)
+        # Extract file paths, allowing spaces
+        for line in section.splitlines():
+            line = line.strip()
+            if line.startswith("-") or line.startswith("*"):
+                filepath = line[1:].strip().strip("`").strip()
+                if filepath and not filepath.startswith("(") and not filepath.startswith("_"):
+                    files.append(filepath)
 
         return files
 
@@ -342,9 +340,7 @@ class ContextCompiler:
         """Stitch sections with clear markdown boundaries."""
         parts: list[str] = []
         for name, content in sections:
-            parts.append(
-                f"{'=' * 60}\n## {name}\n{'=' * 60}\n\n{content}\n"
-            )
+            parts.append(f"{'=' * 60}\n## {name}\n{'=' * 60}\n\n{content}\n")
         return "\n".join(parts)
 
     def _truncate(self, sections: list[tuple[str, str]], max_tokens: int) -> str:

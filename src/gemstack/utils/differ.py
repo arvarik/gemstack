@@ -123,9 +123,7 @@ class ContextDiffer:
 
         return report
 
-    def _check_dependency_drift(
-        self, root: Path, arch_content: str, report: DriftReport
-    ) -> None:
+    def _check_dependency_drift(self, root: Path, arch_content: str, report: DriftReport) -> None:
         """Compare actual dependencies against ARCHITECTURE.md documentation."""
         actual_deps = self._extract_actual_deps(root)
         documented_deps = self._extract_documented_deps(arch_content)
@@ -140,9 +138,7 @@ class ContextDiffer:
         report.new_dependencies = sorted(actual_normalized - documented_normalized)
         report.removed_dependencies = sorted(documented_normalized - actual_normalized)
 
-    def _check_env_drift(
-        self, root: Path, arch_content: str, report: DriftReport
-    ) -> None:
+    def _check_env_drift(self, root: Path, arch_content: str, report: DriftReport) -> None:
         """Compare .env.example variables against ARCHITECTURE.md documentation."""
         actual_vars = self._extract_env_vars(root)
         documented_vars = self._extract_documented_env_vars(arch_content)
@@ -153,9 +149,7 @@ class ContextDiffer:
         report.new_env_vars = sorted(actual_vars - documented_vars)
         report.removed_env_vars = sorted(documented_vars - actual_vars)
 
-    def _check_stale_refs(
-        self, root: Path, status_path: Path, report: DriftReport
-    ) -> None:
+    def _check_stale_refs(self, root: Path, status_path: Path, report: DriftReport) -> None:
         """Check if file references in STATUS.md still exist."""
         content = status_path.read_text()
 

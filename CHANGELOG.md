@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.2] — 2026-04-20
+
+### Fixed
+
+- Resolved test suite formatting violations and MyPy strictness errors mapping to `SecretStr` overrides and generator yields across tests and `tail_app`.
+- Hardened autonomous testing assertions (`test_executor.py`) to bypass unmanaged `.agent/` path resolutions correctly.
+- Aligned wildcard and disjoint Python imports globally via Ruff tracking 100% format compliance.
+
+### Changed
+
+- Refactored `gemstack.core` layer explicitly into `orchestration`, `platform`, `project`, and `utils` for strict domain separation.
+
 ## [1.0.1] — 2026-04-20
 
 ### Fixed

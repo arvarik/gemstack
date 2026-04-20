@@ -14,20 +14,16 @@ def migrate(
     topology: str = typer.Option(
         "", "--topology", "-t", help="Explicit topology (e.g., 'backend,frontend')"
     ),
-    project_root: Path = typer.Option(
-        ".", "--project", "-p", help="Project root directory"
-    ),
+    project_root: Path = typer.Option(".", "--project", "-p", help="Project root directory"),
 ) -> None:
     """Upgrade a project to include topology-specific sections."""
-    from gemstack.core.migrator import TopologyMigrator
+    from gemstack.project.migrator import TopologyMigrator
 
     project_root = project_root.resolve()
     agent_dir = project_root / ".agent"
 
     if not agent_dir.exists():
-        console.print(
-            "[red]❌ No .agent/ directory found. Run `gemstack init` first.[/red]"
-        )
+        console.print("[red]❌ No .agent/ directory found. Run `gemstack init` first.[/red]")
         raise typer.Exit(code=1)
 
     # Determine topologies
@@ -35,21 +31,17 @@ def migrate(
         topologies = [t.strip() for t in topology.split(",") if t.strip()]
     else:
         # Auto-detect from project
-        from gemstack.core.detector import ProjectDetector
+        from gemstack.project.detector import ProjectDetector
 
         detector = ProjectDetector()
         profile = detector.detect(project_root)
         topologies = [t.value for t in profile.topologies]
 
         if not topologies:
-            console.print(
-                "[yellow]⚠️  No topologies detected. Use --topology to specify.[/yellow]"
-            )
+            console.print("[yellow]⚠️  No topologies detected. Use --topology to specify.[/yellow]")
             raise typer.Exit(code=1)
 
-        console.print(
-            f"[dim]Detected topologies: {', '.join(topologies)}[/dim]"
-        )
+        console.print(f"[dim]Detected topologies: {', '.join(topologies)}[/dim]")
 
     migrator = TopologyMigrator()
     result = migrator.migrate(project_root, topologies)

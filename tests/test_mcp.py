@@ -144,13 +144,7 @@ class TestMCPServer:
         from gemstack.mcp.registrar import _upsert_mcp_config
 
         config_path = tmp_path / "existing.json"
-        config_path.write_text(
-            json.dumps({
-                "mcpServers": {
-                    "other-tool": {"command": "other"}
-                }
-            })
-        )
+        config_path.write_text(json.dumps({"mcpServers": {"other-tool": {"command": "other"}}}))
 
         _upsert_mcp_config(config_path, "Test Agent", "mcpServers")
 
@@ -272,11 +266,14 @@ class TestMCPBidirectionalTools:
             tools = server._tool_manager.list_tools()
             tool_names = {t.name for t in tools}
             expected = {
-                "gemstack_status", "gemstack_route", "gemstack_compile",
-                "gemstack_check", "gemstack_diff",
-                "gemstack_run", "gemstack_costs",
+                "gemstack_status",
+                "gemstack_route",
+                "gemstack_compile",
+                "gemstack_check",
+                "gemstack_diff",
+                "gemstack_run",
+                "gemstack_costs",
             }
             assert expected == tool_names
         except ImportError:
             pytest.skip("mcp SDK not installed")
-

@@ -80,9 +80,7 @@ class PhaseRouter:
         lifecycle = self._parse_lifecycle(status_path)
         has_findings = audit_path.exists() and audit_path.stat().st_size > 0
 
-        logger.debug(
-            f"Router state: {state}, has_findings={has_findings}, lifecycle={lifecycle}"
-        )
+        logger.debug(f"Router state: {state}, has_findings={has_findings}, lifecycle={lifecycle}")
 
         # Rule 1: Audit findings exist → reroute to build
         if has_findings:
@@ -176,8 +174,8 @@ class PhaseRouter:
     def _parse_state(self, status_path: Path) -> str:
         """Extract [STATE: ...] enum from STATUS.md."""
         try:
-            content = status_path.read_text()
-        except OSError:
+            content = status_path.read_text(encoding="utf-8")
+        except (OSError, UnicodeDecodeError):
             return "UNKNOWN"
 
         match = re.search(r"\[STATE:\s*(\w+)\]", content)
@@ -189,8 +187,8 @@ class PhaseRouter:
         Returns a dict mapping phase names to completion status.
         """
         try:
-            content = status_path.read_text()
-        except OSError:
+            content = status_path.read_text(encoding="utf-8")
+        except (OSError, UnicodeDecodeError):
             return {}
 
         lifecycle: dict[str, bool] = {}

@@ -64,7 +64,7 @@ class GemstackConfig(BaseModel):
         """
         import tomli_w
 
-        from gemstack.core.fileutil import write_atomic
+        from gemstack.utils.fileutil import write_atomic
 
         path = self.config_path()
         path.parent.mkdir(parents=True, exist_ok=True)

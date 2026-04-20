@@ -32,9 +32,7 @@ def phase(
     phase_name: str = typer.Argument(
         ..., help="Phase to transition to (spec, trap, build, audit, ship)"
     ),
-    project_root: Path = typer.Option(
-        ".", "--project", "-p", help="Project root directory"
-    ),
+    project_root: Path = typer.Option(".", "--project", "-p", help="Project root directory"),
 ) -> None:
     """Advance or switch the active project phase."""
     project_root = project_root.resolve()
@@ -59,9 +57,7 @@ def phase(
     current_state = current_state_match.group(1) if current_state_match else "UNKNOWN"
 
     if current_state == "INITIALIZED" and phase_key != "spec":
-        console.print(
-            "[yellow]⚠️  Project is INITIALIZED. Start with 'spec' phase first.[/yellow]"
-        )
+        console.print("[yellow]⚠️  Project is INITIALIZED. Start with 'spec' phase first.[/yellow]")
 
     # Check for plan doc requirement before build
     if phase_key == "build":
@@ -94,11 +90,9 @@ def phase(
                 content,
             )
 
-    from gemstack.core.fileutil import write_atomic
+    from gemstack.utils.fileutil import write_atomic
 
     write_atomic(status_path, content)
 
-    console.print(
-        f"[green]✅ Transitioned to [bold]{phase_name}[/bold] phase[/green]"
-    )
+    console.print(f"[green]✅ Transitioned to [bold]{phase_name}[/bold] phase[/green]")
     console.print(f"[dim]STATUS.md state updated to [STATE: {new_state}][/dim]")

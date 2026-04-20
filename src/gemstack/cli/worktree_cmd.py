@@ -17,12 +17,10 @@ worktree_app = typer.Typer(name="worktree", help="Parallel git worktree manageme
 def create(
     backend: str = typer.Option("", "--backend", help="Backend branch name"),
     frontend: str = typer.Option("", "--frontend", help="Frontend branch name"),
-    project_root: Path = typer.Option(
-        ".", "--project", "-p", help="Project root directory"
-    ),
+    project_root: Path = typer.Option(".", "--project", "-p", help="Project root directory"),
 ) -> None:
     """Create worktrees for parallel development."""
-    from gemstack.core.worktree import WorktreeManager
+    from gemstack.platform.worktree import WorktreeManager
 
     branches: dict[str, str] = {}
     if backend:
@@ -42,9 +40,7 @@ def create(
 
     if result.success:
         for wt in result.worktrees:
-            console.print(
-                f"  [green]✔[/green] Created worktree: {wt.path} ({wt.branch})"
-            )
+            console.print(f"  [green]✔[/green] Created worktree: {wt.path} ({wt.branch})")
         console.print("[green]✅ Worktrees created![/green]")
     else:
         console.print(f"[red]❌ {result.message}[/red]")
@@ -53,12 +49,10 @@ def create(
 
 @worktree_app.command("status")
 def worktree_status(
-    project_root: Path = typer.Option(
-        ".", "--project", "-p", help="Project root directory"
-    ),
+    project_root: Path = typer.Option(".", "--project", "-p", help="Project root directory"),
 ) -> None:
     """Show active worktree status."""
-    from gemstack.core.worktree import WorktreeManager
+    from gemstack.platform.worktree import WorktreeManager
 
     manager = WorktreeManager()
     result = manager.status(project_root.resolve())
@@ -81,17 +75,13 @@ def worktree_status(
 @worktree_app.command()
 def merge(
     branch: str = typer.Argument("", help="Branch to merge (empty = all)"),
-    project_root: Path = typer.Option(
-        ".", "--project", "-p", help="Project root directory"
-    ),
+    project_root: Path = typer.Option(".", "--project", "-p", help="Project root directory"),
 ) -> None:
     """Merge worktrees back to main branch."""
-    from gemstack.core.worktree import WorktreeManager
+    from gemstack.platform.worktree import WorktreeManager
 
     manager = WorktreeManager()
-    result = manager.merge(
-        project_root.resolve(), branch=branch if branch else None
-    )
+    result = manager.merge(project_root.resolve(), branch=branch if branch else None)
 
     if result.success:
         console.print(f"[green]✅ {result.message}[/green]")
@@ -102,12 +92,10 @@ def merge(
 
 @worktree_app.command()
 def cleanup(
-    project_root: Path = typer.Option(
-        ".", "--project", "-p", help="Project root directory"
-    ),
+    project_root: Path = typer.Option(".", "--project", "-p", help="Project root directory"),
 ) -> None:
     """Clean up completed worktrees."""
-    from gemstack.core.worktree import WorktreeManager
+    from gemstack.platform.worktree import WorktreeManager
 
     manager = WorktreeManager()
     result = manager.cleanup(project_root.resolve())

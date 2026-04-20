@@ -9,39 +9,36 @@ from __future__ import annotations
 import asyncio
 import logging
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Annotated
 
 import typer
-from rich.console import Console
 from rich.panel import Panel
 
-if TYPE_CHECKING:
-    from gemstack.core.detector import ProjectProfile
+from gemstack.cli.context import console
 
-console = Console()
+if TYPE_CHECKING:
+    from gemstack.project.detector import ProjectProfile
+
 logger = logging.getLogger(__name__)
 
 
 def init(
-    project_root: Path = typer.Argument(
-        ".", help="Project root directory to initialize", exists=True
-    ),
-    topology: str = typer.Option(
-        "", "--topology", "-t", help="Explicit topology (e.g., 'backend,frontend')"
-    ),
-    no_ai: bool = typer.Option(
-        False, "--no-ai", help="Template-only, no Gemini API calls"
-    ),
-    from_legacy: bool = typer.Option(
-        False, "--from-legacy", help="Absorb existing context files only"
-    ),
-    ai: bool = typer.Option(
-        False, "--ai", help="Force AI-powered deep analysis"
-    ),
+    project_root: Annotated[
+        Path,
+        typer.Argument(help="Project root directory to initialize", exists=True, resolve_path=True),
+    ] = Path("."),
+    topology: Annotated[
+        str, typer.Option("--topology", "-t", help="Explicit topology (e.g., 'backend,frontend')")
+    ] = "",
+    no_ai: Annotated[
+        bool, typer.Option("--no-ai", help="Template-only, no Gemini API calls")
+    ] = False,
+    from_legacy: Annotated[
+        bool, typer.Option("--from-legacy", help="Absorb existing context files only")
+    ] = False,
+    ai: Annotated[bool, typer.Option("--ai", help="Force AI-powered deep analysis")] = False,
 ) -> None:
     """Initialize a Gemstack project with .agent/ directory."""
-    project_root = project_root.resolve()
-
     console.print(
         Panel(
             f"[bold cyan]Initializing Gemstack project[/bold cyan]\n"
@@ -59,16 +56,14 @@ def init(
 
     # Step 1: Detect project profile
     console.print("[dim]Analyzing project...[/dim]")
-    from gemstack.core.detector import ProjectDetector, Topology
+    from gemstack.project.detector import ProjectDetector, Topology
 
     detector = ProjectDetector()
     profile = detector.detect(project_root)
 
     # Override topologies if explicitly specified
     if topology:
-        profile.topologies = [
-            Topology(t.strip()) for t in topology.split(",") if t.strip()
-        ]
+        profile.topologies = [Topology(t.strip()) for t in topology.split(",") if t.strip()]
 
     _print_detection_results(profile)
 
@@ -86,15 +81,12 @@ def init(
             asyncio.run(_init_with_ai(project_root, profile))
         except ImportError:
             console.print(
-                "[yellow]⚠️  AI extra not installed. "
-                "Install with: pip install gemstack[ai][/yellow]"
+                "[yellow]⚠️  AI extra not installed. Install with: pip install gemstack[ai][/yellow]"
             )
             console.print("[dim]Falling back to template-only mode...[/dim]")
             _init_template_only(project_root, profile)
         except Exception as e:
-            console.print(
-                f"[yellow]⚠️  AI analysis failed: {e}[/yellow]"
-            )
+            console.print(f"[yellow]⚠️  AI analysis failed: {e}[/yellow]")
             console.print("[dim]Falling back to template-only mode...[/dim]")
             _init_template_only(project_root, profile)
     else:
@@ -118,7 +110,7 @@ def _has_api_key() -> bool:
     """Check if a Gemini API key is configured."""
     import os
 
-    from gemstack.core.config import GemstackConfig
+    from gemstack.project.config import GemstackConfig
 
     # Check env var first
     if os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY"):
@@ -131,7 +123,7 @@ def _has_api_key() -> bool:
 
 def _init_template_only(project_root: Path, profile: ProjectProfile) -> None:
     """Initialize using Jinja2 templates only (no AI)."""
-    from gemstack.core.templates import render_agent_files
+    from gemstack.project.templates import render_agent_files
 
     agent_dir = project_root / ".agent"
     created = render_agent_files(profile, agent_dir)
@@ -143,8 +135,8 @@ def _init_template_only(project_root: Path, profile: ProjectProfile) -> None:
 async def _init_with_ai(project_root: Path, profile: ProjectProfile) -> None:
     """Initialize using AI-powered deep analysis."""
     from gemstack.ai.bootstrap import AIBootstrapper
-    from gemstack.core.config import GemstackConfig
-    from gemstack.core.templates import render_agent_files
+    from gemstack.project.config import GemstackConfig
+    from gemstack.project.templates import render_agent_files
 
     config = GemstackConfig.load()
     model = config.default_model or "gemini-2.5-flash"
@@ -166,8 +158,6 @@ async def _init_with_ai(project_root: Path, profile: ProjectProfile) -> None:
         expected_files = {"ARCHITECTURE.md", "STYLE.md", "TESTING.md", "PHILOSOPHY.md", "STATUS.md"}
         missing = expected_files - set(ai_files.keys())
         if missing:
-            from gemstack.core.templates import render_agent_files
-
             render_agent_files(profile, agent_dir)
             for filename in missing:
                 console.print(f"  [green]✔[/green] Created .agent/{filename} [dim](template)[/dim]")

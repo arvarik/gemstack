@@ -45,9 +45,7 @@ class TestCheckCommand:
         result = runner.invoke(app, ["check", str(tmp_path)])
         assert result.exit_code == 1
 
-    def test_check_passes_bootstrapped_project(
-        self, bootstrapped_project: Path
-    ) -> None:
+    def test_check_passes_bootstrapped_project(self, bootstrapped_project: Path) -> None:
         result = runner.invoke(app, ["check", str(bootstrapped_project)])
         assert result.exit_code == 0
 
@@ -94,9 +92,7 @@ class TestStatusCommand:
         assert result.exit_code == 0
 
     def test_status_json_output(self, bootstrapped_project: Path) -> None:
-        result = runner.invoke(
-            app, ["status", str(bootstrapped_project), "--json"]
-        )
+        result = runner.invoke(app, ["status", str(bootstrapped_project), "--json"])
         assert result.exit_code == 0
         assert "READY_FOR_BUILD" in result.stdout
 
@@ -121,11 +117,15 @@ class TestCompileCommand:
     def test_compile_to_file(self, bootstrapped_project: Path, tmp_path: Path) -> None:
         output_file = tmp_path / "compiled.md"
         result = runner.invoke(
-            app, [
-                "compile", "step1-spec",
-                "--project", str(bootstrapped_project),
-                "--output", str(output_file),
-            ]
+            app,
+            [
+                "compile",
+                "step1-spec",
+                "--project",
+                str(bootstrapped_project),
+                "--output",
+                str(output_file),
+            ],
         )
         assert result.exit_code == 0
         assert output_file.exists()
@@ -148,9 +148,7 @@ class TestRouteCommand:
         assert "step3-build" in result.stdout or "CONTINUE" in result.stdout
 
     def test_route_json(self, bootstrapped_project: Path) -> None:
-        result = runner.invoke(
-            app, ["route", str(bootstrapped_project), "--json"]
-        )
+        result = runner.invoke(app, ["route", str(bootstrapped_project), "--json"])
         assert result.exit_code == 0
         assert "action" in result.stdout
         assert "next_command" in result.stdout
@@ -176,9 +174,7 @@ class TestStartCommand:
         assert "Google OAuth" in status
 
     def test_start_no_agent_fails(self, tmp_path: Path) -> None:
-        result = runner.invoke(
-            app, ["start", "Feature", "--project", str(tmp_path)]
-        )
+        result = runner.invoke(app, ["start", "Feature", "--project", str(tmp_path)])
         assert result.exit_code == 1
 
 
@@ -186,9 +182,7 @@ class TestPhaseCommand:
     """Test the phase command — Phase 2."""
 
     def test_phase_build(self, bootstrapped_project: Path) -> None:
-        result = runner.invoke(
-            app, ["phase", "build", "--project", str(bootstrapped_project)]
-        )
+        result = runner.invoke(app, ["phase", "build", "--project", str(bootstrapped_project)])
         assert result.exit_code == 0
         assert "build" in result.stdout.lower()
 
@@ -196,9 +190,7 @@ class TestPhaseCommand:
         assert "READY_FOR_BUILD" in status
 
     def test_phase_invalid(self, bootstrapped_project: Path) -> None:
-        result = runner.invoke(
-            app, ["phase", "explode", "--project", str(bootstrapped_project)]
-        )
+        result = runner.invoke(app, ["phase", "explode", "--project", str(bootstrapped_project)])
         assert result.exit_code == 1
 
 
@@ -210,15 +202,11 @@ class TestConfigCommand:
         assert result.exit_code == 0
         assert "gemini-api-key" in result.stdout
 
-    def test_config_set_and_get(
-        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
-        from gemstack.core.config import GemstackConfig
+    def test_config_set_and_get(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+        from gemstack.project.config import GemstackConfig
 
         config_path = tmp_path / "config.toml"
-        monkeypatch.setattr(
-            GemstackConfig, "config_path", classmethod(lambda cls: config_path)
-        )
+        monkeypatch.setattr(GemstackConfig, "config_path", classmethod(lambda cls: config_path))
 
         result = runner.invoke(app, ["config", "set", "default-model", "gemini-2.5-pro"])
         assert result.exit_code == 0
@@ -237,29 +225,41 @@ class TestExportCommand:
 
     def test_export_cursor(self, bootstrapped_project: Path) -> None:
         result = runner.invoke(
-            app, [
-                "export", "--format", "cursor",
-                "--project", str(bootstrapped_project),
-            ]
+            app,
+            [
+                "export",
+                "--format",
+                "cursor",
+                "--project",
+                str(bootstrapped_project),
+            ],
         )
         assert result.exit_code == 0
         assert (bootstrapped_project / ".cursorrules").exists()
 
     def test_export_claude(self, bootstrapped_project: Path) -> None:
         result = runner.invoke(
-            app, [
-                "export", "--format", "claude",
-                "--project", str(bootstrapped_project),
-            ]
+            app,
+            [
+                "export",
+                "--format",
+                "claude",
+                "--project",
+                str(bootstrapped_project),
+            ],
         )
         assert result.exit_code == 0
         assert (bootstrapped_project / "CLAUDE.md").exists()
 
     def test_export_invalid_format(self, bootstrapped_project: Path) -> None:
         result = runner.invoke(
-            app, [
-                "export", "--format", "vscode",
-                "--project", str(bootstrapped_project),
-            ]
+            app,
+            [
+                "export",
+                "--format",
+                "vscode",
+                "--project",
+                str(bootstrapped_project),
+            ],
         )
         assert result.exit_code == 1

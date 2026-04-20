@@ -110,9 +110,7 @@ def fire_post_init(project_root: Any, profile: Any) -> None:
         logger.warning(f"Plugin post-init hook error: {e}")
 
 
-def fire_pre_compile(
-    step: str, sections: list[tuple[str, str]]
-) -> list[tuple[str, str]]:
+def fire_pre_compile(step: str, sections: list[tuple[str, str]]) -> list[tuple[str, str]]:
     """Fire ``gemstack_pre_compile`` hook.
 
     Returns the (possibly modified) sections list.
@@ -201,4 +199,3 @@ def fire_register_checks(project_root: Any) -> list[str]:
     except Exception as e:
         logger.warning(f"Plugin register_checks hook error: {e}")
     return errors
-

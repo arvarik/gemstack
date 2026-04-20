@@ -71,7 +71,7 @@ test: add fixtures for Go project detection
 ### Testing Requirements
 
 - All new code must have corresponding tests
-- Tests must pass on Python 3.11+ (CI runs on macOS with 3.11)
+- Tests must pass on Python 3.11+ (CI runs on Ubuntu + macOS with 3.11 and 3.13)
 - Maintain ≥80% coverage for `core/` modules
 - Use `tmp_path` for all filesystem operations — never write outside temp dirs
 

@@ -4,11 +4,10 @@ import platform
 import sys
 from pathlib import Path
 
-from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
 
-console = Console()
+from gemstack.cli.context import console
 
 
 def doctor() -> None:
@@ -26,11 +25,13 @@ def doctor() -> None:
     # Check 1: Python version
     py_version = f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
     py_ok = sys.version_info >= (3, 10)
-    results.append((
-        "Python version",
-        py_ok,
-        f"{py_version}" + ("" if py_ok else " (requires ≥3.10)"),
-    ))
+    results.append(
+        (
+            "Python version",
+            py_ok,
+            f"{py_version}" + ("" if py_ok else " (requires ≥3.10)"),
+        )
+    )
 
     # Check 2: Gemstack version
     from gemstack import __version__
@@ -43,11 +44,13 @@ def doctor() -> None:
     # Check 4: Antigravity directory
     antigravity_dir = Path.home() / ".gemini" / "antigravity"
     ag_exists = antigravity_dir.exists()
-    results.append((
-        "Antigravity directory",
-        ag_exists,
-        str(antigravity_dir) if ag_exists else "Not found",
-    ))
+    results.append(
+        (
+            "Antigravity directory",
+            ag_exists,
+            str(antigravity_dir) if ag_exists else "Not found",
+        )
+    )
 
     # Check 5: Global workflows directory
     workflows_dir = antigravity_dir / "global_workflows"
@@ -61,11 +64,13 @@ def doctor() -> None:
     # Check 6: Gemini CLI
     gemini_dir = Path.home() / ".gemini"
     gemini_exists = gemini_dir.exists()
-    results.append((
-        "Gemini CLI config",
-        gemini_exists,
-        str(gemini_dir) if gemini_exists else "Not found",
-    ))
+    results.append(
+        (
+            "Gemini CLI config",
+            gemini_exists,
+            str(gemini_dir) if gemini_exists else "Not found",
+        )
+    )
 
     # Check 7: Bundled data integrity
     try:
@@ -97,7 +102,9 @@ def doctor() -> None:
     if all_ok:
         console.print("\n[bold green]All checks passed! 🎉[/bold green]")
     else:
-        console.print(
-            "\n[yellow]Some checks failed. "
-            "Run `gemstack install` to fix missing components.[/yellow]"
+        from gemstack.errors import GemstackError
+
+        raise GemstackError(
+            "Some diagnostic checks failed.",
+            suggestion="Run `gemstack install` to fix missing components.",
         )

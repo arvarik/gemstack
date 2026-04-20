@@ -12,24 +12,18 @@ console = Console()
 
 
 def diff(
-    project_root: Path = typer.Option(
-        ".", "--project", "-p", help="Project root directory"
-    ),
-    architecture: bool = typer.Option(
-        False, "--architecture", help="Only ARCHITECTURE.md drift"
-    ),
+    project_root: Path = typer.Option(".", "--project", "-p", help="Project root directory"),
+    architecture: bool = typer.Option(False, "--architecture", help="Only ARCHITECTURE.md drift"),
     env: bool = typer.Option(False, "--env", help="Only .env drift"),
 ) -> None:
     """Detect drift between .agent/ docs and the actual codebase."""
-    from gemstack.core.differ import ContextDiffer
+    from gemstack.utils.differ import ContextDiffer
 
     project_root = project_root.resolve()
     agent_dir = project_root / ".agent"
 
     if not agent_dir.exists():
-        console.print(
-            "[red]❌ No .agent/ directory found. Run `gemstack init` first.[/red]"
-        )
+        console.print("[red]❌ No .agent/ directory found. Run `gemstack init` first.[/red]")
         raise typer.Exit(code=1)
 
     differ = ContextDiffer()
@@ -47,9 +41,7 @@ def diff(
                 border_style="yellow",
             )
         )
-        console.print(
-            "[dim]Update your .agent/ files to resolve this drift.[/dim]"
-        )
+        console.print("[dim]Update your .agent/ files to resolve this drift.[/dim]")
         raise typer.Exit(code=1)
     else:
         console.print("[green]✅ No drift detected. .agent/ is in sync.[/green]")

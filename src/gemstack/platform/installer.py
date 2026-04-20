@@ -85,9 +85,7 @@ class InstallManager:
         if the process is interrupted.
         """
         path.parent.mkdir(parents=True, exist_ok=True)
-        tmp_fd, tmp_path = tempfile.mkstemp(
-            dir=path.parent, suffix=".tmp", prefix=f".{path.stem}-"
-        )
+        tmp_fd, tmp_path = tempfile.mkstemp(dir=path.parent, suffix=".tmp", prefix=f".{path.stem}-")
         try:
             with open(tmp_fd, "w") as f:
                 f.write(content)

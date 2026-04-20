@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from gemstack.core.cost_tracker import (
+from gemstack.orchestration.cost_tracker import (
     CostLimitExceeded,
     CostTracker,
     UsageRecord,
@@ -101,9 +101,7 @@ class TestCostTracker:
         with pytest.raises(CostLimitExceeded, match="limit"):
             tracker.check_budget("step2-trap", "expensive")
 
-    def test_budget_enforcement_per_step_tokens(
-        self, project: Path
-    ) -> None:
+    def test_budget_enforcement_per_step_tokens(self, project: Path) -> None:
         tracker = CostTracker(project, max_tokens_per_step=1000)
         tracker.record("step1-spec", "test", "flash", 800, 300)
         with pytest.raises(CostLimitExceeded, match="tokens"):

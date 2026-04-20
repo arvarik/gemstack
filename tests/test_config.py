@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from gemstack.core.config import GemstackConfig
+from gemstack.project.config import GemstackConfig
 
 
 class TestGemstackConfig:
@@ -29,16 +29,15 @@ class TestGemstackConfig:
         config = GemstackConfig.load()
         assert config.default_model == "gemini-2.5-flash"
 
-    def test_save_and_load_roundtrip(
-        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_save_and_load_roundtrip(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
         """Config should survive a save/load roundtrip."""
         config_path = tmp_path / "config.toml"
         monkeypatch.setattr(GemstackConfig, "config_path", classmethod(lambda cls: config_path))
 
         # Save with custom values
+        from pydantic import SecretStr
         config = GemstackConfig(
-            gemini_api_key="test-key-123",
+            gemini_api_key=SecretStr("test-key-123"),
             default_model="gemini-2.5-pro",
             copy_mode=True,
         )

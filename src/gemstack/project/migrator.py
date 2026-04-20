@@ -11,7 +11,7 @@ import re
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from gemstack.core.fileutil import write_atomic
+from gemstack.utils.fileutil import write_atomic
 
 logger = logging.getLogger(__name__)
 
@@ -123,9 +123,7 @@ class TopologyMigrator:
 
         # Check if topology declaration already exists
         if re.search(r"\*\*Topology:\*\*", content):
-            result.warnings.append(
-                "ARCHITECTURE.md already has a topology declaration"
-            )
+            result.warnings.append("ARCHITECTURE.md already has a topology declaration")
             return
 
         # Insert after the first heading
@@ -170,9 +168,7 @@ class TopologyMigrator:
 
         write_atomic(testing_path, content)
         result.files_modified.append("TESTING.md")
-        result.sections_added.append(
-            f"Testing matrices for: {', '.join(topologies)}"
-        )
+        result.sections_added.append(f"Testing matrices for: {', '.join(topologies)}")
 
     def _update_status(
         self, agent_dir: Path, topologies: list[str], result: MigrationResult
@@ -205,6 +201,4 @@ class TopologyMigrator:
 
         write_atomic(status_path, content)
         result.files_modified.append("STATUS.md")
-        result.sections_added.append(
-            f"Tracking sections for: {', '.join(topologies)}"
-        )
+        result.sections_added.append(f"Tracking sections for: {', '.join(topologies)}")

@@ -19,7 +19,7 @@ from rich.console import Console
 from rich.table import Table
 
 if TYPE_CHECKING:
-    from gemstack.core.compiler import ContextCompiler
+    from gemstack.orchestration.compiler import ContextCompiler
 
 console = Console()
 
@@ -31,9 +31,7 @@ def compare(
         "--models",
         help="Comma-separated model names to compare",
     ),
-    project_root: Path = typer.Option(
-        ".", "--project", "-p", help="Project root directory"
-    ),
+    project_root: Path = typer.Option(".", "--project", "-p", help="Project root directory"),
 ) -> None:
     """Compare AI agent performance across different model configurations."""
     project_root = project_root.resolve()
@@ -47,8 +45,7 @@ def compare(
         from google import genai  # noqa: F401
     except ImportError:
         console.print(
-            "[red]❌ AI extra not installed. "
-            "Install with: pip install gemstack[ai][/red]"
+            "[red]❌ AI extra not installed. Install with: pip install gemstack[ai][/red]"
         )
         raise typer.Exit(code=1) from None
 
@@ -58,16 +55,14 @@ def compare(
     console.print(f"[dim]Comparing {len(model_list)} models against: {spec.name}[/dim]")
 
     # Compile base context
-    from gemstack.core.compiler import ContextCompiler
+    from gemstack.orchestration.compiler import ContextCompiler
 
     compiler = ContextCompiler()
 
     results: list[dict[str, Any]] = []
     for model_name in model_list:
         console.print(f"  [cyan]▶[/cyan] Testing {model_name}...")
-        result = _benchmark_model(
-            model_name, spec_content, compiler, project_root
-        )
+        result = _benchmark_model(model_name, spec_content, compiler, project_root)
         results.append(result)
 
     _print_comparison(results)

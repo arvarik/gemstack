@@ -37,15 +37,19 @@ class TestEvalDiscovery:
 class TestEvalRunner:
     def test_perfect_accuracy(self, tmp_path: Path) -> None:
         eval_file = tmp_path / "test.json"
-        eval_file.write_text(json.dumps({
-            "name": "test-eval",
-            "metric": "accuracy",
-            "target": 0.9,
-            "cases": [
-                {"input": "a", "expected": "yes", "actual": "yes"},
-                {"input": "b", "expected": "no", "actual": "no"},
-            ],
-        }))
+        eval_file.write_text(
+            json.dumps(
+                {
+                    "name": "test-eval",
+                    "metric": "accuracy",
+                    "target": 0.9,
+                    "cases": [
+                        {"input": "a", "expected": "yes", "actual": "yes"},
+                        {"input": "b", "expected": "no", "actual": "no"},
+                    ],
+                }
+            )
+        )
 
         result = _run_eval_set(eval_file)
         assert result["score"] == 1.0
@@ -53,15 +57,19 @@ class TestEvalRunner:
 
     def test_partial_accuracy(self, tmp_path: Path) -> None:
         eval_file = tmp_path / "test.json"
-        eval_file.write_text(json.dumps({
-            "name": "test-eval",
-            "metric": "accuracy",
-            "target": 0.9,
-            "cases": [
-                {"input": "a", "expected": "yes", "actual": "yes"},
-                {"input": "b", "expected": "no", "actual": "yes"},
-            ],
-        }))
+        eval_file.write_text(
+            json.dumps(
+                {
+                    "name": "test-eval",
+                    "metric": "accuracy",
+                    "target": 0.9,
+                    "cases": [
+                        {"input": "a", "expected": "yes", "actual": "yes"},
+                        {"input": "b", "expected": "no", "actual": "yes"},
+                    ],
+                }
+            )
+        )
 
         result = _run_eval_set(eval_file)
         assert result["score"] == 0.5
@@ -69,24 +77,32 @@ class TestEvalRunner:
 
     def test_empty_cases(self, tmp_path: Path) -> None:
         eval_file = tmp_path / "test.json"
-        eval_file.write_text(json.dumps({
-            "name": "empty",
-            "metric": "accuracy",
-            "target": 0.9,
-            "cases": [],
-        }))
+        eval_file.write_text(
+            json.dumps(
+                {
+                    "name": "empty",
+                    "metric": "accuracy",
+                    "target": 0.9,
+                    "cases": [],
+                }
+            )
+        )
 
         result = _run_eval_set(eval_file)
         assert result["score"] == 0.0
 
     def test_metric_filter(self, tmp_path: Path) -> None:
         eval_file = tmp_path / "test.json"
-        eval_file.write_text(json.dumps({
-            "name": "test",
-            "metric": "rouge-l",
-            "target": 0.8,
-            "cases": [],
-        }))
+        eval_file.write_text(
+            json.dumps(
+                {
+                    "name": "test",
+                    "metric": "rouge-l",
+                    "target": 0.8,
+                    "cases": [],
+                }
+            )
+        )
 
         result = _run_eval_set(eval_file, metric_filter="accuracy")
         assert result.get("skipped")

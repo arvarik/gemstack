@@ -69,7 +69,7 @@ def create_server(project_root: Path, **server_kwargs: object):  # type: ignore[
     @mcp.tool()
     def gemstack_route() -> str:
         """Get the recommended next action based on current project state."""
-        from gemstack.core.router import PhaseRouter
+        from gemstack.orchestration.router import PhaseRouter
 
         router = PhaseRouter()
         decision = router.route(project_root)
@@ -87,7 +87,7 @@ def create_server(project_root: Path, **server_kwargs: object):  # type: ignore[
             step: Workflow step to compile (e.g., 'step1-spec', 'step3-build').
             max_tokens: Optional max token budget for the compiled context.
         """
-        from gemstack.core.compiler import ContextCompiler
+        from gemstack.orchestration.compiler import ContextCompiler
 
         compiler = ContextCompiler()
         result = compiler.compile(
@@ -100,21 +100,18 @@ def create_server(project_root: Path, **server_kwargs: object):  # type: ignore[
     @mcp.tool()
     def gemstack_check() -> str:
         """Validate the project's .agent/ directory integrity."""
-        from gemstack.core.validator import ProjectValidator
+        from gemstack.project.validator import ProjectValidator
 
         validator = ProjectValidator()
         result = validator.validate(project_root)
         if result.passed:
             return "✅ All checks passed"
-        return (
-            f"❌ {len(result.errors)} errors:\n"
-            + "\n".join(f"  - {e}" for e in result.errors)
-        )
+        return f"❌ {len(result.errors)} errors:\n" + "\n".join(f"  - {e}" for e in result.errors)
 
     @mcp.tool()
     def gemstack_diff() -> str:
         """Detect drift between .agent/ documentation and actual codebase."""
-        from gemstack.core.differ import ContextDiffer
+        from gemstack.utils.differ import ContextDiffer
 
         differ = ContextDiffer()
         report = differ.analyze(project_root)
@@ -165,7 +162,7 @@ def create_server(project_root: Path, **server_kwargs: object):  # type: ignore[
         This tool is async-safe — it works correctly under both
         stdio and SSE MCP transports (no nested event loop).
         """
-        from gemstack.core.executor import StepExecutor
+        from gemstack.orchestration.executor import StepExecutor
 
         executor = StepExecutor()
         result = await executor.execute(
@@ -183,7 +180,7 @@ def create_server(project_root: Path, **server_kwargs: object):  # type: ignore[
         Args:
             feature: Optional feature name to filter costs for.
         """
-        from gemstack.core.cost_tracker import CostTracker
+        from gemstack.orchestration.cost_tracker import CostTracker
 
         tracker = CostTracker(project_root)
         summary = tracker.get_summary(feature=feature)

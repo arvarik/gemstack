@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-from gemstack.core.detector import ProjectDetector, Topology
+from gemstack.project.detector import ProjectDetector, Topology
 
 
 class TestNodeDetection:

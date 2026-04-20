@@ -41,27 +41,22 @@ class TestScaffoldCommand:
 
     def test_scaffold_python_route(self, tmp_path: Path) -> None:
         (tmp_path / "pyproject.toml").touch()
-        result = runner.invoke(
-            app, ["scaffold", "route", "/api/v1/users", "-p", str(tmp_path)]
-        )
+        result = runner.invoke(app, ["scaffold", "route", "/api/v1/users", "-p", str(tmp_path)])
         assert result.exit_code == 0
         assert (tmp_path / "src" / "routes" / "api_v1_users.py").exists()
         assert (tmp_path / "tests" / "test_api_v1_users.py").exists()
 
     def test_scaffold_python_test(self, tmp_path: Path) -> None:
         (tmp_path / "pyproject.toml").touch()
-        result = runner.invoke(
-            app, ["scaffold", "test", "auth", "-p", str(tmp_path)]
-        )
+        result = runner.invoke(app, ["scaffold", "test", "auth", "-p", str(tmp_path)])
         assert result.exit_code == 0
         assert (tmp_path / "tests" / "test_auth.py").exists()
 
     def test_scaffold_unsupported_language(self, tmp_path: Path) -> None:
-        result = runner.invoke(
-            app, ["scaffold", "route", "/api/v1/foo", "-p", str(tmp_path)]
-        )
-        assert result.exit_code == 0
-        assert "not yet supported" in result.stdout
+        result = runner.invoke(app, ["scaffold", "route", "/api/v1/foo", "-p", str(tmp_path)])
+        assert result.exit_code == 1
+        assert result.exception is not None
+        assert "not yet supported" in str(result.exception)
 
 
 class TestSnapshotCommand:
@@ -154,9 +149,7 @@ class TestReplayCommand:
         (feature / "spec.md").write_text("# Spec\n")
         (feature / "plan.md").write_text("# Plan\n")
 
-        result = runner.invoke(
-            app, ["replay", "--all", "--project", str(tmp_path)]
-        )
+        result = runner.invoke(app, ["replay", "--all", "--project", str(tmp_path)])
         assert result.exit_code == 0
         assert "oauth" in result.stdout
 
@@ -166,9 +159,7 @@ class TestReplayCommand:
         feature.mkdir(parents=True)
         (feature / "spec.md").write_text("# Spec\n")
 
-        result = runner.invoke(
-            app, ["replay", "oauth", "--project", str(tmp_path)]
-        )
+        result = runner.invoke(app, ["replay", "oauth", "--project", str(tmp_path)])
         assert result.exit_code == 0
         assert "Spec" in result.stdout
 
@@ -176,9 +167,7 @@ class TestReplayCommand:
         archive = tmp_path / "docs" / "archive"
         archive.mkdir(parents=True)
 
-        result = runner.invoke(
-            app, ["replay", "nonexistent", "--project", str(tmp_path)]
-        )
+        result = runner.invoke(app, ["replay", "nonexistent", "--project", str(tmp_path)])
         assert result.exit_code == 1
 
 

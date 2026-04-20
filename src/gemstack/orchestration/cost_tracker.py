@@ -13,7 +13,7 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any
 
-from gemstack.core.fileutil import write_atomic
+from gemstack.utils.fileutil import write_atomic
 
 logger = logging.getLogger(__name__)
 
@@ -129,9 +129,7 @@ class CostTracker:
             CostLimitExceeded: If a budget threshold has been exceeded.
         """
         if self._max_cost_per_feature is not None:
-            feature_cost = sum(
-                r.cost_usd for r in self._records if r.feature == feature
-            )
+            feature_cost = sum(r.cost_usd for r in self._records if r.feature == feature)
             if feature_cost >= self._max_cost_per_feature:
                 raise CostLimitExceeded(
                     f"Feature '{feature}' has spent ${feature_cost:.2f} "
@@ -163,12 +161,8 @@ class CostTracker:
             summary.total_input_tokens += r.input_tokens
             summary.total_output_tokens += r.output_tokens
             summary.total_cost_usd += r.cost_usd
-            summary.by_step[r.step] = (
-                summary.by_step.get(r.step, 0.0) + r.cost_usd
-            )
-            summary.by_feature[r.feature] = (
-                summary.by_feature.get(r.feature, 0.0) + r.cost_usd
-            )
+            summary.by_step[r.step] = summary.by_step.get(r.step, 0.0) + r.cost_usd
+            summary.by_feature[r.feature] = summary.by_feature.get(r.feature, 0.0) + r.cost_usd
         return summary
 
     def reset(self, feature: str | None = None) -> int:
@@ -178,9 +172,7 @@ class CostTracker:
         """
         if feature:
             before = len(self._records)
-            self._records = [
-                r for r in self._records if r.feature != feature
-            ]
+            self._records = [r for r in self._records if r.feature != feature]
             removed = before - len(self._records)
         else:
             removed = len(self._records)
