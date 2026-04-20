@@ -39,18 +39,19 @@ jobs:
         id: sha
         run: |
           VERSION="${{ steps.version.outputs.version }}"
-          URL="https://files.pythonhosted.org/packages/source/g/gemstack/gemstack-${VERSION}.tar.gz"
+          URL=$(curl -sf "https://pypi.org/pypi/gemstack/$VERSION/json" | python3 -c "import sys,json; urls=json.load(sys.stdin)['urls']; print(next(u['url'] for u in urls if u['packagetype']=='sdist'))")
           echo "Downloading $URL"
           curl -fSL "$URL" -o gemstack.tar.gz
           SHA256=$(sha256sum gemstack.tar.gz | cut -d' ' -f1)
           echo "sha256=$SHA256" >> "$GITHUB_OUTPUT"
+          echo "url=$URL" >> "$GITHUB_OUTPUT"
           echo "SHA256: $SHA256"
 
       - name: Update Formula/gemstack.rb
         run: |
-          VERSION="${{ steps.version.outputs.version }}"
+          URL="${{ steps.sha.outputs.url }}"
           SHA256="${{ steps.sha.outputs.sha256 }}"
-          sed -i "s|url \".*\"|url \"https://files.pythonhosted.org/packages/source/g/gemstack/gemstack-${VERSION}.tar.gz\"|" Formula/gemstack.rb
+          sed -i "s|url \".*\"|url \"${URL}\"|" Formula/gemstack.rb
           sed -i "s|sha256 \".*\"|sha256 \"${SHA256}\"|" Formula/gemstack.rb
           echo "Updated Formula/gemstack.rb:"
           cat Formula/gemstack.rb
