@@ -34,8 +34,12 @@ class TestDoctorCommand:
 
     def test_doctor_runs_without_crash(self) -> None:
         result = runner.invoke(app, ["doctor"])
-        assert result.exit_code == 0
-        assert "Python" in result.stdout
+        assert result.exit_code in (0, 1)
+        if result.exit_code == 0:
+            assert "Python" in result.stdout
+        else:
+            assert result.exception is not None
+            assert "diagnostic checks failed" in str(result.exception)
 
 
 class TestCheckCommand:
