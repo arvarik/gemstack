@@ -71,7 +71,7 @@ test: add fixtures for Go project detection
 ### Testing Requirements
 
 - All new code must have corresponding tests
-- Tests must pass on Python 3.10, 3.11, 3.12, and 3.13
+- Tests must pass on Python 3.11+ (CI runs on macOS with 3.11)
 - Maintain ≥80% coverage for `core/` modules
 - Use `tmp_path` for all filesystem operations — never write outside temp dirs
 
@@ -92,8 +92,7 @@ Sign your commits with `git commit -s` to add a DCO sign-off line.
 
 ## Plugin Development
 
-See [Architecture — Plugin System](PACKAGE_GUIDE/04-architecture.md#46-plugin-system-architecture)
-for details on creating Gemstack plugins.
+See [Building Custom Plugins](docs/plugins.md) for details on creating Gemstack plugins.
 
 ## Reporting Issues
 

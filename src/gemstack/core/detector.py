@@ -271,7 +271,7 @@ class ProjectDetector:
             try:
                 import tomllib
             except ImportError:
-                import tomli as tomllib  # noqa: N812
+                import tomli as tomllib
             data = tomllib.loads(pyproject.read_text())
         except Exception as e:
             logger.warning(f"Malformed pyproject.toml: {e}")

@@ -39,7 +39,7 @@ class GemstackConfig(BaseModel):
             try:
                 import tomllib
             except ImportError:
-                import tomli as tomllib  # noqa: N812
+                import tomli as tomllib
             return cls.model_validate(tomllib.loads(path.read_text()))
         return cls()
 

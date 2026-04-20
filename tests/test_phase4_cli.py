@@ -6,7 +6,6 @@ Uses typer.testing.CliRunner to test the actual CLI interface
 
 import json
 from pathlib import Path
-from unittest.mock import patch
 
 import pytest
 from typer.testing import CliRunner

@@ -10,10 +10,10 @@
 class Gemstack < Formula
   include Language::Python::Virtualenv
 
-  desc "Opinionated AI agent orchestration framework for software engineering"
+  desc "Opinionated AI agent orchestration framework for Gemini CLI and Antigravity"
   homepage "https://github.com/arvarik/gemstack"
-  url "https://pypi.org/packages/source/g/gemstack/gemstack-0.4.0.tar.gz"
-  sha256 "PLACEHOLDER_SHA256"
+  url "https://files.pythonhosted.org/packages/source/g/gemstack/gemstack-1.0.0.tar.gz"
+  sha256 "a312a9f31061e6ed0c9835c0dd41a0aaa362bb9f8955d64a102a7eb540819d07"
   license "Apache-2.0"
 
   depends_on "python@3.12"
