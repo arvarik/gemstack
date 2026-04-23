@@ -189,14 +189,14 @@ To use `gemstack run` (autonomous execution), configure your Gemini API key:
 
 ```bash
 # Option 1: Via gemstack config
-gemstack config set api-key YOUR_GEMINI_API_KEY
-gemstack config set model gemini-2.5-pro    # Default: gemini-2.5-flash
+gemstack config set gemini-api-key YOUR_GEMINI_API_KEY
+gemstack config set default-model gemini-2.5-pro  # Default: gemini-2.5-flash
 
 # Option 2: Via environment variable
 export GEMINI_API_KEY=YOUR_GEMINI_API_KEY
 
 # Verify your configuration
-gemstack config show    # Keys are masked for security
+gemstack config list    # Keys are masked for security
 ```
 
 ---

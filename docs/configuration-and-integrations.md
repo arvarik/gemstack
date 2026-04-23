@@ -20,13 +20,13 @@ Gemstack uses [platformdirs](https://pypi.org/project/platformdirs/) for cross-p
 
 ```bash
 # Set the Gemini API key (required for `gemstack run` and `gemstack init --ai`)
-gemstack config set api-key YOUR_GEMINI_API_KEY
+gemstack config set gemini-api-key YOUR_GEMINI_API_KEY
 
 # Set the default model (used by `gemstack run`)
-gemstack config set model gemini-2.5-pro          # Default: gemini-2.5-flash
+gemstack config set default-model gemini-2.5-pro  # Default: gemini-2.5-flash
 
 # View all current settings (API keys are masked for security)
-gemstack config show
+gemstack config list
 ```
 
 ### Configuration Precedence
@@ -42,8 +42,8 @@ When resolving configuration values, Gemstack checks sources in this order (firs
 
 | Key | Environment Variable | Default | Description |
 |-----|---------------------|---------|-------------|
-| `api-key` | `GEMINI_API_KEY` or `GOOGLE_API_KEY` | *(none)* | Google Gemini API key for AI features |
-| `model` | *(none)* | `gemini-2.5-flash` | Default Gemini model for `gemstack run` |
+| `gemini-api-key` | `GEMINI_API_KEY` or `GOOGLE_API_KEY` | *(none)* | Google Gemini API key for AI features |
+| `default-model` | *(none)* | `gemini-2.5-flash` | Default Gemini model for `gemstack run` |
 
 ---
 
@@ -64,7 +64,7 @@ The Gemini API key is required for two features:
 **Option 1: Via `gemstack config`** (recommended — persisted to config file)
 
 ```bash
-gemstack config set api-key YOUR_GEMINI_API_KEY
+gemstack config set gemini-api-key YOUR_GEMINI_API_KEY
 ```
 
 **Option 2: Via environment variable** (useful for CI/CD or temporary usage)
@@ -85,7 +85,7 @@ GEMINI_API_KEY=YOUR_GEMINI_API_KEY
 ### Verifying the Key
 
 ```bash
-gemstack config show   # Shows masked key if configured
+gemstack config list   # Shows masked key if configured
 gemstack doctor        # Checks API key availability as part of diagnostics
 ```
 

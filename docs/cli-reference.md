@@ -56,12 +56,13 @@ Checks: Python version, Git availability, API key configuration, optional depend
 
 ### `gemstack config`
 
-Manage global Gemstack configuration (stored in `~/.config/gemstack/config.toml`).
+Manage global Gemstack configuration (stored in `~/Library/Application Support/gemstack/config.toml` on macOS, `~/.config/gemstack/config.toml` on Linux).
 
 ```bash
-gemstack config set api-key YOUR_GEMINI_API_KEY
-gemstack config set model gemini-2.5-pro      # Default: gemini-2.5-flash
-gemstack config show                          # View settings (keys masked)
+gemstack config set gemini-api-key YOUR_GEMINI_API_KEY
+gemstack config set default-model gemini-2.5-pro  # Default: gemini-2.5-flash
+gemstack config list                              # View settings (keys masked)
+gemstack config get gemini-api-key                # Get a single value
 ```
 
 ---
