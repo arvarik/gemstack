@@ -31,6 +31,8 @@ coverage.xml
 # uv
 uv.lock
 
-# Local Antigravity symlinks (machine-specific, not portable)
+# Local Antigravity symlinks and workflows (machine-specific, not portable)
 # Leading / restricts to repo root — do NOT ignore tests/fixtures/.agent/
-/.agent/
+/.agent/*
+# But DO track the 5 context .md files (dogfooding)
+!/.agent/*.md
