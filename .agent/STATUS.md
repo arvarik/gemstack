@@ -7,11 +7,11 @@
 **Exploration:** [`docs/explorations/2026-04-23-engineer-migration-dx-improvements.md`](file:///Users/arvind/Documents/github/gemstack/docs/explorations/2026-04-23-engineer-migration-dx-improvements.md)
 
 ## Lifecycle Progress
-- [x] **Step 1 — Spec**: Feature ideation complete, exploration document written
-- [ ] **Step 2 — Trap**: Write failing test suite for parser precision improvements
-- [ ] **Step 3 — Build**: Implement fixes to differ, check, and detector
-- [ ] **Step 4 — Audit**: Security and logic review
-- [ ] **Step 5 — Ship**: PR, merge, release v1.1.0
+- [x] Spec — Feature ideation complete, exploration document written
+- [ ] Trap — Write failing test suite for parser precision improvements
+- [ ] Build — Implement fixes to differ, check, and detector
+- [ ] Audit — Security and logic review
+- [ ] Ship — PR, merge, release v1.1.0
 
 ## Release History
 | Version | Date | Highlights |
