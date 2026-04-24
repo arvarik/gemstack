@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      pull-requests: write
 
     steps:
       - uses: actions/checkout@v4
@@ -39,7 +40,9 @@ jobs:
         id: sha
         run: |
           VERSION="${{ steps.version.outputs.version }}"
-          URL=$(curl -sf "https://pypi.org/pypi/gemstack/$VERSION/json" | python3 -c "import sys,json; urls=json.load(sys.stdin)['urls']; print(next(u['url'] for u in urls if u['packagetype']=='sdist'))")
+          # Fetch PyPI metadata once and reuse
+          PYPI_JSON=$(curl -sf "https://pypi.org/pypi/gemstack/$VERSION/json")
+          URL=$(echo "$PYPI_JSON" | python3 -c "import sys,json; urls=json.load(sys.stdin)['urls']; print(next(u['url'] for u in urls if u['packagetype']=='sdist'))")
           echo "Downloading $URL"
           curl -fSL "$URL" -o gemstack.tar.gz
           SHA256=$(sha256sum gemstack.tar.gz | cut -d' ' -f1)
@@ -56,11 +59,14 @@ jobs:
           echo "Updated Formula/gemstack.rb:"
           cat Formula/gemstack.rb
 
-      - name: Commit and push
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add Formula/gemstack.rb
-          git diff --cached --quiet && echo "No changes" && exit 0
-          git commit -m "chore: update Homebrew formula to v${{ steps.version.outputs.version }}"
-          git push origin main
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: chore/update-formula-v${{ steps.version.outputs.version }}
+          commit-message: "chore: update Homebrew formula to v${{ steps.version.outputs.version }}"
+          title: "chore: update Homebrew formula to v${{ steps.version.outputs.version }}"
+          body: |
+            Automated PR to update the Homebrew formula for gemstack v${{ steps.version.outputs.version }}.
+
+            - Updated sdist URL and SHA256 hash from PyPI
+          labels: automated

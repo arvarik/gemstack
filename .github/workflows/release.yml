@@ -45,11 +45,17 @@ jobs:
         run: |
           VERSION="${{ steps.meta.outputs.version }}"
           mkdir -p dist/
-          WHEEL_URL=$(curl -sf "https://pypi.org/pypi/gemstack/$VERSION/json" \
+          # Fetch PyPI metadata once and extract both URLs
+          PYPI_JSON=$(curl -sf "https://pypi.org/pypi/gemstack/$VERSION/json")
+          if [ -z "$PYPI_JSON" ]; then
+            echo "::error::Failed to fetch PyPI metadata for gemstack $VERSION"
+            exit 1
+          fi
+          WHEEL_URL=$(echo "$PYPI_JSON" \
             | python3 -c "import sys,json; urls=json.load(sys.stdin)['urls']; print(next(u['url'] for u in urls if u['packagetype']=='bdist_wheel'))")
-          curl -fSL "$WHEEL_URL" -o "dist/gemstack-${VERSION}-py3-none-any.whl"
-          SDIST_URL=$(curl -sf "https://pypi.org/pypi/gemstack/$VERSION/json" \
+          SDIST_URL=$(echo "$PYPI_JSON" \
             | python3 -c "import sys,json; urls=json.load(sys.stdin)['urls']; print(next(u['url'] for u in urls if u['packagetype']=='sdist'))")
+          curl -fSL "$WHEEL_URL" -o "dist/gemstack-${VERSION}-py3-none-any.whl"
           curl -fSL "$SDIST_URL" -o "dist/gemstack-${VERSION}.tar.gz"
           ls -lh dist/
 
