@@ -44,20 +44,20 @@ def _print_banner() -> None:
     """Print the colorful Gemstack ASCII art banner."""
     from gemstack import __version__
 
-    # Gradient colors: cyan → blue → magenta → yellow
+    # Gradient colors: blue → green → dark_orange
     lines = [
-        ("[bold cyan]   ██████╗ ███████╗███╗   ███╗[/bold cyan]"
+        ("[bold blue]   ██████╗ ███████╗███╗   ███╗[/bold blue]"
          "[bold blue]███████╗████████╗ █████╗  ██████╗██╗  ██╗[/bold blue]"),
-        ("[bold cyan]  ██╔════╝ ██╔════╝████╗ ████║[/bold cyan]"
-         "[bold blue]██╔════╝╚══██╔══╝██╔══██╗██╔════╝██║ ██╔╝[/bold blue]"),
-        ("[bold magenta]  ██║  ███╗█████╗  ██╔████╔██║[/bold magenta]"
-         "[bold blue]███████╗   ██║   ███████║ ██║     █████╔╝[/bold blue]"),
-        ("[bold magenta]  ██║   ██║██╔══╝  ██║╚██╔╝██║[/bold magenta]"
-         "[bold yellow]╚════██║   ██║   ██╔══██║ ██║     ██╔═██╗[/bold yellow]"),
-        ("[bold yellow]  ╚██████╔╝███████╗██║ ╚═╝ ██║[/bold yellow]"
-         "[bold yellow]███████║   ██║   ██║  ██║╚██████╗██║  ██╗[/bold yellow]"),
-        ("[bold yellow]   ╚═════╝ ╚══════╝╚═╝     ╚═╝[/bold yellow]"
-         "[bold yellow]╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝[/bold yellow]"),
+        ("[bold blue]  ██╔════╝ ██╔════╝████╗ ████║[/bold blue]"
+         "[bold green]██╔════╝╚══██╔══╝██╔══██╗██╔════╝██║ ██╔╝[/bold green]"),
+        ("[bold green]  ██║  ███╗█████╗  ██╔████╔██║[/bold green]"
+         "[bold green]███████╗   ██║   ███████║ ██║     █████╔╝[/bold green]"),
+        ("[bold green]  ██║   ██║██╔══╝  ██║╚██╔╝██║[/bold green]"
+         "[bold dark_orange]╚════██║   ██║   ██╔══██║ ██║     ██╔═██╗[/bold dark_orange]"),
+        ("[bold dark_orange]  ╚██████╔╝███████╗██║ ╚═╝ ██║[/bold dark_orange]"
+         "[bold dark_orange]███████║   ██║   ██║  ██║╚██████╗██║  ██╗[/bold dark_orange]"),
+        ("[bold dark_orange]   ╚═════╝ ╚══════╝╚═╝     ╚═╝[/bold dark_orange]"
+         "[bold dark_orange]╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝[/bold dark_orange]"),
     ]
 
     console.print()
