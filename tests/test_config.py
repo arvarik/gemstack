@@ -24,7 +24,9 @@ class TestGemstackConfig:
         assert "gemstack" in str(path)
         assert path.name == "config.toml"
 
-    def test_load_returns_defaults_when_no_file(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_load_returns_defaults_when_no_file(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         # When no config file exists, load should return defaults
         config_path = tmp_path / "nonexistent" / "config.toml"
         monkeypatch.setattr(GemstackConfig, "config_path", classmethod(lambda cls: config_path))

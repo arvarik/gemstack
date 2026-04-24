@@ -130,8 +130,8 @@ def _register_commands() -> None:
     app.command(rich_help_panel=_WORKFLOW)(run)
 
     # ── Context & Analysis ──────────────────────────────────
-    from gemstack.cli.compile_cmd import compile
     from gemstack.cli.compare_cmd import compare
+    from gemstack.cli.compile_cmd import compile
     from gemstack.cli.diff_cmd import diff
     from gemstack.cli.export_cmd import export
     from gemstack.cli.migrate_cmd import migrate
