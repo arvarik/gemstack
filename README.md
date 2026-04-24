@@ -12,7 +12,9 @@
 >
 > Built for **Gemini CLI** and **Google Antigravity**. Also works with Cursor, Claude Desktop, and Cline via [MCP](docs/mcp-server.md).
 
-<!-- SCREENSHOT: docs/assets/screenshots/hero-terminal.png — `gemstack --help` Rich-formatted terminal output showing the grouped command panels, or alternatively `gemstack status` showing a project mid-lifecycle. This is the first thing visitors see — make it visually impressive. -->
+![gemstack](docs/assets/screenshots/gemstack.png)
+
+![hero](docs/assets/screenshots/hero-terminal.png)
 
 ---
 
@@ -126,8 +128,6 @@ Catch when your codebase drifts from what's documented. Gemstack compares your a
 gemstack diff    # Detect new deps, removed env vars, stale file refs
 gemstack check   # Validate .agent/ directory integrity
 ```
-
-<!-- SCREENSHOT: docs/assets/screenshots/diff-dependency-drift.png — `gemstack diff` output showing detected dependency drift (a package in manifest but not documented in ARCHITECTURE.md) -->
 
 ### 📊 28 CLI Commands Across 7 Categories
 
