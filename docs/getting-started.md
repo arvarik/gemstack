@@ -2,6 +2,8 @@
 
 This guide covers everything you need to go from zero to running your first AI-orchestrated workflow step.
 
+> **What You'll Build:** By the end of this guide, your project will have a `.agent/` directory with 5 structured markdown files that give every AI agent — Gemini CLI, Antigravity, Cursor, Claude Desktop — deterministic, project-specific context before it modifies your code.
+
 ## Prerequisites
 
 - **Python 3.10+** (verify with `python3 --version`)
@@ -75,6 +77,7 @@ gemstack --version       # Print the installed version
 gemstack doctor          # Run environment diagnostics
 ```
 
+
 The `doctor` command checks for:
 - Python version compatibility
 - Git availability
@@ -92,6 +95,7 @@ Navigate to the root of your existing codebase and run:
 cd your-project/
 gemstack init
 ```
+
 
 This performs the following operations:
 
@@ -147,10 +151,17 @@ After initialization, explore the full lifecycle:
 ```bash
 # 1. Check project status — see the current lifecycle state
 gemstack status
+```
+
+
+```bash
 
 # 2. Get routing guidance — what should you do next?
 gemstack route
+```
 
+
+```bash
 # 3. Validate the setup — ensure .agent/ is well-formed
 gemstack check
 
@@ -190,7 +201,7 @@ To use `gemstack run` (autonomous execution), configure your Gemini API key:
 ```bash
 # Option 1: Via gemstack config
 gemstack config set gemini-api-key YOUR_GEMINI_API_KEY
-gemstack config set default-model gemini-2.5-flash  # Default: gemini-3.1-pro-preview
+gemstack config set default-model gemini-3.1-flash-lite-preview  # Default: gemini-3.1-pro-preview
 
 # Option 2: Via environment variable
 export GEMINI_API_KEY=YOUR_GEMINI_API_KEY
@@ -206,5 +217,8 @@ gemstack config list    # Keys are masked for security
 - 📖 Learn how the [`.agent/` Context System](the-agent-context.md) drives all AI behavior
 - 🔄 Understand the [5-Step Lifecycle](the-5-step-lifecycle.md) in depth
 - 📐 Explore [Topology-Aware Guardrails](topologies.md) for your project type
+- 🤖 Deep dive into [Autonomous Execution](autonomous-execution.md) with `gemstack run`
+- 🧠 Understand [The Context Compiler](context-compiler.md) and how prompts are assembled
+- 🔍 Set up [Drift Detection](drift-detection.md) to keep docs in sync
 - 🔌 Connect your IDE via the [MCP Server](mcp-server.md)
 - 🔧 Browse the [Full CLI Reference](cli-reference.md) for all 28 commands

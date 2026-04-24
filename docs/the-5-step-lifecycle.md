@@ -18,6 +18,7 @@ Define it     Write tests     Implement      Verify it      Merge & deploy
 
 Every feature you build flows through these 5 steps. Each step uses entirely fresh context — the Auditor never sees the Builder's internal reasoning, and the SDET writes tests before any implementation code exists.
 
+
 ---
 
 ## Step 1: Spec — *"The Contract"*
@@ -97,6 +98,8 @@ The build-test-fix cycle is bounded to a maximum of **3 attempts**. If the test 
 
 **Status Transition:** `[STATE: READY_FOR_BUILD]` → `[STATE: READY_FOR_AUDIT]`
 
+<!-- VIDEO: docs/assets/videos/run-step3-build.gif — Recording of `gemstack run step3-build --dry-run` showing the full compilation pipeline, token count, and cost estimate (15-20 seconds) -->
+
 ---
 
 ## Step 4: Audit — *"Fresh Eyes"*
@@ -155,6 +158,7 @@ The Builder AI has an inherent bias — it believes its own code works. By runni
 6. Reset `STATUS.md` — clear the active feature, uncheck lifecycle boxes, set `[STATE: SHIPPED]`
 
 **Status Transition:** `[STATE: READY_FOR_SHIP]` → `[STATE: SHIPPED]`
+
 
 ---
 

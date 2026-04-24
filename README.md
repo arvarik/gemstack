@@ -12,6 +12,8 @@
 >
 > Built for **Gemini CLI** and **Google Antigravity**. Also works with Cursor, Claude Desktop, and Cline via [MCP](docs/mcp-server.md).
 
+<!-- SCREENSHOT: docs/assets/screenshots/hero-terminal.png — `gemstack --help` Rich-formatted terminal output showing the grouped command panels, or alternatively `gemstack status` showing a project mid-lifecycle. This is the first thing visitors see — make it visually impressive. -->
+
 ---
 
 ## The Problem
@@ -125,6 +127,8 @@ gemstack diff    # Detect new deps, removed env vars, stale file refs
 gemstack check   # Validate .agent/ directory integrity
 ```
 
+<!-- SCREENSHOT: docs/assets/screenshots/diff-dependency-drift.png — `gemstack diff` output showing detected dependency drift (a package in manifest but not documented in ARCHITECTURE.md) -->
+
 ### 📊 28 CLI Commands Across 7 Categories
 
 | Category | Commands | Purpose |
@@ -213,10 +217,14 @@ gemstack compile step3-build --max-tokens 100000  # With token limits
 | ⚙️ [The `.agent/` Context System](docs/the-agent-context.md) | How the 5 context files drive AI behavior |
 | 🔄 [The 5-Step Lifecycle](docs/the-5-step-lifecycle.md) | Spec → Trap → Build → Audit → Ship in depth |
 | 📐 [Topology-Aware Guardrails](docs/topologies.md) | Domain-specific guardrails for every project type |
+| 🧠 [The Context Compiler](docs/context-compiler.md) | How JIT prompt assembly works |
+| 🤖 [Autonomous Execution](docs/autonomous-execution.md) | Deep dive on `gemstack run` — the autonomous executor |
+| 🔍 [Drift Detection](docs/drift-detection.md) | Catch when code and docs get out of sync |
 | 🔌 [MCP Server & IDE Integration](docs/mcp-server.md) | Connecting Gemstack to Cursor, Claude, and Cline |
 | 🧩 [Building Custom Plugins](docs/plugins.md) | Extending Gemstack with custom topologies, roles, and hooks |
 | 🔧 [Full CLI Reference](docs/cli-reference.md) | All 28 commands with usage and examples |
 | 🛠️ [Configuration & Integrations](docs/configuration-and-integrations.md) | Global config, API keys, and Gemini CLI integration |
+| 📖 [Example Walkthroughs](examples/) | End-to-end lifecycle examples for 6 project types |
 
 ---
 

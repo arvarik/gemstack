@@ -175,9 +175,9 @@ class TestTeachCommand:
     """Test gemstack teach."""
 
     def test_teach_invalid_step(self) -> None:
-        result = runner.invoke(app, ["teach", "--step", "99"])
+        result = runner.invoke(app, ["teach", "--lesson", "99"])
         assert result.exit_code == 1
-        assert "between 1 and 5" in result.stdout
+        assert "between 1 and 9" in result.stdout
 
 
 class TestPluginCheckIntegration:

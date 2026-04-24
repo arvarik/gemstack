@@ -27,7 +27,7 @@ console = Console()
 def compare(
     spec: Path = typer.Option(..., "--spec", help="Path to the feature spec markdown"),
     models: str = typer.Option(
-        "gemini-3.1-pro-preview,gemini-2.5-flash",
+        "gemini-3.1-pro-preview,gemini-3.1-flash-lite-preview",
         "--models",
         help="Comma-separated model names to compare",
     ),

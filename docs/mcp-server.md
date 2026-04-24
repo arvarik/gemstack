@@ -30,6 +30,7 @@ Standard I/O transport — the agent launches gemstack as a subprocess and commu
 gemstack mcp serve
 ```
 
+
 ### SSE Mode (Network)
 
 Server-Sent Events transport — exposes the MCP server over HTTP for network-accessible agents or multi-client setups:
@@ -67,7 +68,6 @@ gemstack mcp register --cline
 # macOS: ~/Library/Application Support/Code/User/globalStorage/
 #         saoudrizwan.claude-dev/settings/cline_mcp_settings.json
 ```
-
 Each registration command creates or updates the `mcpServers` section in the target config file, adding a `"gemstack"` entry with the command `gemstack mcp serve --transport stdio`.
 
 You can register with multiple agents simultaneously — they all point to the same gemstack installation.
