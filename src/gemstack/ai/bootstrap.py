@@ -86,8 +86,18 @@ class AIBootstrapper:
                 "The 'ai' extra is required for AI bootstrapping. "
                 "Install with: pip install gemstack[ai]"
             ) from None
+        from gemstack.project.config import GemstackConfig
+
+        config = GemstackConfig.load()
+        api_key = config.get_api_key()
+
         self._genai = genai
-        self.client = genai.Client()
+        if api_key:
+            self.client = genai.Client(api_key=api_key)
+        else:
+            # Fall back to env vars (which the SDK checks automatically)
+            self.client = genai.Client()
+
         self.model = model
 
     async def analyze(self, profile: ProjectProfile) -> BootstrapResult:
