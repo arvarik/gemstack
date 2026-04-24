@@ -74,9 +74,10 @@ def _print_banner() -> None:
     )
     console.print()
     console.print("  [cyan]Get started:[/cyan]")
-    console.print("    gemstack init --ai        [dim]Initialize a project with AI[/dim]")
-    console.print("    gemstack teach            [dim]Interactive 9-lesson tutorial[/dim]")
-    console.print("    gemstack --help            [dim]See all commands[/dim]")
+    console.print("    gemstack config set gemini-api-key <KEY>  [dim]Configure your API key[/dim]")
+    console.print("    gemstack init --ai                        [dim]Initialize a project with AI[/dim]")
+    console.print("    gemstack teach                            [dim]Interactive 9-lesson tutorial[/dim]")
+    console.print("    gemstack --help                           [dim]See all commands[/dim]")
     console.print()
 
 

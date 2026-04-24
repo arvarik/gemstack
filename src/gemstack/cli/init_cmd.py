@@ -76,19 +76,28 @@ def init(
     use_ai = ai or (not no_ai and _has_api_key())
 
     if use_ai:
-        console.print("[dim]Running AI-powered deep analysis...[/dim]")
-        try:
-            asyncio.run(_init_with_ai(project_root, profile))
-        except ImportError:
+        if not _has_api_key():
             console.print(
-                "[yellow]⚠️  AI extra not installed. Install with: pip install gemstack[ai][/yellow]"
+                "[red]❌ AI analysis failed: No API key was provided.[/red]\n"
+                "   [dim]Configure your API key by running:[/dim]\n"
+                "   [bold cyan]gemstack config set gemini-api-key <YOUR_KEY>[/bold cyan]"
             )
-            console.print("[dim]Falling back to template-only mode...[/dim]")
+            console.print("\n[dim]Falling back to template-only mode...[/dim]")
             _init_template_only(project_root, profile)
-        except Exception as e:
-            console.print(f"[yellow]⚠️  AI analysis failed: {e}[/yellow]")
-            console.print("[dim]Falling back to template-only mode...[/dim]")
-            _init_template_only(project_root, profile)
+        else:
+            console.print("[dim]Running AI-powered deep analysis...[/dim]")
+            try:
+                asyncio.run(_init_with_ai(project_root, profile))
+            except ImportError:
+                console.print(
+                    "[yellow]⚠️  AI extra not installed. Install with: pip install gemstack[ai][/yellow]"
+                )
+                console.print("[dim]Falling back to template-only mode...[/dim]")
+                _init_template_only(project_root, profile)
+            except Exception as e:
+                console.print(f"[yellow]⚠️  AI analysis failed: {e}[/yellow]")
+                console.print("[dim]Falling back to template-only mode...[/dim]")
+                _init_template_only(project_root, profile)
     else:
         _init_template_only(project_root, profile)
 
