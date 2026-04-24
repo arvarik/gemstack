@@ -75,7 +75,10 @@ class ProjectValidator:
         if status_path.exists():
             content = status_path.read_text()
             if not re.search(r"\[STATE:\s*\w+\]", content):
-                warnings.append("STATUS.md missing [STATE: ...] declaration")
+                suggested = self._suggest_state(content)
+                warnings.append(
+                    f"STATUS.md missing [STATE: ...] declaration (suggested: {suggested})"
+                )
 
             relevant = self._extract_relevant_files(content)
             for filepath in relevant:
@@ -103,5 +106,49 @@ class ProjectValidator:
         )
 
     def _extract_relevant_files(self, content: str) -> list[str]:
-        """Parse the Relevant Files section from STATUS.md content."""
-        return re.findall(r"[-*]\s+`?([^\s`]+)`?", content)
+        """Parse the Relevant Files section from STATUS.md content.
+
+        Only scans the '## Relevant Files' section and filters out:
+        - Single characters (|, [, ], -, *)
+        - Markdown syntax (##, **)
+        - Non-path-like items (must contain '.' or '/')
+        """
+        # Scope to ## Relevant Files section
+        section_match = re.search(
+            r"##\s*Relevant Files\s*\n(.*?)(?=\n##|\Z)",
+            content,
+            re.DOTALL,
+        )
+        if not section_match:
+            return []
+
+        section = section_match.group(1)
+        refs: list[str] = []
+        for match in re.finditer(r"[-*]\s+`([^`]+)`", section):
+            filepath = match.group(1).strip()
+            # Filter: must look like a file path (contain . or /)
+            if (
+                filepath
+                and len(filepath) > 1
+                and ("." in filepath or "/" in filepath)
+                and not filepath.startswith(("#", "**"))
+            ):
+                refs.append(filepath)
+        return refs
+
+    @staticmethod
+    def _suggest_state(content: str) -> str:
+        """Suggest a STATE enum based on STATUS.md content heuristics.
+
+        Precedence: IN_PROGRESS > SHIPPED > INITIALIZED.
+        The SHIPPED check requires strong signals (not just the word "release"
+        which appears in "## Release History" headings).
+        """
+        lower = content.lower()
+        # Check active-work signals first — they take precedence
+        if "in progress" in lower or "in_progress" in lower or "todo" in lower:
+            return "IN_PROGRESS"
+        # Require strong shipped signals — not bare "release" (matches headings)
+        if "shipped" in lower or "released v" in lower or "[state: shipped]" in lower:
+            return "SHIPPED"
+        return "INITIALIZED"

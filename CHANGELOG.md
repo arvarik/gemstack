@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] — 2026-04-23
+
+### Added
+
+- `gemstack batch` command for running allowlisted CLI commands across registered projects with timeout protection.
+- `gemstack registry` command for managing a multi-project registry (add, remove, list, clear).
+
+### Fixed
+
+- **Differ**: Replaced naive backtick regex and greedy ALL_CAPS extraction with section-scoped parser (`_extract_sections`, `_extract_documented_deps`, `_extract_documented_env_vars`), eliminating >90% false-positive drift reports in `gemstack diff`.
+- **Differ**: Aligned `_check_stale_refs()` regex with validator's strict backtick-wrapped, path-like extraction logic.
+- **Validator**: Scoped `_extract_relevant_files()` to only match backtick-wrapped items containing `.` or `/` within the `## Relevant Files` section.
+- **Validator**: Fixed `_suggest_state()` heuristic to check `IN_PROGRESS` before `SHIPPED`, preventing false `SHIPPED` classification from `## Release History` headings.
+- **Check**: Added `--strict` flag to `gemstack check` that raises `ValidationError` on warnings (not just errors).
+- **Hook**: Fixed positional argument syntax in generated git hook scripts for the `check` command.
+- **Detector**: Extended Go topology detection to recognize `net/http` backends and `cmd/` directory structures.
+- **Detector**: Added Typer CLI framework detection for Python projects.
+- **Detector**: Expanded dependency exclusion filter (`_DEP_EXCLUDE`) to filter SQL types, version strings, and function calls.
+- Removed redundant negative lookahead in `_ENV_SECTION_PATTERNS` regex.
+
 ## [1.0.3] — 2026-04-20
 
 ### Fixed

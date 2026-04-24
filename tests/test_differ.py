@@ -68,7 +68,7 @@ class TestContextDiffer:
         agent_dir = tmp_path / ".agent"
         agent_dir.mkdir()
         (agent_dir / "ARCHITECTURE.md").write_text(
-            "# Architecture\n\n`DATABASE_URL` is required.\n"
+            "# Architecture\n\n## Configuration\n\n`DATABASE_URL` is required.\n"
         )
         (tmp_path / ".env.example").write_text("DATABASE_URL=postgres://...\nNEW_SECRET=abc\n")
 
@@ -106,7 +106,9 @@ class TestDependencyExtraction:
     def test_extracts_node_deps(self, tmp_path: Path) -> None:
         agent_dir = tmp_path / ".agent"
         agent_dir.mkdir()
-        (agent_dir / "ARCHITECTURE.md").write_text("# Architecture\n\n| `react` |\n")
+        (agent_dir / "ARCHITECTURE.md").write_text(
+            "# Architecture\n\n## Tech Stack\n\n| `react` |\n"
+        )
         (tmp_path / "package.json").write_text(
             '{"dependencies": {"react": "^18", "express": "^4"}, '
             '"devDependencies": {"vitest": "^1"}}'
@@ -121,7 +123,9 @@ class TestDependencyExtraction:
     def test_extracts_python_deps(self, tmp_path: Path) -> None:
         agent_dir = tmp_path / ".agent"
         agent_dir.mkdir()
-        (agent_dir / "ARCHITECTURE.md").write_text("# Arch\n\n| `fastapi` |\n")
+        (agent_dir / "ARCHITECTURE.md").write_text(
+            "# Arch\n\n## Tech Stack\n\n| `fastapi` |\n"
+        )
         (tmp_path / "pyproject.toml").write_text(
             '[project]\ndependencies = ["fastapi>=0.100", "uvicorn>=0.20"]\n'
         )
