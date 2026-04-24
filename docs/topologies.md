@@ -34,6 +34,7 @@ You can override the auto-detection with an explicit flag:
 gemstack init --topology "frontend,backend,ml-ai"
 ```
 
+
 ---
 
 ## The 5 + 1 Topology Profiles

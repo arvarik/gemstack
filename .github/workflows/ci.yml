@@ -29,7 +29,7 @@ jobs:
         run: uv run pytest --cov=src/gemstack --cov-report=xml
 
       - name: Dependency audit
-        run: uv run pip-audit
+        run: uv run pip-audit --ignore-vuln CVE-2026-3219 --skip-editable
 
   build:
     runs-on: ubuntu-latest

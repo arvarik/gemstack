@@ -59,14 +59,34 @@ jobs:
           echo "Updated Formula/gemstack.rb:"
           cat Formula/gemstack.rb
 
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v7
-        with:
-          branch: chore/update-formula-v${{ steps.version.outputs.version }}
-          commit-message: "chore: update Homebrew formula to v${{ steps.version.outputs.version }}"
-          title: "chore: update Homebrew formula to v${{ steps.version.outputs.version }}"
-          body: |
-            Automated PR to update the Homebrew formula for gemstack v${{ steps.version.outputs.version }}.
+      - name: Commit formula update
+        run: |
+          BRANCH="chore/update-formula-v${{ steps.version.outputs.version }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH"
+          git add Formula/gemstack.rb
+          git diff --cached --quiet && echo "No changes to commit" && exit 0
+          git commit -m "chore: update Homebrew formula to v${{ steps.version.outputs.version }}"
+          git push origin "$BRANCH" --force-with-lease
 
-            - Updated sdist URL and SHA256 hash from PyPI
-          labels: automated
+      - name: Create Pull Request
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT || secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          BRANCH="chore/update-formula-v${VERSION}"
+          # Check if PR already exists for this branch
+          EXISTING=$(gh pr list --head "$BRANCH" --json number --jq '.[0].number' 2>/dev/null || true)
+          if [ -n "$EXISTING" ]; then
+            echo "PR #$EXISTING already exists for $BRANCH"
+          else
+            gh pr create \
+              --base main \
+              --head "$BRANCH" \
+              --title "chore: update Homebrew formula to v${VERSION}" \
+              --body "Automated PR to update the Homebrew formula for gemstack v${VERSION}.
+
+          - Updated sdist URL and SHA256 hash from PyPI" \
+              --label "automated" || echo "::warning::PR creation failed — push succeeded, create PR manually"
+          fi

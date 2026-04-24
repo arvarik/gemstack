@@ -8,6 +8,7 @@ The `.agent/` directory is the **single source of truth** that gives every AI ag
 
 Every Gemstack project stores its essential instructions in 5 structured markdown files inside `.agent/`. Each file has a specific purpose and truncation priority (used when context windows are limited):
 
+
 | File | Purpose | Truncation Priority |
 |------|---------|-------------------|
 | **`ARCHITECTURE.md`** | The complete technical specification of your project | High (kept long) |
@@ -111,6 +112,7 @@ gemstack compile step4-audit
 gemstack compile step3-build --token-budget 100000
 ```
 
+
 ### Truncation Priorities
 
 When you specify a token budget that the full context exceeds, the compiler truncates sections in this order (removing lowest-priority first):
@@ -135,6 +137,7 @@ Over time, your codebase may drift from what's documented in `.agent/`. Gemstack
 ```bash
 gemstack diff
 ```
+
 
 This analyzes three categories of drift:
 

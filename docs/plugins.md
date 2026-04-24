@@ -6,6 +6,35 @@ The Plugin API is **stable and backward-compatible through the entire 1.x releas
 
 ---
 
+## Quick Start
+
+Here's a minimal plugin that adds a custom topology in ~10 lines:
+
+```python
+# gemstack_mobile/__init__.py
+from gemstack.plugins.hooks import hookimpl
+
+class MobilePlugin:
+    @hookimpl
+    def gemstack_register_topologies(self):
+        return [{"name": "mobile", "description": "iOS/Android", "content": "# Mobile\n\nOffline-first. Platform parity."}]
+
+    @hookimpl
+    def gemstack_post_init(self, project_root, profile):
+        (project_root / ".agent" / "MOBILE.md").write_text("# Mobile Context\n")
+```
+
+Register it in your `pyproject.toml`:
+
+```toml
+[project.entry-points."gemstack"]
+mobile = "gemstack_mobile:MobilePlugin"
+```
+
+That's it. Gemstack discovers and loads it automatically. Read on for the full hook reference.
+
+---
+
 ## Prerequisites
 
 Install Gemstack with the plugins extra:

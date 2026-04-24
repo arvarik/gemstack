@@ -23,11 +23,12 @@ Gemstack uses [platformdirs](https://pypi.org/project/platformdirs/) for cross-p
 gemstack config set gemini-api-key YOUR_GEMINI_API_KEY
 
 # Set the default model (used by `gemstack run`)
-gemstack config set default-model gemini-2.5-flash  # Default: gemini-3.1-pro-preview
+gemstack config set default-model gemini-3.1-flash-lite-preview  # Default: gemini-3.1-pro-preview
 
 # View all current settings (API keys are masked for security)
 gemstack config list
 ```
+
 
 ### Configuration Precedence
 
@@ -124,6 +125,7 @@ Gemstack can be mounted globally alongside your system agent tools, enabling you
 ```bash
 gemstack install
 ```
+
 
 This creates symlinks in the global workflow directory (e.g., `~/.gemini/antigravity/global_workflows/`) for:
 

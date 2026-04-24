@@ -13,7 +13,8 @@ from gemstack.errors import GemstackError
 app = typer.Typer(
     name="gemstack",
     help="Opinionated AI agent orchestration framework for software engineering.",
-    no_args_is_help=True,
+    no_args_is_help=False,
+    invoke_without_command=True,
     rich_markup_mode="rich",
 )
 
@@ -39,7 +40,47 @@ def version_callback(value: bool) -> None:
         raise typer.Exit()
 
 
-@app.callback()
+def _print_banner() -> None:
+    """Print the colorful Gemstack ASCII art banner."""
+    from gemstack import __version__
+
+    # Gradient colors: cyan → blue → magenta → yellow
+    lines = [
+        ("[bold cyan]   ██████╗ ███████╗███╗   ███╗[/bold cyan]"
+         "[bold blue]███████╗████████╗ █████╗  ██████╗██╗  ██╗[/bold blue]"),
+        ("[bold cyan]  ██╔════╝ ██╔════╝████╗ ████║[/bold cyan]"
+         "[bold blue]██╔════╝╚══██╔══╝██╔══██╗██╔════╝██║ ██╔╝[/bold blue]"),
+        ("[bold magenta]  ██║  ███╗█████╗  ██╔████╔██║[/bold magenta]"
+         "[bold blue]███████╗   ██║   ███████║ ██║     █████╔╝[/bold blue]"),
+        ("[bold magenta]  ██║   ██║██╔══╝  ██║╚██╔╝██║[/bold magenta]"
+         "[bold yellow]╚════██║   ██║   ██╔══██║ ██║     ██╔═██╗[/bold yellow]"),
+        ("[bold yellow]  ╚██████╔╝███████╗██║ ╚═╝ ██║[/bold yellow]"
+         "[bold yellow]███████║   ██║   ██║  ██║╚██████╗██║  ██╗[/bold yellow]"),
+        ("[bold yellow]   ╚═════╝ ╚══════╝╚═╝     ╚═╝[/bold yellow]"
+         "[bold yellow]╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝[/bold yellow]"),
+    ]
+
+    console.print()
+    for line in lines:
+        console.print(line)
+
+    console.print()
+    console.print(
+        f"  [dim]v{__version__}[/dim]  "
+        "[bold]Opinionated AI agent orchestration framework[/bold]"
+    )
+    console.print(
+        "  [dim]Built for Gemini CLI & Antigravity[/dim]"
+    )
+    console.print()
+    console.print("  [cyan]Get started:[/cyan]")
+    console.print("    gemstack init --ai        [dim]Initialize a project with AI[/dim]")
+    console.print("    gemstack teach            [dim]Interactive 9-lesson tutorial[/dim]")
+    console.print("    gemstack --help            [dim]See all commands[/dim]")
+    console.print()
+
+
+@app.callback(invoke_without_command=True)
 def main(
     ctx: typer.Context,
     project: Annotated[
@@ -60,6 +101,11 @@ def main(
     ] = None,
 ) -> None:
     """Gemstack — structure your AI agent workflows."""
+    # Show banner when no subcommand is given (bare `gemstack`)
+    if ctx.invoked_subcommand is None:
+        _print_banner()
+        raise typer.Exit()
+
     ctx.obj = CliContext(project_root=project, verbose=verbose, debug=debug)
 
     log_level = logging.DEBUG if debug else (logging.INFO if verbose else logging.WARNING)

@@ -31,6 +31,12 @@ coverage.xml
 # uv
 uv.lock
 
+# Gemstack lifecycle directories (per-project, not documentation)
+docs/archive/
+docs/designs/
+docs/plans/
+docs/explorations/
+
 # Local Antigravity symlinks and workflows (machine-specific, not portable)
 # Leading / restricts to repo root — do NOT ignore tests/fixtures/.agent/
 /.agent/*

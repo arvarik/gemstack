@@ -2,6 +2,7 @@
 
 Gemstack ships with **28 commands** organized across 7 functional categories. Every command supports `--help` for full documentation. This reference provides an overview of each command's purpose, key flags, and usage examples.
 
+
 ---
 
 ## Setup Commands
@@ -60,7 +61,7 @@ Manage global Gemstack configuration (stored in `~/Library/Application Support/g
 
 ```bash
 gemstack config set gemini-api-key YOUR_GEMINI_API_KEY
-gemstack config set default-model gemini-2.5-flash  # Default: gemini-3.1-pro-preview
+gemstack config set default-model gemini-3.1-flash-lite-preview  # Default: gemini-3.1-pro-preview
 gemstack config list                              # View settings (keys masked)
 gemstack config get gemini-api-key                # Get a single value
 ```
@@ -214,6 +215,7 @@ gemstack check
 
 Verifies: all required files exist, `STATUS.md` has a valid `[STATE:]` tag, topology is declared in `ARCHITECTURE.md`, and custom plugin checks pass.
 
+
 ### `gemstack compare`
 
 Benchmark or compare context across projects.
@@ -241,6 +243,7 @@ gemstack matrix
 ```
 
 Scans for Gemstack projects and displays their lifecycle state, topology, and last activity.
+
 
 ---
 
