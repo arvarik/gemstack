@@ -31,6 +31,14 @@ This workflow composes:
    - Write a `<reflection>` block explaining: what you tried, why it failed, and whether the test itself may be flawed or the contract may be ambiguous.
    - Output a `### SYSTEM ROUTING` block yielding to the SDET for test review.
 
+5. **Update Lifecycle State:**
+   - After all tests pass (Exit Code 0), you **MUST** update `.agent/STATUS.md` before yielding:
+     - Mark the Build checkbox: `- [x] Build — <summary of what was built>`
+     - Update the `**Phase:**` line to `Build → Audit`
+     - Update test suite counts (e.g., "33 tests (33 passing)")
+     - Mark any resolved Known Issues with ~~strikethrough~~ and **Fixed** annotations
+   - This is **not optional**. The lifecycle router reads these checkboxes to determine the next step. If you skip this, the router will get stuck on `/step3-build` indefinitely.
+
 ## Accuracy Check
 The human does not intervene. You must loop execution autonomously until Exit Code 0, up to the circuit breaker limit of 3 attempts.
 

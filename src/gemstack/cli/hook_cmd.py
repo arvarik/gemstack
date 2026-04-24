@@ -19,7 +19,7 @@ _HOOKS: dict[str, str] = {
 # Installed by: gemstack hook install
 
 if command -v gemstack &> /dev/null; then
-    gemstack check --project "$(git rev-parse --show-toplevel)" 2>/dev/null
+    gemstack check "$(git rev-parse --show-toplevel)" 2>/dev/null
     if [ $? -ne 0 ]; then
         echo "❌ gemstack check failed. Fix .agent/ issues before committing."
         exit 1

@@ -131,11 +131,13 @@ def _register_commands() -> None:
     app.add_typer(worktree_app, name="worktree")
 
     # Phase 4 commands — Ecosystem
+    from gemstack.cli.batch_cmd import batch_app
     from gemstack.cli.ci_cmd import ci_app
     from gemstack.cli.compare_cmd import compare
     from gemstack.cli.eval_cmd import eval_app
     from gemstack.cli.matrix_cmd import matrix
     from gemstack.cli.prompt_cmd import prompt_app
+    from gemstack.cli.registry_cmd import registry_app
     from gemstack.cli.replay_cmd import replay
     from gemstack.cli.scaffold_cmd import scaffold_app
     from gemstack.cli.snapshot_cmd import snapshot
@@ -145,6 +147,8 @@ def _register_commands() -> None:
     app.add_typer(scaffold_app, name="scaffold")
     app.add_typer(prompt_app, name="prompt")
     app.add_typer(eval_app, name="eval")
+    app.add_typer(registry_app, name="registry")
+    app.add_typer(batch_app, name="batch")
     app.command()(snapshot)
     app.command()(matrix)
     app.command()(teach)

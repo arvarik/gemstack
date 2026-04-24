@@ -163,11 +163,14 @@ class ContextDiffer:
             return
 
         section = section_match.group(1)
-        for match in re.finditer(r"[-*]\s*`?([^\s`]+)`?", section):
+        for match in re.finditer(r"[-*]\s+`([^`]+)`", section):
             filepath = match.group(1).strip()
+            # Filter: must look like a file path (contain . or /)
             if (
                 filepath
-                and not filepath.startswith(("(", "_", "#"))
+                and len(filepath) > 1
+                and ("." in filepath or "/" in filepath)
+                and not filepath.startswith(("#", "**"))
                 and not (root / filepath).exists()
             ):
                 report.stale_file_refs.append(filepath)
@@ -218,21 +221,60 @@ class ContextDiffer:
 
         return deps
 
+    @staticmethod
+    def _extract_sections(content: str) -> dict[str, str]:
+        """Parse markdown into {heading: content} by ## boundaries.
+
+        Returns a dict mapping lowercase heading text to the section body
+        (everything between that ## and the next ##).
+        """
+        sections: dict[str, str] = {}
+        # Split on ## headings (keep the heading text)
+        parts = re.split(r"^##\s+(.+)$", content, flags=re.MULTILINE)
+        # parts[0] is content before first ##, then alternating heading/content
+        for i in range(1, len(parts), 2):
+            heading = parts[i].strip().lower()
+            body = parts[i + 1] if i + 1 < len(parts) else ""
+            sections[heading] = body
+        return sections
+
+    # Section heading patterns that contain dependency information
+    _DEP_SECTION_PATTERNS = re.compile(
+        r"tech\s*stack|dependenc|core\s*(libraries|deps)", re.IGNORECASE
+    )
+
+    # Candidates to filter out (versions, SQL types, etc.)
+    _DEP_EXCLUDE = re.compile(
+        r"^([><=!~]+.*|[><=!~]*\d+[\d.]*|BIGINT|SMALLINT|INTEGER|TIMESTAMP|BOOLEAN|BYTEA|TEXT|VARCHAR|SERIAL)$",
+        re.IGNORECASE,
+    )
+
     def _extract_documented_deps(self, arch_content: str) -> set[str]:
         """Extract dependency names mentioned in ARCHITECTURE.md.
 
-        Looks for deps in markdown tables, bullet lists with backticks,
-        and the Tech Stack section.
+        Only extracts from sections whose headings match dependency-related
+        patterns (Tech Stack, Dependencies, Core Libraries). Backtick items
+        in Data Models, Safety Invariants, etc. are ignored.
         """
         deps: set[str] = set()
+        sections = self._extract_sections(arch_content)
 
-        # Match backtick-quoted dependency names in table rows or bullet points
-        # Pattern: | `dep-name` | or - `dep-name`
-        for match in re.finditer(r"[|*-]\s*`([^`]+)`", arch_content):
-            candidate = match.group(1).strip()
-            # Filter out non-dependency items (file paths, commands, etc.)
-            if "/" not in candidate and " " not in candidate and not candidate.startswith("."):
-                deps.add(candidate.lower())
+        for heading, body in sections.items():
+            if not self._DEP_SECTION_PATTERNS.search(heading):
+                continue
+
+            # Match backtick-quoted items in table rows or bullet points
+            for match in re.finditer(r"[|*-]\s*`([^`]+)`", body):
+                candidate = match.group(1).strip()
+                # Filter out non-dependency items
+                if (
+                    "/" not in candidate
+                    and " " not in candidate
+                    and not candidate.startswith(".")
+                    and not self._DEP_EXCLUDE.match(candidate)
+                    and not candidate.endswith("()")
+                ):
+                    deps.add(candidate.lower())
 
         return deps
 
@@ -251,18 +293,30 @@ class ContextDiffer:
                     pass
         return set()
 
+    # Section heading patterns that contain environment variable information
+    _ENV_SECTION_PATTERNS = re.compile(
+        r"configuration|environment|config", re.IGNORECASE
+    )
+
     def _extract_documented_env_vars(self, arch_content: str) -> set[str]:
         """Extract env var names from ARCHITECTURE.md.
 
-        Looks for patterns like `DATABASE_URL` in environment sections.
+        Only extracts from sections whose headings match configuration-related
+        patterns (Configuration, Environment, Config). ALL_CAPS items in
+        Data Models, CI/CD, Safety Invariants, etc. are ignored.
         """
         env_vars: set[str] = set()
+        sections = self._extract_sections(arch_content)
 
-        # Look for environment variable patterns in backticks
-        for match in re.finditer(r"`([A-Z_][A-Z0-9_]*)`", arch_content):
-            candidate = match.group(1)
-            # Only include things that look like env vars (ALL_CAPS_WITH_UNDERSCORES)
-            if re.match(r"^[A-Z][A-Z0-9_]{2,}$", candidate):
-                env_vars.add(candidate)
+        for heading, body in sections.items():
+            if not self._ENV_SECTION_PATTERNS.search(heading):
+                continue
+
+            # Look for environment variable patterns in backticks
+            for match in re.finditer(r"`([A-Z_][A-Z0-9_]*)`", body):
+                candidate = match.group(1)
+                # Only include things that look like env vars (ALL_CAPS)
+                if re.match(r"^[A-Z][A-Z0-9_]{2,}$", candidate):
+                    env_vars.add(candidate)
 
         return env_vars

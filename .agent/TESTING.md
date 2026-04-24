@@ -54,6 +54,8 @@ uv run mypy .                        # Type check
 | `ci` | `test_ci.py` | CI config generation |
 | `mcp` | `test_mcp.py` | MCP server registration |
 | `worktree` | `test_worktree.py` | Git worktree management |
+| `batch` | `test_v110_contracts.py` | Multi-project batch execution |
+| `registry` | `test_v110_contracts.py` | Project registry management |
 
 ### Mandatory Test Rules
 1. **No mocking of internal gemstack modules** — mock only external APIs (Gemini, filesystem edges)

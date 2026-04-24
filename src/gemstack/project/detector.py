@@ -117,6 +117,9 @@ _BACKEND_PYTHON_DEPS = frozenset(
         "sanic",
         "uvicorn",
         "gunicorn",
+        "typer",
+        "click",
+        "fire",
     }
 )
 
@@ -136,6 +139,10 @@ _MLAI_PYTHON_DEPS = frozenset(
         "datasets",
         "accelerate",
         "vllm",
+        "faster-whisper",
+        "ctranslate2",
+        "whisper",
+        "onnxruntime",
     }
 )
 
@@ -441,12 +448,26 @@ class ProjectDetector:
                 profile.framework = dep.split("/")[-1]
                 break
 
+        # Check for net/http import in Go source files (backend without framework)
+        if Topology.BACKEND not in profile.topologies:
+            for go_file in root.rglob("*.go"):
+                # Skip test files and vendor
+                if "vendor" in str(go_file) or go_file.name.endswith("_test.go"):
+                    continue
+                try:
+                    go_content = go_file.read_text(encoding="utf-8")
+                    if '"net/http"' in go_content:
+                        profile.topologies.append(Topology.BACKEND)
+                        break
+                except (OSError, UnicodeDecodeError):
+                    continue
+
         # Check for cmd/ directory (indicates a backend service)
         if (root / "cmd").is_dir() and Topology.BACKEND not in profile.topologies:
             profile.topologies.append(Topology.BACKEND)
 
-        # Check for internal/ (library pattern if no cmd/)
-        if (root / "pkg").is_dir() and not (root / "cmd").is_dir():
+        # Check for pkg/ directory → library-sdk (regardless of cmd/)
+        if (root / "pkg").is_dir():
             profile.topologies.append(Topology.LIBRARY_SDK)
 
         # Infer commands

@@ -17,6 +17,9 @@ def check(
         Path, typer.Argument(help="Project root directory", resolve_path=True)
     ] = Path("."),
     fix: Annotated[bool, typer.Option("--fix", help="Auto-fix trivial issues")] = False,
+    strict: Annotated[
+        bool, typer.Option("--strict", help="Treat warnings as errors")
+    ] = False,
 ) -> None:
     """Validate the project's .agent/ directory integrity."""
     validator = ProjectValidator()
@@ -53,4 +56,11 @@ def check(
                 "Fix the errors listed above or optionally "
                 "run `gemstack check --fix` for trivial issues."
             ),
+        )
+
+    # --strict: treat warnings as errors
+    if strict and result.warnings:
+        raise ValidationError(
+            f"{len(result.warnings)} warnings treated as errors (--strict mode).",
+            suggestion="Fix the warnings listed above or remove the --strict flag.",
         )
