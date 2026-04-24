@@ -17,7 +17,7 @@ from gemstack.utils.fileutil import write_atomic
 
 logger = logging.getLogger(__name__)
 
-# Gemini pricing (USD per 1M tokens) — gemini-2.5-flash defaults
+# Gemini pricing (USD per 1M tokens) — gemini-3.1-pro-preview defaults
 _DEFAULT_INPUT_PRICE_PER_M = 0.15
 _DEFAULT_OUTPUT_PRICE_PER_M = 0.60
 

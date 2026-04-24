@@ -60,7 +60,7 @@ Manage global Gemstack configuration (stored in `~/Library/Application Support/g
 
 ```bash
 gemstack config set gemini-api-key YOUR_GEMINI_API_KEY
-gemstack config set default-model gemini-2.5-pro  # Default: gemini-2.5-flash
+gemstack config set default-model gemini-2.5-flash  # Default: gemini-3.1-pro-preview
 gemstack config list                              # View settings (keys masked)
 gemstack config get gemini-api-key                # Get a single value
 ```

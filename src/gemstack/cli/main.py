@@ -80,6 +80,16 @@ def main(
     )
 
 
+# --- Rich help panel names for command grouping ---
+_SETUP = "Setup & Config"
+_WORKFLOW = "Workflow & Lifecycle"
+_CONTEXT = "Context & Analysis"
+_TOOLING = "Tooling & Integrations"
+_MULTI = "Multi-Project"
+_MLAI = "ML/AI"
+_DX = "DX & Learning"
+
+
 # --- Register all subcommands ---
 
 
@@ -95,70 +105,83 @@ def _register_commands() -> None:
     from gemstack.cli.install_cmd import install, uninstall
     from gemstack.cli.status_cmd import status
 
-    # Phase 1 commands
-    app.command()(init)
-    app.command()(install)
-    app.command()(uninstall)
-    app.command()(status)
-    app.command()(check)
-    app.command()(doctor)
+    # ── Setup & Config ──────────────────────────────────────
+    app.command(rich_help_panel=_SETUP)(init)
+    app.command(rich_help_panel=_SETUP)(install)
+    app.command(rich_help_panel=_SETUP)(uninstall)
+    app.command(rich_help_panel=_SETUP)(doctor)
 
-    # Future commands (Phase 2+) — registered as stubs
-    from gemstack.cli.compile_cmd import compile
     from gemstack.cli.config_cmd import config_app
-    from gemstack.cli.diff_cmd import diff
-    from gemstack.cli.export_cmd import export
-    from gemstack.cli.hook_cmd import hook_app
-    from gemstack.cli.mcp_cmd import mcp_app
-    from gemstack.cli.migrate_cmd import migrate
+
+    app.add_typer(config_app, name="config", rich_help_panel=_SETUP)
+
+    # ── Workflow & Lifecycle ────────────────────────────────
     from gemstack.cli.phase_cmd import phase
     from gemstack.cli.route_cmd import route
     from gemstack.cli.start_cmd import start
-    from gemstack.cli.tail_cmd import tail
-    from gemstack.cli.worktree_cmd import worktree_app
 
-    app.command()(compile)
-    app.command()(route)
-    app.command()(start)
-    app.command()(phase)
-    app.command()(migrate)
-    app.command()(diff)
-    app.command()(export)
-    app.command()(tail)
-    app.add_typer(config_app, name="config")
-    app.add_typer(hook_app, name="hook")
-    app.add_typer(mcp_app, name="mcp")
-    app.add_typer(worktree_app, name="worktree")
+    app.command(rich_help_panel=_WORKFLOW)(status)
+    app.command(rich_help_panel=_WORKFLOW)(route)
+    app.command(rich_help_panel=_WORKFLOW)(start)
+    app.command(rich_help_panel=_WORKFLOW)(phase)
 
-    # Phase 4 commands — Ecosystem
-    from gemstack.cli.batch_cmd import batch_app
-    from gemstack.cli.ci_cmd import ci_app
-    from gemstack.cli.compare_cmd import compare
-    from gemstack.cli.eval_cmd import eval_app
-    from gemstack.cli.matrix_cmd import matrix
-    from gemstack.cli.prompt_cmd import prompt_app
-    from gemstack.cli.registry_cmd import registry_app
-    from gemstack.cli.replay_cmd import replay
-    from gemstack.cli.scaffold_cmd import scaffold_app
-    from gemstack.cli.snapshot_cmd import snapshot
-    from gemstack.cli.teach_cmd import teach
-
-    app.add_typer(ci_app, name="ci")
-    app.add_typer(scaffold_app, name="scaffold")
-    app.add_typer(prompt_app, name="prompt")
-    app.add_typer(eval_app, name="eval")
-    app.add_typer(registry_app, name="registry")
-    app.add_typer(batch_app, name="batch")
-    app.command()(snapshot)
-    app.command()(matrix)
-    app.command()(teach)
-    app.command()(compare)
-    app.command()(replay)
-
-    # Phase 5 commands — Autonomy
     from gemstack.cli.run_cmd import run
 
-    app.command()(run)
+    app.command(rich_help_panel=_WORKFLOW)(run)
+
+    # ── Context & Analysis ──────────────────────────────────
+    from gemstack.cli.compile_cmd import compile
+    from gemstack.cli.compare_cmd import compare
+    from gemstack.cli.diff_cmd import diff
+    from gemstack.cli.export_cmd import export
+    from gemstack.cli.migrate_cmd import migrate
+    from gemstack.cli.replay_cmd import replay
+    from gemstack.cli.snapshot_cmd import snapshot
+
+    app.command(rich_help_panel=_CONTEXT)(compile)
+    app.command(rich_help_panel=_CONTEXT)(check)
+    app.command(rich_help_panel=_CONTEXT)(diff)
+    app.command(rich_help_panel=_CONTEXT)(migrate)
+    app.command(rich_help_panel=_CONTEXT)(export)
+    app.command(rich_help_panel=_CONTEXT)(snapshot)
+    app.command(rich_help_panel=_CONTEXT)(compare)
+    app.command(rich_help_panel=_CONTEXT)(replay)
+
+    # ── Tooling & Integrations ──────────────────────────────
+    from gemstack.cli.ci_cmd import ci_app
+    from gemstack.cli.hook_cmd import hook_app
+    from gemstack.cli.mcp_cmd import mcp_app
+    from gemstack.cli.scaffold_cmd import scaffold_app
+    from gemstack.cli.worktree_cmd import worktree_app
+
+    app.add_typer(hook_app, name="hook", rich_help_panel=_TOOLING)
+    app.add_typer(mcp_app, name="mcp", rich_help_panel=_TOOLING)
+    app.add_typer(worktree_app, name="worktree", rich_help_panel=_TOOLING)
+    app.add_typer(ci_app, name="ci", rich_help_panel=_TOOLING)
+    app.add_typer(scaffold_app, name="scaffold", rich_help_panel=_TOOLING)
+
+    # ── Multi-Project ───────────────────────────────────────
+    from gemstack.cli.batch_cmd import batch_app
+    from gemstack.cli.matrix_cmd import matrix
+    from gemstack.cli.registry_cmd import registry_app
+
+    app.command(rich_help_panel=_MULTI)(matrix)
+    app.add_typer(registry_app, name="registry", rich_help_panel=_MULTI)
+    app.add_typer(batch_app, name="batch", rich_help_panel=_MULTI)
+
+    # ── ML/AI ───────────────────────────────────────────────
+    from gemstack.cli.eval_cmd import eval_app
+    from gemstack.cli.prompt_cmd import prompt_app
+
+    app.add_typer(prompt_app, name="prompt", rich_help_panel=_MLAI)
+    app.add_typer(eval_app, name="eval", rich_help_panel=_MLAI)
+
+    # ── DX & Learning ──────────────────────────────────────
+    from gemstack.cli.tail_cmd import tail
+    from gemstack.cli.teach_cmd import teach
+
+    app.command(rich_help_panel=_DX)(tail)
+    app.command(rich_help_panel=_DX)(teach)
 
 
 _register_commands()

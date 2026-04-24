@@ -139,7 +139,7 @@ async def _init_with_ai(project_root: Path, profile: ProjectProfile) -> None:
     from gemstack.project.templates import render_agent_files
 
     config = GemstackConfig.load()
-    model = config.default_model or "gemini-2.5-flash"
+    model = config.default_model or "gemini-3.1-pro-preview"
 
     bootstrapper = AIBootstrapper(model=model)
     result = await bootstrapper.analyze_with_fallback(profile)

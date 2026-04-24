@@ -23,7 +23,7 @@ Gemstack uses [platformdirs](https://pypi.org/project/platformdirs/) for cross-p
 gemstack config set gemini-api-key YOUR_GEMINI_API_KEY
 
 # Set the default model (used by `gemstack run`)
-gemstack config set default-model gemini-2.5-pro  # Default: gemini-2.5-flash
+gemstack config set default-model gemini-2.5-flash  # Default: gemini-3.1-pro-preview
 
 # View all current settings (API keys are masked for security)
 gemstack config list
@@ -36,14 +36,14 @@ When resolving configuration values, Gemstack checks sources in this order (firs
 1. **CLI flags** — `--model gemini-2.5-pro` on a specific command
 2. **Environment variables** — `GEMINI_API_KEY` or `GOOGLE_API_KEY`
 3. **Config file** — Values from `config.toml`
-4. **Defaults** — Built-in fallbacks (e.g., `gemini-2.5-flash` for the model)
+4. **Defaults** — Built-in fallbacks (e.g., `gemini-3.1-pro-preview` for the model)
 
 ### Key Configuration Values
 
 | Key | Environment Variable | Default | Description |
 |-----|---------------------|---------|-------------|
 | `gemini-api-key` | `GEMINI_API_KEY` or `GOOGLE_API_KEY` | *(none)* | Google Gemini API key for AI features |
-| `default-model` | *(none)* | `gemini-2.5-flash` | Default Gemini model for `gemstack run` |
+| `default-model` | *(none)* | `gemini-3.1-pro-preview` | Default Gemini model for `gemstack run` |
 
 ---
 
@@ -97,7 +97,7 @@ When you use `gemstack run`, every API call is recorded with full cost tracking 
 
 - **Per-step tracking** — How much each workflow step cost in tokens and USD
 - **Per-feature tracking** — Cumulative cost across all steps for a feature
-- **Model-aware pricing** — Uses Gemini's pricing model ($0.15/1M input tokens, $0.60/1M output tokens for `gemini-2.5-flash`)
+- **Model-aware pricing** — Uses Gemini's pricing model ($0.15/1M input tokens, $0.60/1M output tokens for `gemini-3.1-pro-preview`)
 
 ### Setting Cost Limits
 

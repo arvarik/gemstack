@@ -273,7 +273,7 @@ class WorktreeManager:
         branches: dict[str, str],
         step: str,
         feature: str,
-        model: str = "gemini-2.5-flash",
+        model: str = "gemini-3.1-pro-preview",
     ) -> list[dict[str, object]]:
         """Run a step concurrently across multiple worktrees.
 

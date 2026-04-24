@@ -114,7 +114,7 @@ class StepExecutor:
 
     def __init__(
         self,
-        model: str = "gemini-2.5-flash",
+        model: str = "gemini-3.1-pro-preview",
         max_cost: float | None = None,
         max_tokens: int | None = None,
     ) -> None:

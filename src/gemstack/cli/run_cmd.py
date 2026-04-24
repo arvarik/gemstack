@@ -32,7 +32,7 @@ def run(
     ] = False,
     model: Annotated[
         str, typer.Option("--model", "-m", help="Gemini model to use")
-    ] = "gemini-2.5-flash",
+    ] = "gemini-3.1-pro-preview",
     max_cost: Annotated[
         float | None, typer.Option("--max-cost", help="Max USD cost per feature (circuit breaker)")
     ] = None,

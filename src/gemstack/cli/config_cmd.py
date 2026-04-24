@@ -13,7 +13,7 @@ config_app = typer.Typer(name="config", help="Manage global Gemstack settings")
 # Valid config keys and their descriptions
 _VALID_KEYS = {
     "gemini-api-key": "Gemini API key for AI-powered bootstrapping",
-    "default-model": "Default Gemini model (e.g., gemini-2.5-flash, gemini-2.5-pro)",
+    "default-model": "Default Gemini model (e.g., gemini-3.1-pro-preview, gemini-2.5-flash)",
     "default-topology": "Default topology for new projects (comma-separated)",
     "custom-templates-dir": "Path to custom template directory",
     "copy-mode": "Use file copy instead of symlinks (true/false)",
