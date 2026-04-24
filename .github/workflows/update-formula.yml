@@ -68,7 +68,7 @@ jobs:
           git add Formula/gemstack.rb
           git diff --cached --quiet && echo "No changes to commit" && exit 0
           git commit -m "chore: update Homebrew formula to v${{ steps.version.outputs.version }}"
-          git push origin "$BRANCH" --force-with-lease
+          git push origin "$BRANCH" --force
 
       - name: Create Pull Request
         env:
