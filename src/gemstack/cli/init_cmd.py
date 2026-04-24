@@ -90,7 +90,8 @@ def init(
                 asyncio.run(_init_with_ai(project_root, profile))
             except ImportError:
                 console.print(
-                    "[yellow]⚠️  AI extra not installed. Install with: pip install gemstack[ai][/yellow]"
+                    "[yellow]⚠️  AI extra not installed. "
+                    "Install with: pip install gemstack[ai][/yellow]"
                 )
                 console.print("[dim]Falling back to template-only mode...[/dim]")
                 _init_template_only(project_root, profile)

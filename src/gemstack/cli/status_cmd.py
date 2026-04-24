@@ -79,15 +79,21 @@ def status(
 
     # API Key verification
     import os
+
     from gemstack.project.config import GemstackConfig
 
     config = GemstackConfig.load()
-    api_key = config.get_api_key() or os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
+    api_key = (
+        config.get_api_key()
+        or os.environ.get("GEMINI_API_KEY")
+        or os.environ.get("GOOGLE_API_KEY")
+    )
 
     if api_key:
         console.print("[green]✅ API Key configured[/green]")
     else:
         console.print(
             "[yellow]⚠️  No Gemini API key found.[/yellow]\n"
-            "   [dim]To use AI features, run:[/dim] [bold cyan]gemstack config set gemini-api-key <YOUR_KEY>[/bold cyan]"
+            "   [dim]To use AI features, run:[/dim]\n"
+            "   [bold cyan]gemstack config set gemini-api-key <YOUR_KEY>[/bold cyan]"
         )
