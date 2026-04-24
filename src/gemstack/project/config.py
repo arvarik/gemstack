@@ -20,7 +20,7 @@ class GemstackConfig(BaseModel):
     """
 
     gemini_api_key: SecretStr | None = None
-    default_model: str = "gemini-2.5-flash"
+    default_model: str = "gemini-3.1-pro-preview"
     default_topology: list[str] | None = None
     custom_templates_dir: str | None = None
     projects: list[str] = Field(default_factory=list)  # For `gemstack matrix`

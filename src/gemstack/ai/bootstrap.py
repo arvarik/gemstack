@@ -78,7 +78,7 @@ class AIBootstrapper:
     and bootstrapping may involve multiple API calls.
     """
 
-    def __init__(self, model: str = "gemini-2.5-flash") -> None:
+    def __init__(self, model: str = "gemini-3.1-pro-preview") -> None:
         try:
             from google import genai
         except ImportError:

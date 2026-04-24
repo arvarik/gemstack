@@ -13,7 +13,7 @@ class TestGemstackConfig:
     def test_default_values(self) -> None:
         config = GemstackConfig()
         assert config.gemini_api_key is None
-        assert config.default_model == "gemini-2.5-flash"
+        assert config.default_model == "gemini-3.1-pro-preview"
         assert config.default_topology is None
         assert config.custom_templates_dir is None
         assert config.projects == []
@@ -24,10 +24,14 @@ class TestGemstackConfig:
         assert "gemstack" in str(path)
         assert path.name == "config.toml"
 
-    def test_load_returns_defaults_when_no_file(self) -> None:
+    def test_load_returns_defaults_when_no_file(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         # When no config file exists, load should return defaults
+        config_path = tmp_path / "nonexistent" / "config.toml"
+        monkeypatch.setattr(GemstackConfig, "config_path", classmethod(lambda cls: config_path))
         config = GemstackConfig.load()
-        assert config.default_model == "gemini-2.5-flash"
+        assert config.default_model == "gemini-3.1-pro-preview"
 
     def test_save_and_load_roundtrip(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
         """Config should survive a save/load roundtrip."""
