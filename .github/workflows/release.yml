@@ -47,10 +47,9 @@ jobs:
         run: |
           VERSION="${{ steps.meta.outputs.version }}"
           mkdir -p dist/
-          # Fetch PyPI metadata and extract both URLs
-          curl -sf "https://pypi.org/pypi/gemstack/$VERSION/json" > pypi.json
+          # Use PyPI metadata already fetched by the Wait step
           if [ ! -s pypi.json ]; then
-            echo "::error::Failed to fetch PyPI metadata for gemstack $VERSION"
+            echo "::error::PyPI metadata file missing or empty!"
             exit 1
           fi
           WHEEL_URL=$(python3 -c "import sys,json; urls=json.load(open('pypi.json'))['urls']; print(next(u['url'] for u in urls if u['packagetype']=='bdist_wheel'))")

@@ -42,8 +42,7 @@ jobs:
         id: sha
         run: |
           VERSION="${{ steps.version.outputs.version }}"
-          # Fetch PyPI metadata
-          curl -sf "https://pypi.org/pypi/gemstack/$VERSION/json" > pypi.json
+          # Use PyPI metadata already fetched by the Wait step
           URL=$(python3 -c "import sys,json; urls=json.load(open('pypi.json'))['urls']; print(next(u['url'] for u in urls if u['packagetype']=='sdist'))")
           echo "Downloading $URL"
           curl -fSL "$URL" -o gemstack.tar.gz
