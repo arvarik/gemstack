@@ -94,4 +94,8 @@ def _copy_to_clipboard(text: str) -> None:
     elif sys.platform == "win32":
         subprocess.run(["clip"], input=text.encode(), check=True)
     else:
-        console.print("[yellow]⚠️  Clipboard not supported on this platform. Try installing `xclip` or use the `--out <file>` flag to save to a file instead.[/yellow]")
+        console.print(
+            "[yellow]⚠️  Clipboard not supported on this platform. "
+            "Try installing `xclip` or use the `--out <file>` flag "
+            "to save to a file instead.[/yellow]"
+        )

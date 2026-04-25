@@ -137,7 +137,9 @@ class AIBootstrapper:
         
         if process.returncode != 0:
             error_msg = stderr.decode("utf-8").strip()
-            raise RuntimeError(f"Gemini CLI failed with exit code {process.returncode}: {error_msg}")
+            raise RuntimeError(
+                f"Gemini CLI failed with exit code {process.returncode}: {error_msg}"
+            )
             
         class DummyResponse:
             def __init__(self, text: str):
@@ -190,7 +192,10 @@ class AIBootstrapper:
                     if match:
                         delay = int(match.group(1)) + 1  # Add 1s buffer
                         
-                    logger.warning(f"Rate limit hit. Retrying in {delay}s... (Attempt {attempt + 1}/{max_retries})")
+                    logger.warning(
+                        f"Rate limit hit. Retrying in {delay}s... "
+                        f"(Attempt {attempt + 1}/{max_retries})"
+                    )
                     await asyncio.sleep(delay)
                     continue
                 

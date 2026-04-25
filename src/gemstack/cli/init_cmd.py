@@ -38,7 +38,10 @@ def init(
     ] = False,
     ai: Annotated[bool, typer.Option("--ai", help="Force AI-powered deep analysis")] = False,
     force: Annotated[
-        bool, typer.Option("--force", "-f", help="Overwrite existing .agent/ directory without prompting")
+        bool,
+        typer.Option(
+            "--force", "-f", help="Overwrite existing .agent/ directory without prompting"
+        ),
     ] = False,
 ) -> None:
     """Initialize a Gemstack project with .agent/ directory."""
@@ -53,16 +56,19 @@ def init(
 
     agent_dir = project_root / ".agent"
 
-    if agent_dir.exists():
-        if not force:
-            overwrite = typer.confirm(
-                "⚠️  .agent/ directory already exists. Do you want to overwrite it? (Use --force to skip this prompt)",
-                default=False,
+    if agent_dir.exists() and not force:
+        overwrite = typer.confirm(
+            "⚠️  .agent/ directory already exists. "
+            "Do you want to overwrite it? (Use --force to skip this prompt)",
+            default=False,
+        )
+        if not overwrite:
+            console.print("[yellow]Skipping initialization.[/yellow]")
+            console.print(
+                "[dim]Tip: Use `--force` to bypass this prompt "
+                "and overwrite automatically.[/dim]"
             )
-            if not overwrite:
-                console.print("[yellow]Skipping initialization.[/yellow]")
-                console.print("[dim]Tip: Use `--force` to bypass this prompt and overwrite automatically.[/dim]")
-                raise typer.Exit(0)
+            raise typer.Exit(0)
 
     # Step 1: Detect project profile
     console.print("[dim]Analyzing project...[/dim]")
@@ -89,7 +95,8 @@ def init(
         if not _has_gemini_cli() and not _has_api_key():
             console.print(
                 "[red]❌ AI analysis failed: Gemini CLI not found and no API key provided.[/red]\n"
-                "   [dim]Install the Gemini CLI (npm install -g @google/generative-ai-cli) OR configure an API key:[/dim]\n"
+                "   [dim]Install the Gemini CLI (npm install -g @google/generative-ai-cli) "
+                "OR configure an API key:[/dim]\n"
                 "   [bold cyan]gemstack config set gemini-api-key <YOUR_KEY>[/bold cyan]"
             )
             console.print("\n[dim]Falling back to template-only mode...[/dim]")

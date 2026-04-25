@@ -57,7 +57,10 @@ def phase(
     current_state = current_state_match.group(1) if current_state_match else "UNKNOWN"
 
     if current_state == "INITIALIZED" and phase_key != "spec":
-        console.print("[yellow]⚠️  Project is INITIALIZED. Run `gemstack phase spec` to begin your first feature.[/yellow]")
+        console.print(
+            "[yellow]⚠️  Project is INITIALIZED. "
+            "Run `gemstack phase spec` to begin your first feature.[/yellow]"
+        )
 
     # Check for plan doc requirement before build
     if phase_key == "build":
