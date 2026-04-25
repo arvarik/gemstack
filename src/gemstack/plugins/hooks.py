@@ -49,6 +49,30 @@ class GemstackHookSpec:
     All hooks are optional — plugins only need to implement the hooks
     they care about.
 
+    Example — a minimal plugin that adds a "mobile" topology::
+
+        # my_gemstack_plugin.py
+        from gemstack.plugins.hooks import hookimpl
+
+        class MobilePlugin:
+            @hookimpl
+            def gemstack_register_topologies(self):
+                return [{
+                    "name": "mobile",
+                    "description": "iOS/Android guardrails",
+                    "content": "# Mobile Topology\\n\\n- Test on real devices...",
+                }]
+
+            @hookimpl
+            def gemstack_post_init(self, project_root, profile):
+                mobile_ctx = project_root / ".agent" / "MOBILE.md"
+                if not mobile_ctx.exists():
+                    mobile_ctx.write_text("# Mobile Context\\n")
+
+        # In pyproject.toml:
+        # [project.entry-points."gemstack"]
+        # mobile = "my_gemstack_plugin:MobilePlugin"
+
     .. versionadded:: 1.0
     """
 

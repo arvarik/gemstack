@@ -57,7 +57,7 @@ def phase(
     current_state = current_state_match.group(1) if current_state_match else "UNKNOWN"
 
     if current_state == "INITIALIZED" and phase_key != "spec":
-        console.print("[yellow]⚠️  Project is INITIALIZED. Start with 'spec' phase first.[/yellow]")
+        console.print("[yellow]⚠️  Project is INITIALIZED. Run `gemstack phase spec` to begin your first feature.[/yellow]")
 
     # Check for plan doc requirement before build
     if phase_key == "build":
@@ -65,7 +65,7 @@ def phase(
         if plans_dir.exists() and not any(plans_dir.iterdir()):
             console.print(
                 "[yellow]⚠️  No plan documents found in docs/plans/. "
-                "Consider running /step2-trap first.[/yellow]"
+                "Create a plan or run the `/step2-trap` workflow to generate one.[/yellow]"
             )
 
     # Update state

@@ -27,7 +27,7 @@ def replay(
     archive_dir = project_root / "docs" / "archive"
 
     if not archive_dir.exists():
-        console.print("[yellow]⚠️  No docs/archive/ directory found.[/yellow]")
+        console.print("[yellow]⚠️  No docs/archive/ directory found. Archive a feature first by completing the `gemstack phase ship` process.[/yellow]")
         raise typer.Exit(code=1)
 
     if all_features or not feature:
@@ -41,7 +41,7 @@ def _replay_all(archive_dir: Path, project_root: Path) -> None:
     features = sorted(d for d in archive_dir.iterdir() if d.is_dir())
 
     if not features:
-        console.print("[yellow]⚠️  No archived features found.[/yellow]")
+        console.print("[yellow]⚠️  No archived features found. Complete and ship a feature using `gemstack phase ship` before replaying.[/yellow]")
         return
 
     table = Table(title="Feature Archive", show_header=True)

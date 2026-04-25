@@ -79,28 +79,73 @@ class AIBootstrapper:
     """
 
     def __init__(self, model: str = "gemini-3.1-pro-preview") -> None:
+        import shutil
+        
+        self.has_cli = shutil.which("gemini") is not None
+        self.model = model
+        self.client = None
+        
         try:
             from google import genai
+
+            from gemstack.project.config import GemstackConfig
+
+            config = GemstackConfig.load()
+            api_key = config.get_api_key()
+
+            self._genai = genai
+            if api_key:
+                self.client = genai.Client(api_key=api_key)
+            else:
+                self.client = genai.Client()
         except ImportError:
-            raise ImportError(
-                "The 'ai' extra is required for AI bootstrapping. "
-                "Install with: pip install gemstack[ai]"
-            ) from None
-        from gemstack.project.config import GemstackConfig
-
-        config = GemstackConfig.load()
-        api_key = config.get_api_key()
-
-        self._genai = genai
-        if api_key:
-            self.client = genai.Client(api_key=api_key)
-        else:
-            # Fall back to env vars (which the SDK checks automatically)
-            self.client = genai.Client()
-
-        self.model = model
+            if not self.has_cli:
+                raise ImportError(
+                    "The 'ai' extra or Gemini CLI is required for AI bootstrapping. "
+                    "Install SDK with: pip install gemstack[ai] or install CLI."
+                ) from None
 
     async def analyze(self, profile: ProjectProfile) -> BootstrapResult:
+        """Analyze the codebase, preferring Gemini CLI over SDK."""
+        if self.has_cli:
+            try:
+                return await self._analyze_with_cli(profile)
+            except Exception as e:
+                logger.warning(f"CLI analysis failed: {e}. Falling back to SDK if available.")
+                if not self.client:
+                    raise
+                    
+        return await self._analyze_with_sdk(profile)
+
+    async def _analyze_with_cli(self, profile: ProjectProfile) -> BootstrapResult:
+        """Send key source files to Gemini CLI via subprocess."""
+        context_parts = self._build_context(profile)
+        system_instruction = self._load_system_instruction()
+        
+        payload = "\n\n".join(context_parts)
+        
+        logger.info("Executing Gemini CLI for AI analysis...")
+        process = await asyncio.create_subprocess_exec(
+            "gemini",
+            system_instruction,
+            stdin=asyncio.subprocess.PIPE,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE,
+        )
+        
+        stdout, stderr = await process.communicate(input=payload.encode("utf-8"))
+        
+        if process.returncode != 0:
+            error_msg = stderr.decode("utf-8").strip()
+            raise RuntimeError(f"Gemini CLI failed with exit code {process.returncode}: {error_msg}")
+            
+        class DummyResponse:
+            def __init__(self, text: str):
+                self.text = text
+                
+        return self._parse_response(DummyResponse(stdout.decode("utf-8")))
+
+    async def _analyze_with_sdk(self, profile: ProjectProfile) -> BootstrapResult:
         """Send key source files to Gemini for deep analysis.
 
         Strategy:
@@ -119,20 +164,38 @@ class AIBootstrapper:
         system_instruction = self._load_system_instruction()
 
         # Call Gemini (run sync SDK in thread to avoid blocking)
-        try:
-            response = await asyncio.to_thread(
-                self.client.models.generate_content,
-                model=self.model,
-                contents=context_parts,
-                config={
-                    "system_instruction": system_instruction,
-                    "temperature": 0.2,  # Low temperature for factual extraction
-                    "max_output_tokens": 8192,
-                },
-            )
-        except Exception as e:
-            logger.error(f"Gemini API call failed: {e}")
-            raise
+        max_retries = 3
+        base_delay = 10
+        for attempt in range(max_retries):
+            try:
+                response = await asyncio.to_thread(
+                    self.client.models.generate_content,
+                    model=self.model,
+                    contents=context_parts,
+                    config={
+                        "system_instruction": system_instruction,
+                        "temperature": 0.2,  # Low temperature for factual extraction
+                        "max_output_tokens": 8192,
+                    },
+                )
+                break
+            except Exception as e:
+                error_str = str(e).lower()
+                is_rate_limit = "429" in error_str or "resource_exhausted" in error_str
+                if is_rate_limit and attempt < max_retries - 1:
+                    import re
+                    
+                    delay = base_delay * (2 ** attempt)
+                    match = re.search(r"'retryDelay':\s*'(\d+)s'", error_str, re.IGNORECASE)
+                    if match:
+                        delay = int(match.group(1)) + 1  # Add 1s buffer
+                        
+                    logger.warning(f"Rate limit hit. Retrying in {delay}s... (Attempt {attempt + 1}/{max_retries})")
+                    await asyncio.sleep(delay)
+                    continue
+                
+                logger.error(f"Gemini API call failed: {e}")
+                raise
 
         return self._parse_response(response)
 

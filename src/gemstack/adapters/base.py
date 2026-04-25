@@ -21,7 +21,38 @@ class InstallResult:
 
 @runtime_checkable
 class AgentAdapter(Protocol):
-    """Protocol that all installable agent adapters must implement."""
+    """Protocol that all installable agent adapters must implement.
+
+    Adapters are responsible for installing/uninstalling Gemstack
+    workflow commands into a specific AI agent tool (e.g., Gemini CLI,
+    Cursor, Claude Desktop).
+
+    Example — a minimal adapter for a custom agent::
+
+        class MyAgentAdapter:
+            @property
+            def name(self) -> str:
+                return "My Agent"
+
+            @property
+            def is_available(self) -> bool:
+                return shutil.which("myagent") is not None
+
+            def install(self, data_dir: Path, copy_mode: bool = False) -> InstallResult:
+                target = Path.home() / ".myagent" / "workflows"
+                target.mkdir(parents=True, exist_ok=True)
+                count = 0
+                for md_file in data_dir.glob("*.md"):
+                    (target / md_file.name).write_text(md_file.read_text())
+                    count += 1
+                return InstallResult(success=True, installed_count=count, skipped_count=0)
+
+            def uninstall(self) -> InstallResult:
+                return InstallResult(success=True, installed_count=0, skipped_count=0)
+
+            def verify(self) -> list[str]:
+                return []
+    """
 
     @property
     def name(self) -> str:

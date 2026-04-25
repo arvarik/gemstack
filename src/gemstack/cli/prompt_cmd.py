@@ -38,7 +38,7 @@ def create(
     prompt_file = prompt_dir / f"{version}.md"
 
     if prompt_file.exists():
-        console.print(f"[yellow]⚠️  Prompt {name}/{version} already exists.[/yellow]")
+        console.print(f"[yellow]⚠️  Prompt {name}/{version} already exists. Use `--force` to overwrite or bump the version.[/yellow]")
         raise typer.Exit(code=1)
 
     now = datetime.now(tz=timezone.utc).strftime("%Y-%m-%d")
@@ -69,7 +69,7 @@ def bump(
     prompt_dir = project_root / "prompts" / name
 
     if not prompt_dir.exists():
-        console.print(f"[red]❌ Prompt '{name}' not found.[/red]")
+        console.print(f"[red]❌ Prompt '{name}' not found. Run `gemstack prompt create {name}` to generate it.[/red]")
         raise typer.Exit(code=1)
 
     # Find current latest version

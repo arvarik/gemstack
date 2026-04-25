@@ -72,6 +72,6 @@ def start(
         except subprocess.CalledProcessError as e:
             console.print(f"[yellow]⚠️  Failed to create branch: {e.stderr.strip()}[/yellow]")
         except FileNotFoundError:
-            console.print("[yellow]⚠️  git not found — skipping branch creation[/yellow]")
+            console.print("[yellow]⚠️  git not found — skipping branch creation. Install `git` and ensure it is in your PATH.[/yellow]")
 
     console.print("[dim]Next: Run `gemstack route` to determine your next step.[/dim]")

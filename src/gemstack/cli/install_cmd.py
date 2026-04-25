@@ -107,8 +107,7 @@ def _install_gemini_cli() -> None:
 
     if not commands_dir.parent.exists():
         console.print(
-            "  [yellow]⚠️  Gemini CLI directory not found. "
-            "Skipping. Install Gemini CLI first.[/yellow]"
+            "  [yellow]⚠️  Gemini CLI directory not found. Skipping. Install it globally with `npm install -g @google/generative-ai-cli` first.[/yellow]"
         )
         return
 
