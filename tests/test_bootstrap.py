@@ -42,6 +42,7 @@ class TestBootstrapperImport:
 
     def test_import_error_without_genai(self) -> None:
         with (
+            patch("shutil.which", return_value=None),
             patch.dict("sys.modules", {"google": None, "google.genai": None}),
             pytest.raises(ImportError, match=r"ai.*extra"),
         ):

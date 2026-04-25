@@ -507,7 +507,10 @@ class StepExecutor:
         """Acquire a per-project lockfile to prevent concurrent execution.
 
         Uses exclusively created file lock, making it safe across
-        all platforms including Windows.
+        all platforms including Windows.  If a stale lockfile is
+        detected (the owning PID is no longer alive), the lock is
+        automatically reclaimed so a crashed previous run does not
+        permanently block the user.
 
         Returns:
             Path of the lock file, or None if locking fails implicitly.
@@ -523,6 +526,23 @@ class StepExecutor:
             logger.debug(f"Acquired lock: {lock_path}")
             return lock_path
         except FileExistsError:
+            # Check if the lock is stale (owning process is dead)
+            if StepExecutor._is_lock_stale(lock_path):
+                logger.warning(
+                    f"Reclaiming stale lockfile from dead process: {lock_path}"
+                )
+                with contextlib.suppress(OSError):
+                    lock_path.unlink()
+                # Retry once after reclaiming
+                try:
+                    fd = os.open(str(lock_path), os.O_CREAT | os.O_EXCL | os.O_RDWR)
+                    os.write(fd, str(os.getpid()).encode())
+                    os.close(fd)
+                    logger.debug(f"Acquired lock after reclaim: {lock_path}")
+                    return lock_path
+                except (FileExistsError, OSError):
+                    pass  # Fall through to the error below
+
             raise RuntimeError(
                 "Another `gemstack run` is already executing in this project. "
                 f"If this is incorrect, remove {lock_path}"
@@ -530,6 +550,28 @@ class StepExecutor:
         except OSError as e:
             logger.warning(f"Failed to acquire lockfile: {e}")
             return None
+
+    @staticmethod
+    def _is_lock_stale(lock_path: Path) -> bool:
+        """Check if the PID recorded in a lockfile is still alive.
+
+        Returns True if the lock is stale (process is dead or PID
+        is unreadable), False if the owning process is still running.
+        """
+        try:
+            pid_str = lock_path.read_text().strip()
+            pid = int(pid_str)
+        except (OSError, ValueError):
+            # Can't read or parse the PID — treat as stale
+            return True
+
+        try:
+            os.kill(pid, 0)  # Signal 0: check existence without killing
+        except ProcessLookupError:
+            return True  # Process does not exist
+        except PermissionError:
+            return False  # Process exists but we can't signal it
+        return False  # Process is alive
 
     @staticmethod
     def _release_lock(lock_path: Path | None) -> None:

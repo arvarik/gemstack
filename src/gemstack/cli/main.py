@@ -1,7 +1,11 @@
 """Main CLI entry point for Gemstack."""
 
 import logging
+import os
+import platform
 import sys
+import traceback
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Annotated
 
@@ -20,12 +24,87 @@ app = typer.Typer(
 
 
 def _gemstack_excepthook(exc_type, exc_value, exc_traceback):  # type: ignore
-    """Global exception handler for GemstackErrors."""
+    """Global exception handler for GemstackErrors.
+
+    Known GemstackErrors are displayed as structured panels.
+    Unexpected exceptions generate a crash dump file with full
+    debugging context so issues can be diagnosed without local
+    reproduction.
+    """
     if issubclass(exc_type, GemstackError):
         handle_error(exc_value)
     else:
-        # Fall back to default exception formatting for pure bugs
+        # Generate crash dump before falling back to default output
+        crash_path = _write_crash_dump(exc_type, exc_value, exc_traceback)
+        if crash_path:
+            err_console.print(
+                f"\n[bold red]Unexpected error — crash report saved to:[/bold red]\n"
+                f"  [dim]{crash_path}[/dim]\n"
+                f"[dim]Please include this file when reporting a bug.[/dim]\n"
+            )
         sys.__excepthook__(exc_type, exc_value, exc_traceback)
+
+
+def _write_crash_dump(
+    exc_type: type[BaseException],
+    exc_value: BaseException,
+    exc_traceback: object,
+) -> Path | None:
+    """Write a structured crash dump for post-mortem debugging.
+
+    The dump includes the full traceback, Python/OS/gemstack versions,
+    the .agent/ directory listing, and environment variable keys
+    (values are redacted for security).
+    """
+    try:
+        from platformdirs import user_config_dir
+
+        from gemstack import __version__
+
+        crashes_dir = Path(user_config_dir("gemstack")) / "crashes"
+        crashes_dir.mkdir(parents=True, exist_ok=True)
+
+        ts = datetime.now(tz=timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+        crash_path = crashes_dir / f"gemstack-crash-{ts}.log"
+
+        tb_text = "".join(
+            traceback.format_exception(exc_value)
+        )
+
+        # Collect .agent/ file listing from cwd
+        agent_dir = Path.cwd() / ".agent"
+        if agent_dir.exists():
+            agent_listing = "\n".join(
+                f"  {f.name} ({f.stat().st_size} bytes)"
+                for f in sorted(agent_dir.iterdir())
+                if f.is_file()
+            )
+        else:
+            agent_listing = "  (no .agent/ directory in cwd)"
+
+        # Redacted environment keys
+        env_keys = ", ".join(sorted(os.environ.keys()))
+
+        report = (
+            f"=== Gemstack Crash Report ==="
+            f"\nTimestamp: {ts}"
+            f"\nGemstack Version: {__version__}"
+            f"\nPython: {sys.version}"
+            f"\nPlatform: {platform.system()} {platform.machine()}"
+            f"\nCWD: {Path.cwd()}"
+            f"\n\n--- .agent/ Directory ---"
+            f"\n{agent_listing}"
+            f"\n\n--- Environment Keys (values redacted) ---"
+            f"\n{env_keys}"
+            f"\n\n--- Traceback ---"
+            f"\n{tb_text}"
+        )
+
+        crash_path.write_text(report, encoding="utf-8")
+        return crash_path
+    except Exception:
+        # Never let crash-dump logic itself crash the process
+        return None
 
 
 sys.excepthook = _gemstack_excepthook
@@ -90,6 +169,13 @@ def main(
     ] = Path("."),
     verbose: Annotated[bool, typer.Option("--verbose", "-v", help="Enable verbose output")] = False,
     debug: Annotated[bool, typer.Option("--debug", help="Enable debug logging")] = False,
+    json_logs: Annotated[
+        bool,
+        typer.Option(
+            "--json-logs",
+            help="Emit structured JSON logs to stderr (for CI/CD pipelines)",
+        ),
+    ] = False,
     version: Annotated[
         bool | None,
         typer.Option(
@@ -111,20 +197,27 @@ def main(
 
     log_level = logging.DEBUG if debug else (logging.INFO if verbose else logging.WARNING)
 
-    from rich.logging import RichHandler
+    if json_logs:
+        from gemstack.cli.json_log_formatter import JsonLogFormatter
 
-    logging.basicConfig(
-        level=log_level,
-        format="%(levelname)s %(name)s: %(message)s",
-        handlers=[
-            RichHandler(
-                level=log_level,
-                console=err_console,
-                show_path=False,
-                markup=True,
-            )
-        ],
-    )
+        handler = logging.StreamHandler(sys.stderr)
+        handler.setFormatter(JsonLogFormatter())
+        logging.basicConfig(level=log_level, handlers=[handler])
+    else:
+        from rich.logging import RichHandler
+
+        logging.basicConfig(
+            level=log_level,
+            format="%(levelname)s %(name)s: %(message)s",
+            handlers=[
+                RichHandler(
+                    level=log_level,
+                    console=err_console,
+                    show_path=False,
+                    markup=True,
+                )
+            ],
+        )
 
 
 # --- Rich help panel names for command grouping ---
@@ -179,6 +272,7 @@ def _register_commands() -> None:
     # ── Context & Analysis ──────────────────────────────────
     from gemstack.cli.compare_cmd import compare
     from gemstack.cli.compile_cmd import compile
+    from gemstack.cli.diagnose_cmd import diagnose
     from gemstack.cli.diff_cmd import diff
     from gemstack.cli.export_cmd import export
     from gemstack.cli.migrate_cmd import migrate
@@ -188,6 +282,7 @@ def _register_commands() -> None:
     app.command(rich_help_panel=_CONTEXT)(compile)
     app.command(rich_help_panel=_CONTEXT)(check)
     app.command(rich_help_panel=_CONTEXT)(diff)
+    app.command(rich_help_panel=_CONTEXT)(diagnose)
     app.command(rich_help_panel=_CONTEXT)(migrate)
     app.command(rich_help_panel=_CONTEXT)(export)
     app.command(rich_help_panel=_CONTEXT)(snapshot)

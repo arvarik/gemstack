@@ -65,9 +65,14 @@ class TestInitCommand:
         assert (tmp_path / ".agent" / "STATUS.md").exists()
 
     def test_init_skips_existing(self, bootstrapped_project: Path) -> None:
-        result = runner.invoke(app, ["init", str(bootstrapped_project)])
+        result = runner.invoke(app, ["init", str(bootstrapped_project)], input="n\n")
         assert result.exit_code == 0
         assert "already exists" in result.stdout
+
+    def test_init_force_existing(self, bootstrapped_project: Path) -> None:
+        result = runner.invoke(app, ["init", str(bootstrapped_project), "--no-ai", "--force"])
+        assert result.exit_code == 0
+        assert "Analyzing project" in result.stdout
 
     def test_init_creates_docs_dirs(self, tmp_path: Path) -> None:
         runner.invoke(app, ["init", str(tmp_path), "--no-ai"])

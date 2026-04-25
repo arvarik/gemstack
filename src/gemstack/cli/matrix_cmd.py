@@ -34,7 +34,11 @@ def matrix(
         raise typer.Exit(code=1)
 
     if not project_paths:
-        console.print("[yellow]⚠️  No Gemstack projects found.[/yellow]")
+        console.print(
+            "[yellow]⚠️  No Gemstack projects found. "
+            "Run `gemstack registry add <path>` or `gemstack registry scan <dir>` "
+            "to register projects first.[/yellow]"
+        )
         raise typer.Exit(code=1)
 
     rows = [_get_project_status(p) for p in project_paths]

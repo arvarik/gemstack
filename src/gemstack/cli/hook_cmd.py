@@ -72,7 +72,10 @@ def install(
     hooks_dir = project_root / ".git" / "hooks"
 
     if not hooks_dir.exists():
-        console.print("[red]❌ No .git/hooks/ directory found. Are you in a git repository?[/red]")
+        console.print(
+            "[red]❌ No .git/hooks/ directory found. "
+            "Run `git init` to initialize a repository first.[/red]"
+        )
         raise typer.Exit(code=1)
 
     # Determine which hooks to install
@@ -116,7 +119,10 @@ def uninstall(
     hooks_dir = project_root / ".git" / "hooks"
 
     if not hooks_dir.exists():
-        console.print("[yellow]⚠️  No .git/hooks/ directory found.[/yellow]")
+        console.print(
+            "[yellow]⚠️  No .git/hooks/ directory found. "
+            "Run `git init` to initialize a repository first.[/yellow]"
+        )
         return
 
     count = 0
