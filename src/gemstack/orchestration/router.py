@@ -102,7 +102,7 @@ class PhaseRouter:
             )
 
         # Rule 3: Sequential step routing
-        next_cmd, phase_name = self._infer_current_step(lifecycle)
+        next_cmd, _ = self._infer_current_step(lifecycle)
 
         if next_cmd == "/step1-spec":
             return RoutingDecision(
@@ -116,7 +116,7 @@ class PhaseRouter:
             return RoutingDecision(
                 action=RoutingAction.CONTINUE,
                 next_command="/step2-trap",
-                reason="Spec is complete. Proceed to Step 2: Trap to write the plan and failing tests.",
+                reason="Spec complete. Proceed to Step 2: Trap to write plan & failing tests.",
                 context_files=[str(status_path)],
             )
 
@@ -150,7 +150,7 @@ class PhaseRouter:
                 return RoutingDecision(
                     action=RoutingAction.READY_TO_SHIP,
                     next_command="/step5-ship",
-                    reason="Audit passed. Proceeding to Step 5: Ship — integrate, merge, and deploy.",
+                    reason="Audit passed. Proceed to Step 5: Ship — integrate, merge, and deploy.",
                     context_files=[str(status_path)],
                 )
             # Should not reach here if FINDINGS/RESOLVED due to earlier rules

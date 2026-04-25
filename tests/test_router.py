@@ -19,7 +19,12 @@ class TestRouterRules:
     def test_audit_findings_reroute_to_build(self, tmp_path: Path) -> None:
         agent_dir = tmp_path / ".agent"
         agent_dir.mkdir()
-        (agent_dir / "STATUS.md").write_text("- [x] Step 1: Spec\n- [x] Step 2: Trap\n- [x] Step 3: Build\n- [ ] Step 4: Audit\n")
+        (agent_dir / "STATUS.md").write_text(
+            "- [x] Step 1: Spec\n"
+            "- [x] Step 2: Trap\n"
+            "- [x] Step 3: Build\n"
+            "- [ ] Step 4: Audit\n"
+        )
         
         audit_path = agent_dir / "AUDIT_FINDINGS.md"
         audit_path.write_text("## Findings\n- SQL injection in login route\n")
@@ -35,7 +40,14 @@ class TestRouterRules:
         agent_dir = tmp_path / ".agent"
         agent_dir.mkdir()
         (agent_dir / "STATUS.md").write_text(
-            "## 5. Lifecycle Tracker\n- [ ] Step 1: Spec\n- [ ] Step 2: Trap\n- [ ] Step 3: Build\n- [ ] Step 4: Audit\n- [ ] Step 5: Ship\n"
+            
+            "## 5. Lifecycle Tracker\n"
+            "- [ ] Step 1: Spec\n"
+            "- [ ] Step 2: Trap\n"
+            "- [ ] Step 3: Build\n"
+            "- [ ] Step 4: Audit\n"
+            "- [ ] Step 5: Ship\n"
+        
         )
 
         router = PhaseRouter()
@@ -48,7 +60,11 @@ class TestRouterRules:
         agent_dir = tmp_path / ".agent"
         agent_dir.mkdir()
         (agent_dir / "STATUS.md").write_text(
-            "- [x] Step 1: Spec\n- [x] Step 2: Trap\n- [ ] Step 3: Build\n"
+            
+            "- [x] Step 1: Spec\n"
+            "- [x] Step 2: Trap\n"
+            "- [ ] Step 3: Build\n"
+        
         )
 
         router = PhaseRouter()
@@ -61,7 +77,12 @@ class TestRouterRules:
         agent_dir = tmp_path / ".agent"
         agent_dir.mkdir()
         (agent_dir / "STATUS.md").write_text(
-            "- [x] Step 1: Spec\n- [x] Step 2: Trap\n- [x] Step 3: Build\n- [ ] Step 4: Audit\n"
+            
+            "- [x] Step 1: Spec\n"
+            "- [x] Step 2: Trap\n"
+            "- [x] Step 3: Build\n"
+            "- [ ] Step 4: Audit\n"
+        
         )
 
         router = PhaseRouter()
@@ -74,7 +95,13 @@ class TestRouterRules:
         agent_dir = tmp_path / ".agent"
         agent_dir.mkdir()
         (agent_dir / "STATUS.md").write_text(
-            "- [x] Step 1: Spec\n- [x] Step 2: Trap\n- [x] Step 3: Build\n- [x] Step 4: Audit\n- [ ] Step 5: Ship\n"
+            
+            "- [x] Step 1: Spec\n"
+            "- [x] Step 2: Trap\n"
+            "- [x] Step 3: Build\n"
+            "- [x] Step 4: Audit\n"
+            "- [ ] Step 5: Ship\n"
+        
         )
 
         router = PhaseRouter()
@@ -87,7 +114,13 @@ class TestRouterRules:
         agent_dir = tmp_path / ".agent"
         agent_dir.mkdir()
         (agent_dir / "STATUS.md").write_text(
-            "- [x] Step 1: Spec\n- [x] Step 2: Trap\n- [x] Step 3: Build\n- [x] Step 4: Audit\n- [x] Step 5: Ship\n"
+            
+            "- [x] Step 1: Spec\n"
+            "- [x] Step 2: Trap\n"
+            "- [x] Step 3: Build\n"
+            "- [x] Step 4: Audit\n"
+            "- [x] Step 5: Ship\n"
+        
         )
 
         router = PhaseRouter()
@@ -103,7 +136,12 @@ class TestAuditStateParsing:
     def test_empty_audit_file(self, tmp_path: Path) -> None:
         agent_dir = tmp_path / ".agent"
         agent_dir.mkdir()
-        (agent_dir / "STATUS.md").write_text("- [x] Step 1: Spec\n- [x] Step 2: Trap\n- [x] Step 3: Build\n- [ ] Step 4: Audit\n")
+        (agent_dir / "STATUS.md").write_text(
+            "- [x] Step 1: Spec\n"
+            "- [x] Step 2: Trap\n"
+            "- [x] Step 3: Build\n"
+            "- [ ] Step 4: Audit\n"
+        )
         (agent_dir / "AUDIT_FINDINGS.md").write_text("")
         
         router = PhaseRouter()
@@ -116,7 +154,12 @@ class TestAuditStateParsing:
     def test_resolved_audit_file(self, tmp_path: Path) -> None:
         agent_dir = tmp_path / ".agent"
         agent_dir.mkdir()
-        (agent_dir / "STATUS.md").write_text("- [x] Step 1: Spec\n- [x] Step 2: Trap\n- [x] Step 3: Build\n- [ ] Step 4: Audit\n")
+        (agent_dir / "STATUS.md").write_text(
+            "- [x] Step 1: Spec\n"
+            "- [x] Step 2: Trap\n"
+            "- [x] Step 3: Build\n"
+            "- [ ] Step 4: Audit\n"
+        )
         (agent_dir / "AUDIT_FINDINGS.md").write_text("ALL ISSUES RESOLVED")
         
         router = PhaseRouter()
@@ -130,7 +173,13 @@ class TestAuditStateParsing:
         agent_dir = tmp_path / ".agent"
         agent_dir.mkdir()
         # Even if Audit checkbox isn't checked, if file says PASS it skips to ship
-        (agent_dir / "STATUS.md").write_text("- [x] Step 1: Spec\n- [x] Step 2: Trap\n- [x] Step 3: Build\n- [ ] Step 4: Audit\n- [ ] Step 5: Ship\n")
+        (agent_dir / "STATUS.md").write_text(
+            "- [x] Step 1: Spec\n"
+            "- [x] Step 2: Trap\n"
+            "- [x] Step 3: Build\n"
+            "- [ ] Step 4: Audit\n"
+            "- [ ] Step 5: Ship\n"
+        )
         (agent_dir / "AUDIT_FINDINGS.md").write_text("PASS")
         
         router = PhaseRouter()
@@ -157,7 +206,13 @@ class TestLifecycleParsing:
 
     def test_parse_lifecycle_new_format(self, tmp_path: Path) -> None:
         path = tmp_path / "STATUS.md"
-        path.write_text("- [x] Step 1: Spec\n- [x] Step 2: Trap\n- [ ] Step 3: Build\n- [ ] Step 4: Audit\n- [ ] Step 5: Ship\n")
+        path.write_text(
+            "- [x] Step 1: Spec\n"
+            "- [x] Step 2: Trap\n"
+            "- [ ] Step 3: Build\n"
+            "- [ ] Step 4: Audit\n"
+            "- [ ] Step 5: Ship\n"
+        )
 
         router = PhaseRouter()
         lifecycle = router._parse_lifecycle(path)
