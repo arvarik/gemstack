@@ -26,11 +26,13 @@ jobs:
           VERSION="${{ steps.version.outputs.version }}"
           echo "Waiting for gemstack $VERSION on PyPI..."
           for i in $(seq 1 30); do
-            if curl -sf "https://pypi.org/pypi/gemstack/$VERSION/json" > /dev/null 2>&1; then
-              echo "Package available on PyPI"
-              exit 0
+            if curl -sf "https://pypi.org/pypi/gemstack/$VERSION/json" > pypi.json; then
+              if python3 -c "import sys,json; data=json.load(open('pypi.json')); sys.exit(0 if any(u['packagetype']=='sdist' for u in data.get('urls', [])) else 1)" 2>/dev/null; then
+                echo "✅ Package and sdist available on PyPI"
+                exit 0
+              fi
             fi
-            echo "Attempt $i/30 — waiting 10s..."
+            echo "  Attempt $i/30 — waiting 10s..."
             sleep 10
           done
           echo "::error::Package not found on PyPI after 5 minutes"
@@ -40,9 +42,9 @@ jobs:
         id: sha
         run: |
           VERSION="${{ steps.version.outputs.version }}"
-          # Fetch PyPI metadata once and reuse
-          PYPI_JSON=$(curl -sf "https://pypi.org/pypi/gemstack/$VERSION/json")
-          URL=$(echo "$PYPI_JSON" | python3 -c "import sys,json; urls=json.load(sys.stdin)['urls']; print(next(u['url'] for u in urls if u['packagetype']=='sdist'))")
+          # Fetch PyPI metadata
+          curl -sf "https://pypi.org/pypi/gemstack/$VERSION/json" > pypi.json
+          URL=$(python3 -c "import sys,json; urls=json.load(open('pypi.json'))['urls']; print(next(u['url'] for u in urls if u['packagetype']=='sdist'))")
           echo "Downloading $URL"
           curl -fSL "$URL" -o gemstack.tar.gz
           SHA256=$(sha256sum gemstack.tar.gz | cut -d' ' -f1)
