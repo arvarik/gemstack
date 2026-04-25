@@ -402,12 +402,20 @@ class AIBootstrapper:
 
         for marker, attr in file_markers.items():
             pattern = (
-                rf"(?:^|\n)#\s*(?:\.agent/)?\s*{marker}\.md\s*\n"
-                rf"(.*?)(?=\n#\s*(?:\.agent/)?\s*\w+\.md|\Z)"
+                rf"(?:^|\n)#{{1,6}}\s*(?:\.agent/)?\s*{marker}\.md\s*\n"
+                rf"(.*?)(?=\n#{{1,6}}\s*(?:\.agent/)?\s*\w+\.md|\Z)"
             )
             match = re.search(pattern, text, re.DOTALL | re.IGNORECASE)
             if match:
-                setattr(result, attr, match.group(1).strip())
+                content = match.group(1).strip()
+                # Clean up markdown code block wrappers if present
+                if content.startswith("```markdown"):
+                    content = content[len("```markdown"):].strip()
+                elif content.startswith("```"):
+                    content = content[3:].strip()
+                if content.endswith("```"):
+                    content = content[:-3].strip()
+                setattr(result, attr, content)
 
         # If no sections were parsed, treat the whole response as architecture
         if not any([result.architecture, result.style, result.testing]):

@@ -209,6 +209,7 @@ If you moved pre-existing docs to `docs/archive/pre-gemstack/` in Phase 0.5, ens
 ---
 
 ## Execution Rules for the LLM
+- **Output Format**: Your final response MUST be structured as a sequence of markdown sections. Each section MUST begin with exactly an H1 markdown header for the filename, e.g., `# .agent/ARCHITECTURE.md`, followed by the raw content for that file. Do NOT wrap the file content in markdown code blocks.
 - **No Hallucinations**: If a project does not have a database, simply write "N/A — No database utilized" in the database section. Do not invent details.
 - **Extreme Specificity**: Do not write generic statements like "Uses Tailwind for styling." Write "Uses Tailwind CSS v4 with a strict tokenized surface hierarchy (`bg-surface`, `bg-surface-container`). 1px borders are FORBIDDEN for sectioning."
 - **Absorb Legacy Rules**: If `.cursorrules`, `GEMINI.md`, or similar files exist, their rules MUST be reflected in the appropriate `.agent/` file. Do not ignore them.
