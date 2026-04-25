@@ -168,18 +168,22 @@ class AIBootstrapper:
         # Call Gemini (run sync SDK in thread to avoid blocking)
         max_retries = 3
         base_delay = 10
+        
+        def _call_api() -> object:
+            assert self.client is not None, "Gemini SDK client not initialized"
+            return self.client.models.generate_content(
+                model=self.model,
+                contents=context_parts,
+                config={
+                    "system_instruction": system_instruction,
+                    "temperature": 0.2,  # Low temperature for factual extraction
+                    "max_output_tokens": 8192,
+                },
+            )
+
         for attempt in range(max_retries):
             try:
-                response = await asyncio.to_thread(
-                    self.client.models.generate_content,
-                    model=self.model,
-                    contents=context_parts,
-                    config={
-                        "system_instruction": system_instruction,
-                        "temperature": 0.2,  # Low temperature for factual extraction
-                        "max_output_tokens": 8192,
-                    },
-                )
+                response = await asyncio.to_thread(_call_api)
                 break
             except Exception as e:
                 error_str = str(e).lower()
