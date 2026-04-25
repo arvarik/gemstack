@@ -31,9 +31,11 @@ jobs:
           VERSION="${{ steps.meta.outputs.version }}"
           echo "Waiting for gemstack $VERSION on PyPI..."
           for i in $(seq 1 30); do
-            if curl -sf "https://pypi.org/pypi/gemstack/$VERSION/json" > /dev/null 2>&1; then
-              echo "✅ Package available on PyPI"
-              exit 0
+            if curl -sf "https://pypi.org/pypi/gemstack/$VERSION/json" > pypi.json; then
+              if python3 -c "import sys,json; data=json.load(open('pypi.json')); sys.exit(0 if any(u['packagetype']=='sdist' for u in data.get('urls', [])) else 1)" 2>/dev/null; then
+                echo "✅ Package and sdist available on PyPI"
+                exit 0
+              fi
             fi
             echo "  Attempt $i/30 — waiting 10s..."
             sleep 10
@@ -45,16 +47,14 @@ jobs:
         run: |
           VERSION="${{ steps.meta.outputs.version }}"
           mkdir -p dist/
-          # Fetch PyPI metadata once and extract both URLs
-          PYPI_JSON=$(curl -sf "https://pypi.org/pypi/gemstack/$VERSION/json")
-          if [ -z "$PYPI_JSON" ]; then
+          # Fetch PyPI metadata and extract both URLs
+          curl -sf "https://pypi.org/pypi/gemstack/$VERSION/json" > pypi.json
+          if [ ! -s pypi.json ]; then
             echo "::error::Failed to fetch PyPI metadata for gemstack $VERSION"
             exit 1
           fi
-          WHEEL_URL=$(echo "$PYPI_JSON" \
-            | python3 -c "import sys,json; urls=json.load(sys.stdin)['urls']; print(next(u['url'] for u in urls if u['packagetype']=='bdist_wheel'))")
-          SDIST_URL=$(echo "$PYPI_JSON" \
-            | python3 -c "import sys,json; urls=json.load(sys.stdin)['urls']; print(next(u['url'] for u in urls if u['packagetype']=='sdist'))")
+          WHEEL_URL=$(python3 -c "import sys,json; urls=json.load(open('pypi.json'))['urls']; print(next(u['url'] for u in urls if u['packagetype']=='bdist_wheel'))")
+          SDIST_URL=$(python3 -c "import sys,json; urls=json.load(open('pypi.json'))['urls']; print(next(u['url'] for u in urls if u['packagetype']=='sdist'))")
           curl -fSL "$WHEEL_URL" -o "dist/gemstack-${VERSION}-py3-none-any.whl"
           curl -fSL "$SDIST_URL" -o "dist/gemstack-${VERSION}.tar.gz"
           ls -lh dist/
