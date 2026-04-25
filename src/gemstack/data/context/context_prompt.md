@@ -2,7 +2,7 @@
 
 You are an expert Software Architect and Tech Lead. Your objective is to bootstrap the `.agent/` context directory for this repository.
 
-The `.agent/` directory acts as the permanent memory and rules engine for all future AI agents operating in this codebase. By establishing strict architectural boundaries, style rules, and testing strategies, you ensure that agents do not drift, hallucinate styles, or break conventions as the project scales.
+The `.agent/` directory acts as the permanent memory and rules engine for all future AI agents operating in this codebase. By establishing strict architectural boundaries, style rules, and testing strategies, you ensure that agents do not drift, hallucinate styles, or break conventions as the project scales. This directory also orchestrates the 5-Step Autonomous Workflow (`/step1-spec` → `/step2-trap` → `/step3-build` → `/step4-audit` → `/step5-ship`). Your output must perfectly support these phases.
 
 ## Your Task
 
@@ -142,7 +142,7 @@ Before writing any files, you MUST use your search and read tools to investigate
 Now, read the template files currently located in the `.agent/` directory. Use their exact structure and headers as your baseline, but **replace the placeholder text with the concrete facts you discovered during your analysis (Phases 0 through 1).** Write the finalized content back to the same files, overwriting the templates.
 
 ### 1. `.agent/ARCHITECTURE.md`
-- **Goal**: The definitive anchor for system design.
+- **Goal**: The definitive anchor for system design and the target for strict execution contracts locked in during `/step1-spec`.
 - **Instructions**: At the top of the file, set the `## 0. Project Topology` section with the detected topology attributes. Detail the exact tech stack with pinned versions. Map out the data flow (e.g., "Client Components → React Query → Express → Drizzle → SQLite" or "CLI → asyncio.TaskGroup → bounded queues → GPU worker" or "HTTP → go-chi middleware → handler → service → sqlc → PostgreSQL"). Document all core database entities and their relational rules (cascading deletes, virtual tables, hypertables, manual cleanup requirements). Define API contracts (methods, paths, request/response shapes) for primary endpoints. For SDK libraries, document the exported public API surface and versioning guarantees. Note any AI providers, external APIs, or complex integrations. If the ML/AI topology is active, populate the Model Ledger in Section 5.1 with all models identified during analysis. Document the concurrency/threading model (goroutines, asyncio, Node.js event loop). List all environment variables from `.env.example`. Include exact local development commands. Document invariants and safety rules found in the codebase.
 
 ### 2. `.agent/STYLE.md`
@@ -151,7 +151,7 @@ Now, read the template files currently located in the `.agent/` directory. Use t
 - **CRITICAL**: Formulate explicit "Anti-Patterns (FORBIDDEN)" based on what the codebase avoids (e.g., "NEVER use `useEffect` for data fetching", "NEVER use `border-gray-200` for sectioning", "NEVER write temp files to disk", "NEVER use `Any`/`interface{}` types", "NEVER write raw SQL outside sqlc queries").
 
 ### 3. `.agent/TESTING.md`
-- **Goal**: Track test methods, execution evidence, and local dev setup.
+- **Goal**: Track test methods, execution evidence, and local dev setup. This powers the failing test suite trap set in `/step2-trap` and execution looping in `/step3-build`.
 - **Instructions**: Document the exact steps to get the app running locally (prerequisites, install, start, seed, database, code generation). Document the exact CLI commands to run tests, type checking, and linting (including `go test -race`, `golangci-lint`, `shellcheck` where applicable). Keep the "Execution Evidence Rules" from the template intact. Set up the empty scenario tables ready for the first feature. Initialize the empty Regression Scenarios table. Based on the active topologies, retain or mark as "N/A" the conditional sections: Backend Route Coverage Matrix, Frontend Component State Matrix, and ML/AI Evaluation Thresholds. Populate headers and set up empty tables ready for the first feature.
 
 ### 4. `.agent/PHILOSOPHY.md`
@@ -159,8 +159,21 @@ Now, read the template files currently located in the `.agent/` directory. Use t
 - **Instructions**: Read the project's `README.md` and any existing context files. Infer the core pain point the project solves. Define the target user persona. Synthesize 3-5 core beliefs that drive technical and product decisions. Document design/UX principles (applies to CLI, web, SDK, and headless projects). Define explicit anti-goals (What This Is NOT). *If the product purpose is completely ambiguous, stop and ask the user for a 1-paragraph description before writing this file.*
 
 ### 5. `.agent/STATUS.md`
-- **Goal**: The single source of truth for progress.
-- **Instructions**: Initialize the tracking state. Set "Current Focus" to "Project Bootstrapped". Leave the lifecycle checkboxes unchecked. Leave "Relevant Files" empty. Leave "Review Results" empty. Set "Active Worktrees" to "(none — sequential execution)". Based on the active topologies, retain or mark as "N/A" the conditional sections: Stub Audit Tracker (for projects with both frontend and backend), and Prompt Versioning Changelog (for ML/AI projects).
+- **Goal**: The single source of truth for tracking progress through the 5-Step workflow.
+- **Instructions**:
+  - Add `**Phase:** Ideation` near the top to track the current workflow phase.
+  - Set "Current Focus" to "Project Bootstrapped".
+  - **CRITICAL**: You MUST preserve the exact 5-Step Feature Lifecycle checkboxes exactly as follows:
+    `- [ ] Step 1: Spec`
+    `- [ ] Step 2: Trap`
+    `- [ ] Step 3: Build`
+    `- [ ] Step 4: Audit`
+    `- [ ] Step 5: Ship`
+    Do NOT invent generic SDLC phases (like "Requirements Gathered").
+  - Leave "Relevant Files" empty.
+  - Leave "Review Results" empty.
+  - Set "Active Worktrees" to "(none — sequential execution)".
+  - Based on the active topologies, retain or mark as "N/A" the conditional sections: Stub Audit Tracker (for projects with both frontend and backend), and Prompt Versioning Changelog (for ML/AI projects).
 
 ---
 
@@ -198,7 +211,7 @@ Some projects don't fit the traditional "application" mold. Adapt the templates 
 
 ## Phase 3: Docs Scaffolding Verification
 
-Ensure the following directory structure exists in the project root to support the roles/phases workflow. Create them with `.gitkeep` files if they are missing:
+Ensure the following directory structure exists in the project root to support the `/step2-trap` (plans) and `/step5-ship` (archive) workflows. Create them with `.gitkeep` files if they are missing:
 - `docs/explorations/.gitkeep`
 - `docs/designs/.gitkeep`
 - `docs/plans/.gitkeep`
@@ -216,4 +229,4 @@ If you moved pre-existing docs to `docs/archive/pre-gemstack/` in Phase 0.5, ens
 - **Clean Up After Absorbing**: After absorbing existing `.agent/` files (Phase 0.5), delete the old files. The new standardized files replace them entirely.
 - **Do not delete template sections**: If a section from the template is not applicable, keep the header and write "N/A — [Reason]".
 - **Respect auto-generated content**: Do NOT move or modify auto-generated files in `docs/` (Swagger, godoc, images). Only move human-written documentation to the archive.
-- **Completion**: Once all 5 files are successfully overwritten, the `docs/` folders are verified, and any pre-existing content is properly archived, inform the user that the project is bootstrapped and ready for the `/ideate` phase.
+- **Completion**: Once all 5 files are successfully overwritten, the `docs/` folders are verified, and any pre-existing content is properly archived, inform the user that the project is bootstrapped and ready for `/step1-spec` (or `/ideate`).
