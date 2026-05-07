@@ -85,7 +85,7 @@ class TestRunCommand:
 
     def test_cli_args_passed_to_executor(self, project: Path) -> None:
         """Verify CLI arguments are correctly passed to StepExecutor."""
-        with patch("gemstack.cli.run_cmd.StepExecutor") as mock_executor_class:
+        with patch("gemstack.orchestration.executor.StepExecutor") as mock_executor_class:
             mock_executor = mock_executor_class.return_value
             # Mock the execute method to return a successful result
             mock_result = MagicMock()
@@ -119,7 +119,7 @@ class TestRunCommand:
 
     def test_default_cli_args_passed_to_executor(self, project: Path) -> None:
         """Verify default CLI arguments are correctly passed to StepExecutor."""
-        with patch("gemstack.cli.run_cmd.StepExecutor") as mock_executor_class:
+        with patch("gemstack.orchestration.executor.StepExecutor") as mock_executor_class:
             mock_executor = mock_executor_class.return_value
             mock_result = MagicMock()
             mock_result.success = True
