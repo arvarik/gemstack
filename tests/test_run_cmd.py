@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from unittest.mock import MagicMock, patch
 
 import pytest
 from typer.testing import CliRunner
@@ -81,3 +82,64 @@ class TestRunCommand:
         )
         assert "step1-spec" in result.output
         assert "My feature" in result.output
+
+    def test_cli_args_passed_to_executor(self, project: Path) -> None:
+        """Verify CLI arguments are correctly passed to StepExecutor."""
+        with patch("gemstack.cli.run_cmd.StepExecutor") as mock_executor_class:
+            mock_executor = mock_executor_class.return_value
+            # Mock the execute method to return a successful result
+            mock_result = MagicMock()
+            mock_result.success = True
+            mock_result.summary.return_value = "Mock success"
+            mock_executor.execute.return_value = mock_result
+
+            result = runner.invoke(
+                app,
+                [
+                    "run",
+                    "step1-spec",
+                    "Test feature",
+                    "--project",
+                    str(project),
+                    "--model",
+                    "custom-model",
+                    "--max-cost",
+                    "50.0",
+                    "--max-tokens",
+                    "10000",
+                ],
+            )
+
+            assert result.exit_code == 0
+            mock_executor_class.assert_called_once_with(
+                model="custom-model",
+                max_cost=50.0,
+                max_tokens=10000,
+            )
+
+    def test_default_cli_args_passed_to_executor(self, project: Path) -> None:
+        """Verify default CLI arguments are correctly passed to StepExecutor."""
+        with patch("gemstack.cli.run_cmd.StepExecutor") as mock_executor_class:
+            mock_executor = mock_executor_class.return_value
+            mock_result = MagicMock()
+            mock_result.success = True
+            mock_result.summary.return_value = "Mock success"
+            mock_executor.execute.return_value = mock_result
+
+            result = runner.invoke(
+                app,
+                [
+                    "run",
+                    "step1-spec",
+                    "Test feature",
+                    "--project",
+                    str(project),
+                ],
+            )
+
+            assert result.exit_code == 0
+            mock_executor_class.assert_called_once_with(
+                model="gemini-3.1-pro-preview",
+                max_cost=None,
+                max_tokens=None,
+            )
