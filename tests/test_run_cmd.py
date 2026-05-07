@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from unittest.mock import MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 from typer.testing import CliRunner
@@ -91,7 +91,7 @@ class TestRunCommand:
             mock_result = MagicMock()
             mock_result.success = True
             mock_result.summary.return_value = "Mock success"
-            mock_executor.execute.return_value = mock_result
+            mock_executor.execute = AsyncMock(return_value=mock_result)
 
             result = runner.invoke(
                 app,
@@ -124,7 +124,7 @@ class TestRunCommand:
             mock_result = MagicMock()
             mock_result.success = True
             mock_result.summary.return_value = "Mock success"
-            mock_executor.execute.return_value = mock_result
+            mock_executor.execute = AsyncMock(return_value=mock_result)
 
             result = runner.invoke(
                 app,
