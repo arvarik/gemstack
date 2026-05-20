@@ -12,8 +12,8 @@ class Gemstack < Formula
 
   desc "Opinionated AI agent orchestration framework for Gemini CLI and Antigravity"
   homepage "https://github.com/arvarik/gemstack"
-  url "https://files.pythonhosted.org/packages/source/g/gemstack/gemstack-1.0.1.tar.gz"
-  sha256 "051b8c246c659ab305e32c2d5f3ee050d7f201df9543f143aed9071d1f0b9e3e"
+  url "https://files.pythonhosted.org/packages/34/fc/c2692b3f459ca34bd4c76fe0972e2cb514efa3505a21be3b9902b8fcc43a/gemstack-2.0.0.tar.gz"
+  sha256 "861502da220c60faefcd36cb4912dcfb920f5f436f0d4e4359c3065294832587"
   license "Apache-2.0"
 
   depends_on "python@3.12"
