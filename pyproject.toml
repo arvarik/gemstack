@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "gemstack"
 dynamic = ["version"]
-description = "Opinionated AI agent orchestration framework for Gemini CLI and Antigravity"
+description = "The high-velocity AI agent orchestration framework, natively optimized for Antigravity."
 readme = "README.md"
 license = "Apache-2.0"
 requires-python = ">=3.10"

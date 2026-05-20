@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] — 2026-05-19
+
+### Added
+- **Native Antigravity (`agy`) Support**: Gemstack is now a first-class plugin for the Antigravity CLI.
+- **XML Role Architecture**: Completely re-engineered all 9 expert roles using XML-structured instructions for higher stability and reasoning performance.
+- **Autonomous Subagents**: Introduced `<subagent_capabilities>` to all roles, enabling native delegation (e.g., SDET invoking Browser subagents).
+- **Artifact-Driven Workflows**: Migrated the 5-step lifecycle to use native `agy` artifacts (`implementation_plan.md`, `task.md`, `walkthrough.md`) for real-time progress tracking.
+- **Topologies v2.0**: 
+    - **Backend**: Added **Drizzle ORM** guardrails and N+1 query protection.
+    - **Frontend**: Added **Next.js 15 Server Actions** and Hydration Safety rules.
+    - **Infrastructure**: Added **Proxmox/LXC** specific resource limit guardrails.
+    - **ML/AI**: Implemented the **AI Testing Pyramid** and Multi-variable Circuit Breaker.
+
+### Changed
+- **Deprecated Manual Planning**: Replaced `docs/plans/` with native `agy` artifacts in all workflows.
+- **Deprecated Status File**: Migrated `.agent/STATUS.md` to a persistent system artifact for faster cross-agent access.
+
 ## [1.1.0] — 2026-04-23
 
 ### Added

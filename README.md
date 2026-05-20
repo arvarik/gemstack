@@ -1,238 +1,69 @@
-# Gemstack
+# 💎 Gemstack
 
-**Opinionated AI agent orchestration framework for [Gemini CLI](https://github.com/google-gemini/gemini-cli) and [Antigravity](https://github.com/google-gemini/antigravity).**
+**The high-velocity AI agent orchestration framework, natively optimized for Antigravity.**
 
-[![PyPI](https://img.shields.io/pypi/v/gemstack?style=flat-square&logo=pypi&logoColor=white&label=PyPI)](https://pypi.org/project/gemstack/)
-[![Python](https://img.shields.io/pypi/pyversions/gemstack?style=flat-square&logo=python&logoColor=white)](https://pypi.org/project/gemstack/)
-[![CI](https://img.shields.io/github/actions/workflow/status/arvarik/gemstack/ci.yml?style=flat-square&logo=github&label=CI)](https://github.com/arvarik/gemstack/actions/workflows/ci.yml)
-[![License](https://img.shields.io/github/license/arvarik/gemstack?style=flat-square)](LICENSE)
-[![Typed](https://img.shields.io/badge/typed-py.typed-blue?style=flat-square&logo=python&logoColor=white)](https://peps.python.org/pep-0561/)
-
-> Gemstack gives your Gemini-powered agents architectural memory, topology-aware guardrails, and a 5-step lifecycle that forces them to *verify their own work* against your terminal — not just hallucinate a solution and tell you it's done.
->
-> Built for **Gemini CLI** and **Google Antigravity**. Also works with Cursor, Claude Desktop, and Cline via [MCP](docs/mcp-server.md).
-
-![gemstack](docs/assets/screenshots/gemstack.png)
-
-![hero](docs/assets/screenshots/hero-terminal.png)
+[![CI Status](https://img.shields.io/github/actions/workflow/status/arvarik/gemstack/test.yml?branch=main&style=flat-square)](https://github.com/arvarik/gemstack/actions)
+[![Version](https://img.shields.io/github/v/release/arvarik/gemstack?style=flat-square)](https://github.com/arvarik/gemstack/releases)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg?style=flat-square)](LICENSE)
 
 ---
 
-## The Problem
+## 🚀 Gemstack 2.0: The Antigravity Release
 
-Every AI coding tool on the market today — Cursor, Copilot, Aider, Cline — is **bottom-up**. You highlight a file, say "write this function," and the agent does its best. Here's what goes wrong at scale:
+Gemstack has evolved. Version 2.0 is a fundamental architectural shift that moves beyond simple prompt-stitching into **Native Agentic Orchestration**. It is designed specifically to harness the full power of the **Antigravity (`agy`) CLI**.
 
-- 🧠 **Architecture amnesia** — The agent forgets your tech stack, reinvents design patterns, and introduces conflicting libraries across sessions.
-- 🔁 **Silent rewrites** — It overwrites perfectly good files to suit new logic, mutating critical path variables without testing.
-- ✅ **Self-reported success** — It tells you "Done!" but never actually ran the test suite. You discover failures 3 commits later.
-- 🎭 **One-size-fits-all prompting** — A React SPA and a Go microservice get the same generic instructions. No guardrails for your specific topology.
+### What makes 2.0 different?
 
-## The Solution
-
-**Gemstack is top-down.** It acts as the orchestrator *above* your editor, purpose-built for **Gemini CLI** and **Google Antigravity** — Google's agentic AI coding platforms. Gemstack gives your Gemini agent the exact context, constraints, and verification loops it needs to produce production-quality code.
-
-```
-┌───────────────────────────────────────────────────────────────┐
-│                          GEMSTACK                             │
-│                                                               │
-│   ┌──────────┐  ┌────────────┐  ┌─────────┐  ┌────────────┐   │
-│   │ Context  │  │  Topology  │  │  Phase  │  │ Autonomous │   │
-│   │ Compiler │─▶│ Guardrails │─▶│ Router  │─▶│  Executor  │   │
-│   └────┬─────┘  └────────────┘  └─────────┘  └─────┬──────┘   │
-│        │                                           │          │
-│   .agent/ files                        Terminal verification  │
-│   (ARCHITECTURE, STYLE,              (Exit Code 0 or retry)   │
-│    TESTING, STATUS)                                           │
-└───────────────────────────────────────────────────────────────┘
-          ↕                  ↕                    ↕
-     Gemini CLI         Antigravity      Cursor / Claude / Cline
-      (native)           (native)          (via MCP Server)
-```
-
-Gemstack's workflows install as **slash commands** (`/architect`, `/step1-spec`, `/step3-build`, etc.) directly into Gemini CLI and Antigravity. When you type `/step3-build` in a new Antigravity conversation, the full compiled context — roles, phases, topology guardrails, and your project's `.agent/` files — is loaded automatically. For other AI IDEs, the built-in [MCP server](docs/mcp-server.md) provides the same capabilities.
+*   **🧠 XML-Structured Mindsets**: Every expert role (Architect, SDET, DevOps, etc.) now uses a high-precision XML-tagged mindset. This ensures perfect instruction following and eliminates "Logic Drift" when working with Gemini 1.5 Pro and 2.0.
+*   **🤖 Autonomous Subagents**: Roles are now **Subagent-Aware**. The framework no longer just tells the AI what to do; it gives the AI the tools to delegate. The Architect can now autonomously spawn a Security subagent to audit a schema before it ever reaches your codebase.
+*   **📊 Native Artifact Integration**: We've deprecated manual planning files in favor of native Antigravity artifacts. `IMPLEMENTATION_PLAN.md`, `task.md`, and `walkthrough.md` are now the living, breathing heart of your project, providing real-time visual progress tracking.
+*   **📐 Modern Topology Guardrails**: Topologies have been refreshed for the 2025 stack. 
+    *   **Backend**: Drizzle ORM + Playwright integration.
+    *   **Frontend**: Next.js 15 Server Components & Server Actions.
+    *   **Infrastructure**: Proxmox/LXC resource limits and Caddy DNS-01 automation.
+*   **🔍 Deterministic Phase Routing**: The new `agy` routing engine replaces the old status-file check with a high-fidelity artifact monitor, ensuring you never skip a step in the lifecycle.
 
 ---
 
-## Key Features
+## 🏗️ The 5-Step Lifecycle
 
-### 🏛️ Architectural Memory via `.agent/` Files
-Define your entire project context **once** — tech stack, API contracts, database schemas, coding style, test strategy, and anti-patterns — in 5 structured markdown files. Every AI agent reads these before touching your code. No more repeating yourself across sessions.
+Gemstack enforces a rigorous, contract-driven engineering process:
 
-```bash
-gemstack init --ai    # AI analyzes your codebase and auto-populates .agent/
-```
-
-### 🔄 The 5-Step Verified Lifecycle
-Every feature flows through **Spec → Trap → Build → Audit → Ship**, with each step running in a **fresh context window**. The Auditor can't be influenced by the Builder's justifications. Tests are written before code. This is how you crush hallucination.
-
-```
-Step 1: Spec  → Define the feature, lock API contracts    (Product Visionary + Architect)
-Step 2: Trap  → Write the failing test suite + task plan  (SDET + Planner)
-Step 3: Build → Implement until Exit Code 0               (Principal Engineer)
-Step 4: Audit → Fresh-eyes security & logic review        (Security Engineer)
-Step 5: Ship  → Integrate, merge, deploy, archive         (DevOps Engineer)
-```
-
-### 📐 Topology-Aware Guardrails
-Instead of generic prompts, Gemstack loads **domain-specific guardrails** based on your project's detected topology. A Next.js app with a Go backend gets different rules than a Python ML pipeline.
-
-| Topology | Example Guardrails |
-|----------|-------------------|
-| **Backend** | Deterministic test discipline, anti-mocking rules, N+1 query detection |
-| **Frontend** | Component state coverage matrix (empty/loading/success/error), hydration safety |
-| **ML/AI** | Evaluation-Driven Development, cost circuit breakers, prompt versioning |
-| **Infrastructure** | YAML validation, no-auto-apply policy, configuration drift detection |
-| **Library/SDK** | API surface snapshot diffing, semver enforcement, backward compatibility |
-
-### 🤖 Autonomous Execution with `gemstack run`
-Go beyond copy-pasting prompts. Gemstack compiles your full project context, calls Gemini, writes the results to disk, and tracks costs — all in a single command:
-
-```bash
-gemstack run step1-spec --feature "Add user notifications"   # Define the spec
-gemstack run step3-build --feature "Add user notifications"  # Build until tests pass
-gemstack run step4-audit --feature "Add user notifications"  # Fresh-context audit
-```
-
-Each execution includes: **per-project lockfile** (prevents concurrent corruption), **cost tracking** with configurable circuit breakers, **path traversal prevention** on AI-generated file writes, and **structured result summaries**.
-
-### 🔌 Native IDE Integration via MCP
-Gemstack exposes your `.agent/` context to **any MCP-compatible agent** (Cursor, Claude Desktop, Gemini CLI, Cline) as a Model Context Protocol server — with read-only resources, actionable tools, and reusable prompt templates:
-
-```bash
-gemstack mcp serve                           # Start stdio server
-gemstack mcp register --cursor --claude-desktop  # Auto-register with your IDEs
-```
-
-**Exposed MCP tools:** `gemstack_status`, `gemstack_route`, `gemstack_compile`, `gemstack_check`, `gemstack_diff`, `gemstack_run`, `gemstack_costs`
-
-### 🧩 Extensible Plugin System
-Add custom topologies, roles, validation checks, or intercept compilation events with the stable `pluggy`-based plugin API (backward-compatible through the 1.x series):
-
-```python
-from gemstack.plugins.hooks import hookimpl
-
-class MobilePlugin:
-    @hookimpl
-    def gemstack_register_topologies(self):
-        return [{"name": "mobile", "description": "iOS/Android", "content": "..."}]
-
-    @hookimpl
-    def gemstack_post_init(self, project_root, profile):
-        (project_root / ".agent" / "MOBILE.md").write_text("# Mobile Context")
-```
-
-### 🔍 Context Drift Detection
-Catch when your codebase drifts from what's documented. Gemstack compares your actual dependencies, environment variables, and file references against your `.agent/` context:
-
-```bash
-gemstack diff    # Detect new deps, removed env vars, stale file refs
-gemstack check   # Validate .agent/ directory integrity
-```
-
-### 📊 28 CLI Commands Across 7 Categories
-
-| Category | Commands | Purpose |
-|----------|----------|---------|
-| **Setup** | `init`, `install`, `uninstall`, `doctor`, `config` | Project bootstrapping, CLI registration, environment validation |
-| **Workflow** | `status`, `route`, `start`, `phase`, `run` | Lifecycle management, autonomous execution |
-| **Context** | `compile`, `diff`, `export`, `snapshot`, `migrate` | Prompt compilation, drift detection, format exports |
-| **Analysis** | `check`, `compare`, `replay`, `matrix` | Validation, benchmarking, retrospectives, cross-project dashboards |
-| **Tooling** | `mcp`, `hook`, `worktree`, `ci`, `scaffold` | MCP server, git hooks, parallel worktrees, CI generation |
-| **ML/AI** | `prompt`, `eval` | Prompt template versioning, evaluation runner with holdout boundary |
-| **DX** | `tail`, `teach` | Live TUI dashboard, interactive tutorial |
+1. **Step 1: Spec** → Define the feature, design UX, and lock in executable contracts (Architect).
+2. **Step 2: Trap** → Write failing automated tests that "trap" the requirement before coding (SDET).
+3. **Step 3: Build** → Implement the logic until the "traps" pass (Principal Engineers).
+4. **Step 4: Audit** → Security, performance, and accessibility review (Security Engineer).
+5. **Step 5: Ship** → Deployment, infrastructure provisioning, and post-flight checks (DevOps Engineer).
 
 ---
 
-## Quickstart
+## 📦 Installation
 
 ```bash
-# 1. Install (with AI bootstrapping + MCP server support)
-pipx install "gemstack[ai,mcp]"
+# Recommended: Install everything (AI, MCP, TUI)
+pipx install "gemstack[all]"
 
-# 2. Initialize your project (AI auto-detects stack, topology, and commands)
-cd your-project/
-gemstack init --ai
-
-# 3. See your current lifecycle state
-gemstack status
-
-# 4. Get the recommended next action
-gemstack route
-
-# 5. Start a new feature lifecycle
-gemstack start "Add user search"
-
-# 6. Execute Step 1 autonomously via Gemini
-gemstack run step1-spec --feature "Add user search"
-```
-
-### Alternative Install Methods
-
-```bash
-uv tool install "gemstack[all]"          # uv (fastest)
-pip install "gemstack[all]"              # Standard pip
-pipx install gemstack                    # Minimal (no AI, no MCP)
+# Or via uv (fastest)
+uv tool install "gemstack[all]"
 ```
 
 ---
 
-## How It Works: The Context Compiler
+## 📖 Documentation
 
-The **Context Compiler** is the engine that makes Gemstack work. When you run a workflow step, it performs **JIT (Just-In-Time) prompt assembly**:
-
-1. **Parses the workflow** — Extracts required roles and phases from the step definition
-2. **Loads role definitions** — Bundles expert personas (Architect, SDET, Security Engineer, etc.)
-3. **Loads phase instructions** — Attaches phase-specific behavioral rules (Ideate, Design, Build, etc.)
-4. **Applies topology guardrails** — Detects your project topology from `ARCHITECTURE.md` and injects domain-specific constraints
-5. **Compiles `.agent/` context** — Reads your project's architecture, style, testing, and status files
-6. **Includes relevant source files** — Pulls in files referenced in `STATUS.md`
-7. **Fires plugin hooks** — Lets plugins modify sections before/after compilation
-8. **Applies token budgeting** — Truncates lowest-priority sections first if you exceed your context window
-
-```bash
-gemstack compile step3-build                   # View the full compiled prompt
-gemstack compile step3-build --max-tokens 100000  # With token limits
-```
+*   [Getting Started](docs/getting-started.md) — From zero to your first v2.0 workflow.
+*   [The 5-Step Lifecycle](docs/the-5-step-lifecycle.md) — How the orchestration engine works.
+*   [Topology Guardrails](docs/topologies.md) — Domain-specific rules for every project type.
+*   [MCP Server & IDE Integration](docs/mcp-server.md) — Connecting Gemstack to Cursor and Claude.
 
 ---
 
-## Compatibility
+## 🤝 Contributing
 
-| | Supported |
-|---|-----------|
-| **Python** | 3.10, 3.11, 3.12, 3.13 |
-| **OS** | macOS, Linux, Windows (WSL) |
-| **AI Backend** | Google Gemini (via `google-genai`) |
-| **MCP Transport** | stdio, SSE |
-| **Project Languages** | TypeScript/JavaScript, Python, Go, Rust (auto-detected) |
-| **Package Managers** | npm, pnpm, yarn, bun, pip, uv, poetry, cargo, go mod |
+We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for our v2.0 XML prompting standards and development guidelines.
 
 ---
 
-## Documentation
+## ⚖️ License
 
-| | |
-|---|---|
-| 📚 [Getting Started](docs/getting-started.md) | Installation, initialization, and your first workflow |
-| ⚙️ [The `.agent/` Context System](docs/the-agent-context.md) | How the 5 context files drive AI behavior |
-| 🔄 [The 5-Step Lifecycle](docs/the-5-step-lifecycle.md) | Spec → Trap → Build → Audit → Ship in depth |
-| 📐 [Topology-Aware Guardrails](docs/topologies.md) | Domain-specific guardrails for every project type |
-| 🧠 [The Context Compiler](docs/context-compiler.md) | How JIT prompt assembly works |
-| 🤖 [Autonomous Execution](docs/autonomous-execution.md) | Deep dive on `gemstack run` — the autonomous executor |
-| 🔍 [Drift Detection](docs/drift-detection.md) | Catch when code and docs get out of sync |
-| 🔌 [MCP Server & IDE Integration](docs/mcp-server.md) | Connecting Gemstack to Cursor, Claude, and Cline |
-| 🧩 [Building Custom Plugins](docs/plugins.md) | Extending Gemstack with custom topologies, roles, and hooks |
-| 🔧 [Full CLI Reference](docs/cli-reference.md) | All 28 commands with usage and examples |
-| 🛠️ [Configuration & Integrations](docs/configuration-and-integrations.md) | Global config, API keys, and Gemini CLI integration |
-| 📖 [Example Walkthroughs](examples/) | End-to-end lifecycle examples for 6 project types |
-
----
-
-## Project Links
-
-| | |
-|---|---|
-| 📋 [Changelog](CHANGELOG.md) | 🤝 [Contributing](CONTRIBUTING.md) |
-| 🔒 [Security Policy](SECURITY.md) | 📜 [Code of Conduct](CODE_OF_CONDUCT.md) |
-| 🐛 [Report a Bug](https://github.com/arvarik/gemstack/issues/new?template=bug_report.md) | 💡 [Request a Feature](https://github.com/arvarik/gemstack/issues/new?template=feature_request.md) |
-| ⚖️ [License — Apache 2.0](LICENSE) | 🎓 Run `gemstack teach` for an interactive tutorial |
+Apache 2.0. See [LICENSE](LICENSE) for details.

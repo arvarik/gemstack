@@ -68,6 +68,14 @@ test: add fixtures for Go project detection
 - **Docstrings**: Google-style
 - Run `uv run ruff check --fix src/ tests/` to auto-fix lint issues
 
+### Prompting Standards (v2.0)
+
+For Gemstack 2.0, all role and topology definitions MUST follow the XML-structured instruction format:
+- Use `<thinking_process>` for Chain of Thought instructions.
+- Use `<role_instructions>` for core behavioral rules.
+- Use `<subagent_capabilities>` to define which Antigravity subagents this role is authorized to invoke.
+- Wrap all guardrails in a `<guardrails>` block.
+
 ### Testing Requirements
 
 - All new code must have corresponding tests

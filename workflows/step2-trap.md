@@ -1,36 +1,30 @@
 ---
 name: step2-trap
-description: "Step 2: Write the task plan and lay the failing test suite trap"
+description: "Step 2: Write failing automated tests to trap requirements"
 ---
-# Workflow: Trap (Setting the Trap)
+# Workflow: Trap (The Test)
 
-**Goal:** Write the step-by-step task list and lay the failing test suite trap.
+<thinking_process>
+The Trap phase is about "Requirement Capture." Think about:
+1. What does "Success" look like in a test suite?
+2. How to ensure the test fails for the right reason before implementation.
+</thinking_process>
+
+**Goal:** Create failing automated tests that "trap" the requirement. Nothing moves to "Build" without a failing trap.
 
 ## Composition
-This workflow composes:
 - **Roles:** `Principal Engineer`, `SDET`
 - **Phases:** `Contract & Plan`
+- **Native Tools:** Uses `task.md` and `IMPLEMENTATION_PLAN.md`.
 
 ## Process
 
-1. **Implementation Planning (Principal Engineer):**
-   - Act as the Planner. Write the step-by-step implementable task list based strictly on the Architect's contracts from Step 1.
-   - Write the plan to the `docs/plans/` directory.
+1.  **Draft Tasks**: The **SDET** translates the Spec into a checklist in `task.md`.
+2.  **Failing Tests**: The **Principal Engineer** writes the actual test files (Jest, Playwright, etc.) with assertions that fail on the current codebase.
 
-2. **Contract Enforcement (SDET):**
-   - Act as the SDET. Read the API contracts from Step 1.
-   - Write the **failing test suite** based on these contracts (e.g., `tests/api.spec.ts`).
-   - Test for edge cases, nulls, and rapid state changes. Ensure the test fails right now because the code hasn't been written.
+## Accuracy Checks
+- [ ] Do all new tests fail with a clear "Expected X, got Y" message?
+- [ ] Is there 100% contract coverage for the feature?
+- [ ] Is the `task.md` marked with `[/]` for the current building block?
 
-## Accuracy Check
-The definition of "done" is now mathematically locked in code. The Builder's biases cannot corrupt the process. The test suite MUST fail before proceeding to Step 3.
-
-## ROUTING PROTOCOL (Yield & Prompt)
-At the end of your execution, or if you hit a blocker you cannot resolve, you must output a `### SYSTEM ROUTING` block. Explicitly tell the human orchestrator exactly what slash command to run next in a New Chat, or what human action is required.
-
-**Example:**
-```markdown
-### SYSTEM ROUTING
-[🛑] BLOCKED: I am building the frontend, but the backend `Interaction` schema is missing from ARCHITECTURE.md. I am yielding.
-🟠 NEXT ACTION: Open a New Chat, run `/step1-spec`, and instruct the Architect to define the Interaction schema.
-```
+[STATE: READY_FOR_BUILD]
