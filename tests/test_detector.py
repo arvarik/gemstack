@@ -174,3 +174,53 @@ class TestMiscDetection:
         detector = ProjectDetector()
         profile = detector.detect(python_fastapi)
         assert any(d.name == "src" for d in profile.source_dirs)
+
+class TestInfrastructureDetection:
+    """Test infrastructure detection logic."""
+
+    def test_detects_docker_compose(self, empty_project: Path) -> None:
+        (empty_project / "docker-compose.yml").touch()
+        detector = ProjectDetector()
+        profile = detector.detect(empty_project)
+
+        assert profile.language == "yaml"
+        assert Topology.INFRASTRUCTURE in profile.topologies
+        assert profile.manifest_file is not None
+        assert profile.manifest_file.name == "docker-compose.yml"
+
+    def test_detects_terraform(self, empty_project: Path) -> None:
+        (empty_project / "main.tf").touch()
+        detector = ProjectDetector()
+        profile = detector.detect(empty_project)
+
+        assert profile.language == "yaml"
+        assert Topology.INFRASTRUCTURE in profile.topologies
+
+    def test_detects_kubernetes(self, empty_project: Path) -> None:
+        # Test k8s directory
+        k8s_dir = empty_project / "k8s"
+        k8s_dir.mkdir()
+        detector = ProjectDetector()
+        profile = detector.detect(empty_project)
+
+        assert profile.language == "yaml"
+        assert Topology.INFRASTRUCTURE in profile.topologies
+
+        # Cleanup for next part
+        k8s_dir.rmdir()
+
+        # Test kubernetes directory
+        (empty_project / "kubernetes").mkdir()
+        profile = detector.detect(empty_project)
+        assert Topology.INFRASTRUCTURE in profile.topologies
+
+    def test_skips_infrastructure_if_app_code_present(self, empty_project: Path) -> None:
+        (empty_project / "package.json").write_text("{}")
+        (empty_project / "docker-compose.yml").touch()
+
+        detector = ProjectDetector()
+        profile = detector.detect(empty_project)
+
+        # Should be detected as javascript/typescript, not yaml infrastructure
+        assert profile.language in ("javascript", "typescript")
+        assert Topology.INFRASTRUCTURE not in profile.topologies
