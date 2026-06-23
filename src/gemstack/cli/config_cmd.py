@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import Any
+
 import typer
 from rich.console import Console
 from rich.table import Table
@@ -29,6 +31,16 @@ _KEY_MAP = {
     "custom-templates-dir": "custom_templates_dir",
     "copy-mode": "copy_mode",
 }
+
+
+def _mask_value(key: str, value: Any) -> str:
+    """Mask configuration value if it appears to be an API key."""
+    raw_value = str(value)
+    if "api-key" in key.lower():
+        if len(raw_value) > 8:
+            return raw_value[:4] + "..." + raw_value[-4:]
+        return "********"
+    return raw_value
 
 
 @config_app.command("set")
@@ -63,10 +75,7 @@ def config_set(
 
     config.save()
 
-    # Mask API key in output
-    display_value = value
-    if "api-key" in key and len(value) > 8:
-        display_value = value[:4] + "..." + value[-4:]
+    display_value = _mask_value(key, value)
 
     console.print(f"[green]✅ Set {key} = {display_value}[/green]")
     console.print(f"[dim]Saved to {GemstackConfig.config_path()}[/dim]")
@@ -98,10 +107,7 @@ def config_get(
     if raw_value is None:
         console.print(f"[dim]{key}: (not set)[/dim]")
     else:
-        # Mask API key
-        display_value = str(raw_value)
-        if "api-key" in key and len(display_value) > 8:
-            display_value = display_value[:4] + "..." + display_value[-4:]
+        display_value = _mask_value(key, raw_value)
         console.print(f"{key}: {display_value}")
 
 
@@ -128,10 +134,8 @@ def config_list() -> None:
 
         if raw_value is None:
             display_value = "[dim](not set)[/dim]"
-        elif "api-key" in key and isinstance(raw_value, str) and len(raw_value) > 8:
-            display_value = raw_value[:4] + "..." + raw_value[-4:]
         else:
-            display_value = str(raw_value)
+            display_value = _mask_value(key, raw_value)
 
         table.add_row(key, display_value, description)
 
