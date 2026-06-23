@@ -111,8 +111,7 @@ class Scaffolder:
             route_file,
             f"// Route handler for {route_path}\n\n"
             f"export async function handle(req: Request): Promise<Response> {{\n"
-            f"  // TODO: Implement {route_path}\n"
-            f'  return new Response(JSON.stringify({{ status: "ok" }}));\n'
+            f'  return Response.json({{ status: "ok", path: "{route_path}" }});\n'
             f"}}\n",
         )
         return route_file
