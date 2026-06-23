@@ -225,8 +225,26 @@ class TestConfigCommand:
         assert "gemini-2.5-pro" in result.stdout
 
     def test_config_invalid_key(self) -> None:
+        # Test set with invalid key
         result = runner.invoke(app, ["config", "set", "invalid-key", "value"])
         assert result.exit_code == 1
+        assert "Unknown config key" in result.stdout
+
+        # Test get with invalid key
+        result = runner.invoke(app, ["config", "get", "invalid-key"])
+        assert result.exit_code == 1
+        assert "Unknown config key" in result.stdout
+
+    def test_config_get_not_set(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+        from gemstack.project.config import GemstackConfig
+
+        config_path = tmp_path / "config.toml"
+        monkeypatch.setattr(GemstackConfig, "config_path", classmethod(lambda cls: config_path))
+
+        # default-topology is None by default
+        result = runner.invoke(app, ["config", "get", "default-topology"])
+        assert result.exit_code == 0
+        assert "(not set)" in result.stdout
 
 
 class TestExportCommand:
