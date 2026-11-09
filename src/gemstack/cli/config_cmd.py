@@ -132,10 +132,7 @@ def config_list() -> None:
         else:
             raw_value = getattr(config, attr_name)
 
-        if raw_value is None:
-            display_value = "[dim](not set)[/dim]"
-        else:
-            display_value = _mask_value(key, raw_value)
+        display_value = "[dim](not set)[/dim]" if raw_value is None else _mask_value(key, raw_value)
 
         table.add_row(key, display_value, description)
 

@@ -110,6 +110,9 @@ class Scaffolder:
         write_atomic(
             route_file,
             f"// Route handler for {route_path}\n\n"
+            f"/**\n"
+            f" * Handle requests for {route_path}.\n"
+            f" */\n"
             f"export async function handle(req: Request): Promise<Response> {{\n"
             f'  return Response.json({{ status: "ok", path: "{route_path}" }});\n'
             f"}}\n",

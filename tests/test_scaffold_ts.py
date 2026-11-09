@@ -1,7 +1,9 @@
 """Tests for TypeScript scaffolding."""
 
 from pathlib import Path
+
 from gemstack.project.scaffolder import Scaffolder
+
 
 class TestTypeScriptScaffolding:
     def test_scaffold_route_creates_files(self, tmp_path: Path) -> None:
@@ -14,3 +16,4 @@ class TestTypeScriptScaffolding:
         assert "export async function handle(req: Request): Promise<Response>" in content
         assert f'return Response.json({{ status: "ok", path: "{route_path}" }});' in content
         assert "TODO" not in content
+        assert "/**" in content
